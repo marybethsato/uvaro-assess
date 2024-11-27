@@ -13,24 +13,14 @@ const LayoutContainer = styled.div`
   margin: 0 auto;
   background-color: #fff;
   max-width: 480px;
+  overflow: hidden;
 `;
-//
+
 //   color: ${(props) => props.theme.colors.text};
+// footer height: calc(var(--vh, 1vh) * 100 + [footer height]);
 
 const Layout = ({ children }: LayoutProps): ReactElement => {
   return <LayoutContainer>{children}</LayoutContainer>;
 };
-
-// const styles: { container: CSSProperties } = {
-//   container: {
-//     height: "calc(var(--vh) * 100)",
-//     display: "flex",
-//     flexDirection: "column",
-//     // alignItems: 'center',
-//     padding: "20px",
-//     // margin: '0 auto',
-//     // maxWidth: '600px',
-//   },
-// };
 
 export default Layout;

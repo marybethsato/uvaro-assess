@@ -5,7 +5,7 @@ type Props = {};
 const Welcome = (props: Props) => {
   return (
     <Layout>
-      <h2>Welcome Page</h2>
+      <h3>Welcome Page</h3>
     </Layout>
   );
 };
