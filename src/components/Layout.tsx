@@ -1,26 +1,11 @@
-import { ReactElement, ReactNode } from "react";
-import styled from "styled-components";
+import "../styles/globals.css";
 
-interface LayoutProps {
-  children: ReactNode;
-}
-
-const LayoutContainer = styled.div`
-  height: calc(var(--vh) * 100);
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  margin: 0 auto;
-  background-color: #fff;
-  max-width: 480px;
-  overflow: hidden;
-`;
-
-//   color: ${(props) => props.theme.colors.text};
-// footer height: calc(var(--vh, 1vh) * 100 + [footer height]);
-
-const Layout = ({ children }: LayoutProps): ReactElement => {
-  return <LayoutContainer>{children}</LayoutContainer>;
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="h-[calc(var(--vh)*100)] flex flex-col p-4 mx-auto bg-white min-w-[360px] max-w-[480px] overflow-hidden">
+      {children}
+    </div>
+  );
 };
 
 export default Layout;
