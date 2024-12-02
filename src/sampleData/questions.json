@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "category": "Category 1",
+    "question": "What is your favorite color?",
+    "answers": ["Red", "Blue", "Green", "Yellow"]
+  },
+  {
+    "id": 2,
+    "category": "Category 2",
+    "question": "Which animal do you like the most?",
+    "answers": ["Cat", "Dog", "Bird", "Fish"]
+  },
+  {
+    "id": 3,
+    "category": "Category 3",
+    "question": "What is your preferred mode of transport?",
+    "answers": ["Car", "Bicycle", "Bus", "Train"]
+  }
+]
