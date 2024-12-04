@@ -14,14 +14,11 @@ module.exports = {
         success: "#",
       },
       fontSize: {
-        small: "",
-        base: "14px",
+        xsmall: "12px",
+        small: "14px",
         large: "",
-        heading: "",
+        heading: "48px",
       },
-      // backgroundImage: {
-      //   "welcome-page": "url('/images/welcomePage.png')",
-      // },
     },
   },
   plugins: [],

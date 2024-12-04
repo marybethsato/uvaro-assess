@@ -30,3 +30,11 @@
     line-height: 1.5;
   }
 }
+
+.heading2 {
+  @apply font-bold mb-2;
+}
+
+.smallText {
+  @apply text-small;
+}

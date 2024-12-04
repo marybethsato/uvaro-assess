@@ -7,7 +7,7 @@ export const PrimaryButton = ({
   return (
     <BaseButton
       {...props}
-      className="bg-primary hover:bg-secondary hover:text-black text-white"
+      className="bg-primary hover:bg-secondary hover:text-black text-white mb-5"
     >
       {children}
     </BaseButton>
