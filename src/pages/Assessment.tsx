@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import BaseButton from "../components/buttons/BaseButton";
 import questionsData from "../sampleData/questions.json";
 import { QuestionType } from "../types/question";
+import Note from "../components/assessment/Note";
 
 const Assessment = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -49,26 +50,30 @@ const Assessment = () => {
   return (
     <Layout>
       <Header />
-      <Question
-        number={currentQuestionIndex + 1}
-        total={questions.length}
-        category={currentQuestion.category}
-        question={currentQuestion.question}
-      />
-      <AnswerList
-        options={currentQuestion.answers}
-        selected={
-          selectedAnswers.find((item) => item.questionId === currentQuestion.id)
-            ?.answer || null
-        }
-        onSelect={(answer) => handleSelectAnswer(answer)}
-      />
-      <BaseButton
-        className="border border-gray-300 font-bold w-24 self-end mx-5 mt-5 hover:bg-gray-100"
-        onClick={handleNext}
-      >
-        → Next
-      </BaseButton>
+      <div className="mx-5 flex flex-col">
+        <Question
+          number={currentQuestionIndex + 1}
+          total={questions.length}
+          category={currentQuestion.category}
+          question={currentQuestion.question}
+        />
+        <AnswerList
+          options={currentQuestion.answers}
+          selected={
+            selectedAnswers.find(
+              (item) => item.questionId === currentQuestion.id
+            )?.answer || null
+          }
+          onSelect={(answer) => handleSelectAnswer(answer)}
+        />
+        <Note />
+        <button
+          className="px-4 py-2 border border-gray-300 font-bold hover:bg-gray-100 self-end rounded-md cursor-pointer"
+          onClick={handleNext}
+        >
+          → NEXT
+        </button>
+      </div>
     </Layout>
   );
 };

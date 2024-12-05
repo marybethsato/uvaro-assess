@@ -11,7 +11,7 @@ export default function AnswerList({
   onSelect,
 }: AnswerListProps) {
   return (
-    <div className="space-y-3 mx-5">
+    <div className="space-y-3">
       {options.map((option, index) => (
         <AnswerItem
           key={index}

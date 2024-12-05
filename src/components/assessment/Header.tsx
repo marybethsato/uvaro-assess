@@ -1,8 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-type Props = {};
-
-export default function Header({}: Props) {
+export default function Header() {
   const navigate = useNavigate();
 
   return (

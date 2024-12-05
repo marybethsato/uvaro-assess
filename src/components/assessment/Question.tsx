@@ -4,6 +4,7 @@ interface QuestionProps {
   category: string;
   question: string;
 }
+
 export default function Question({
   number,
   total,
@@ -11,7 +12,7 @@ export default function Question({
   question,
 }: QuestionProps) {
   return (
-    <div className="p-4 mt-5">
+    <div className="my-5">
       <h4>
         Question {number}/{total}
       </h4>

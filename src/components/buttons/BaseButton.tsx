@@ -10,7 +10,7 @@ interface ButtonProps {
 const BaseButton = ({ children, className = "", ...props }: ButtonProps) => {
   return (
     <button
-      className={`px-4 py-2 rounded-md cursor-pointer disabled:bg-lightGray disabled:cursor-not-allowed ${className}`}
+      className={`px-7 py-3 rounded-md cursor-pointer ${className}`}
       {...props}
     >
       {children}
