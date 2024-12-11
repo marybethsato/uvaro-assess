@@ -6,7 +6,7 @@ import Header from "../components/assessment/Header";
 import QuestionCard from "../components/assessment/QuestionCard";
 
 import { useNavigate } from "react-router-dom";
-import Note from "../components/assessment/Note";
+import NoteCard from "../components/assessment/NoteCard";
 import { ALL_CATEGORIES } from "../graphql/queries";
 
 interface Answer {
@@ -31,19 +31,25 @@ interface SelectedAnswer {
   answer: string;
 }
 
+interface Note {
+  questionId: number;
+  content: string;
+}
+
 const Assessment = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswer[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const [notes, setNotes] = useState<Note[]>([]);
 
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const res = await fetch("http://localhost:4000/graphql", {
+        const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -115,8 +121,10 @@ const Assessment = () => {
 
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
+      console.log("Note:", notes);
     } else {
       console.log("All answers:", selectedAnswers);
+      console.log("All Notes:", notes);
       navigate("/completeAssessment");
     }
   };
@@ -140,6 +148,20 @@ const Assessment = () => {
     );
   }
 
+  const handleNoteChange = (questionId: number, newContent: string) => {
+    setNotes((prev) => {
+      const existing = prev.findIndex((n) => n.questionId === questionId);
+
+      if (existing !== -1) {
+        const updatedNotes = [...prev];
+        updatedNotes[existing].content = newContent;
+        return updatedNotes;
+      } else {
+        return [...prev, { questionId, content: newContent }];
+      }
+    });
+  };
+
   return (
     <Layout>
       <Header />
@@ -161,7 +183,14 @@ const Assessment = () => {
           }
           onSelect={(answer) => handleSelectAnswer(answer)}
         />
-        <Note />
+        <NoteCard
+          questionId={currentQuestion.question_id}
+          onNoteChange={handleNoteChange}
+          existingNote={
+            notes.find((n) => n.questionId === currentQuestion.question_id)
+              ?.content
+          }
+        />
         <button
           className="px-4 py-2 border border-gray-300 font-bold hover:bg-gray-100 self-end rounded-md cursor-pointer"
           onClick={handleNext}
