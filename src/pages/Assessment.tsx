@@ -1,39 +1,113 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 
 import AnswerList from "../components/assessment/AnswerList";
 import Header from "../components/assessment/Header";
-import Question from "../components/assessment/Question";
+import QuestionCard from "../components/assessment/QuestionCard";
 
 import { useNavigate } from "react-router-dom";
-import BaseButton from "../components/buttons/BaseButton";
-import questionsData from "../sampleData/questions.json";
-import { QuestionType } from "../types/question";
 import Note from "../components/assessment/Note";
+import { ALL_CATEGORIES } from "../graphql/queries";
+
+interface Answer {
+  answer_id: number;
+  answer_text: string;
+}
+
+interface Question {
+  question_id: number;
+  question_text: string;
+  answers: Answer[];
+}
+
+interface Category {
+  category_id: number;
+  category_name: string;
+  questions: Question[];
+}
+
+interface SelectedAnswer {
+  questionId: number;
+  answer: string;
+}
 
 const Assessment = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<
-    { questionId: number; answer: string }[]
-  >([]);
-
-  const questions: QuestionType[] = questionsData;
-  const currentQuestion = questions[currentQuestionIndex];
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswer[]>([]);
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch("http://localhost:4000/graphql", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: ALL_CATEGORIES,
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const response = await res.json();
+
+        if (response.errors) {
+          throw new Error(
+            `GraphQL error: ${response.errors[0].message || "Unknown error"}`
+          );
+        }
+
+        const data = response.data;
+
+        if (data && data.allCategories) {
+          setCategories(data.allCategories);
+          if (data.allCategories.length > 0) {
+            setQuestions(data.allCategories[0].questions);
+          } else {
+            setCategories([]);
+            setQuestions([]);
+            console.log("No categories found.");
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCategories();
+  }, []);
+
+  const currentQuestion = questions[currentQuestionIndex];
+
   const handleSelectAnswer = (answer: string) => {
-    const updatedAnswers = selectedAnswers.filter(
-      (item) => item.questionId !== currentQuestion.id
-    );
-    setSelectedAnswers([
-      ...updatedAnswers,
-      { questionId: currentQuestion.id, answer },
-    ]);
+    setSelectedAnswers((prev) => {
+      const existing = prev.find(
+        (a) => a.questionId === currentQuestion.question_id
+      );
+      if (existing) {
+        return prev.map((a) =>
+          a.questionId === currentQuestion.question_id ? { ...a, answer } : a
+        );
+      } else {
+        return [...prev, { questionId: currentQuestion.question_id, answer }];
+      }
+    });
   };
 
   const handleNext = () => {
     if (
-      !selectedAnswers.find((item) => item.questionId === currentQuestion.id)
+      !selectedAnswers.find(
+        (item) => item.questionId === currentQuestion.question_id
+      )
     ) {
       alert("Please select an answer.");
       return;
@@ -47,22 +121,43 @@ const Assessment = () => {
     }
   };
 
+  const currentCategory = categories.find((category) =>
+    category.questions.some(
+      (q) => q.question_id === currentQuestion.question_id
+    )
+  );
+  const totalQuestions = questions.length;
+  const currentNumber = currentQuestionIndex + 1;
+
+  if (loading) {
+    return (
+      <Layout>
+        <Header />
+        <div className="mx-5 flex justify-center items-center h-screen">
+          <p>Loading...</p>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <Header />
       <div className="mx-5 flex flex-col">
-        <Question
-          number={currentQuestionIndex + 1}
-          total={questions.length}
-          category={currentQuestion.category}
-          question={currentQuestion.question}
+        <QuestionCard
+          number={currentNumber}
+          total={totalQuestions}
+          category={
+            currentCategory ? currentCategory.category_name : "Uncategorized"
+          }
+          question={currentQuestion.question_text}
         />
         <AnswerList
-          options={currentQuestion.answers}
+          options={currentQuestion.answers.map((a) => a.answer_text)}
           selected={
             selectedAnswers.find(
-              (item) => item.questionId === currentQuestion.id
-            )?.answer || null
+              (a) => a.questionId === currentQuestion.question_id
+            )?.answer || ""
           }
           onSelect={(answer) => handleSelectAnswer(answer)}
         />
