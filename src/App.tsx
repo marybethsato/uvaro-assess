@@ -6,6 +6,7 @@ import CompleteAssessment from "./pages/CompleteAssessment";
 import Welcome from "./pages/Welcome";
 import "./styles/globals.css";
 import Signin from "./pages/Signin";
+import Result from "./pages/Result";
 
 export default function App() {
   useViewportHeight();
@@ -16,7 +17,8 @@ export default function App() {
         <Route path="/" element={<Welcome />} />
         <Route path="/assessment" element={<Assessment />} />
         <Route path="/completeAssessment" element={<CompleteAssessment />} />
-        <Route path="/signup" element={<Signin />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/result" element={<Result />} />
       </Routes>
     </BrowserRouter>
   );

@@ -12,6 +12,7 @@ import { ALL_CATEGORIES } from "../graphql/queries";
 interface Answer {
   answer_id: number;
   answer_text: string;
+  weighting: number;
 }
 
 interface Question {
@@ -28,7 +29,9 @@ interface Category {
 
 interface SelectedAnswer {
   questionId: number;
+  answerId: number;
   answer: string;
+  weighting: number;
 }
 
 interface Note {
