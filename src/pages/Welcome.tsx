@@ -29,7 +29,7 @@ const Welcome = () => {
             </PrimaryButton>
             <p>
               Have an account?{" "}
-              <Link to="/login" className="text-red-500 font-medium">
+              <Link to="/signup" className="text-red-500 font-medium">
                 Sign in
               </Link>
             </p>
