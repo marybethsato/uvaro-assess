@@ -1,8 +1,15 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../images/signup/logo.png";
 
-const Signin = () => {
+const SignIn = () => {
   const [isSignUp, setIsSignUp] = useState(false);
+
+  const navigate = useNavigate();
+
+  function handleSignIn(){
+    navigate('/app/home');
+  }
 
   return (
     <div style={containerStyle}>
@@ -24,7 +31,7 @@ const Signin = () => {
         )}
         <input type="email" placeholder="Email" style={inputStyle} />
 
-        <button style={primaryButtonStyle}>
+        <button onClick={handleSignIn} style={primaryButtonStyle}>
           {isSignUp ? "Sign Up" : "Sign In"}
         </button>
 
@@ -130,4 +137,4 @@ const linkButtonStyle: React.CSSProperties = {
   fontSize: "12px",
 };
 
-export default Signin;
+export default SignIn;

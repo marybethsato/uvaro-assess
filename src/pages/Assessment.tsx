@@ -49,6 +49,8 @@ const Assessment = () => {
   useEffect(() => {
     async function fetchCategories() {
       try {
+        console.log("HI");
+        console.log(process.env.REACT_APP_GRAPHQL_URL);
         const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
           method: "POST",
           headers: {
@@ -64,6 +66,7 @@ const Assessment = () => {
         }
 
         const response = await res.json();
+        console.log(response.data);
 
         if (response.errors) {
           throw new Error(
@@ -161,6 +164,12 @@ const Assessment = () => {
       }
     });
   };
+
+  if (!currentQuestion) {
+    return (
+      <p>Error...</p>
+    );
+  }
 
   return (
     <Layout>
