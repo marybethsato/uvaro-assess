@@ -23,7 +23,7 @@ export default function CompleteAssessment() {
 
         <div className="w-full flex mt-32">
           <BaseButton
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/result")}
             className="bg-green-600 hover:bg-green-700 text-white px-8 w-full"
           >
             View Results
