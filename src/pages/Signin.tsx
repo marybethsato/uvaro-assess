@@ -1,44 +1,49 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import logo from "../images/signup/logo.png";
 
-const SignIn = () => {
+const Signin = () => {
   const [isSignUp, setIsSignUp] = useState(false);
 
-  const navigate = useNavigate();
-
-  function handleSignIn(){
-    navigate('/app/home');
-  }
-
   return (
-    <div style={containerStyle}>
-      <div style={cardStyle}>
-        <div style={imageStyle}>
-          <img style={imageStyle2} src={logo} alt="logo" />
+    <div className="flex justify-center items-center min-h-screen p-5 bg-gray-100 box-border">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-md p-5 text-center">
+        <div className="flex justify-center pb-5">
+          <img className="w-1/5 h-1/5" src={logo} alt="logo" />
         </div>
-        <h1 style={appNameStyle}>Uvaro</h1>
-        <h1 style={appNameStyle2}>Assess</h1>
-        <p style={subTextStyle}>
+        <h1 className="text-4xl font-extrabold text-center">Uvaro</h1>
+        <h1 className="text-4xl font-extrabold text-center mb-5">Assess</h1>
+        <p className="text-sm mb-5 text-gray-600">
           {isSignUp ? "Sign up to continue" : "Sign in to continue"}
         </p>
 
         {isSignUp && (
           <div>
-            <input type="text" placeholder="First Name" style={inputStyle} />
-            <input type="text" placeholder="Last Name" style={inputStyle} />
+            <input
+              type="text"
+              placeholder="First Name"
+              className="w-full p-3 my-2 border border-gray-300 rounded-md text-sm box-border"
+            />
+            <input
+              type="text"
+              placeholder="Last Name"
+              className="w-full p-3 my-2 border border-gray-300 rounded-md text-sm box-border"
+            />
           </div>
         )}
-        <input type="email" placeholder="Email" style={inputStyle} />
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full p-3 my-2 border border-gray-300 rounded-md text-sm box-border"
+        />
 
-        <button onClick={handleSignIn} style={primaryButtonStyle}>
+        <button className="w-full p-3 mt-2 bg-[#d32f2f] text-white border-none rounded-md cursor-pointer text-base">
           {isSignUp ? "Sign Up" : "Sign In"}
         </button>
 
-        <p style={footerTextStyle}>
+        <p className="text-xs text-gray-600 mt-4">
           {isSignUp ? "Already have an account? " : "Don’t have an account? "}
           <button
-            style={linkButtonStyle}
+            className="bg-none border-none text-[#d32f2f] cursor-pointer underline text-xs"
             onClick={() => setIsSignUp(!isSignUp)}
           >
             {isSignUp ? "Sign In" : "Sign Up"}
@@ -49,92 +54,4 @@ const SignIn = () => {
   );
 };
 
-const containerStyle: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100vh",
-  padding: "20px",
-  backgroundColor: "#f5f5f5",
-  boxSizing: "border-box",
-};
-
-const cardStyle: React.CSSProperties = {
-  width: "100%",
-  maxWidth: "400px",
-  backgroundColor: "white",
-  borderRadius: "10px",
-  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-  padding: "20px",
-  textAlign: "center",
-};
-
-const imageStyle: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "center",
-  paddingBottom: "20px",
-};
-
-const imageStyle2: React.CSSProperties = {
-  width: "20%",
-  height: "20%",
-};
-
-const appNameStyle: React.CSSProperties = {
-  textAlign: "center",
-  fontSize: "40px",
-  fontWeight: "bolder",
-};
-
-const appNameStyle2: React.CSSProperties = {
-  textAlign: "center",
-  fontSize: "40px",
-  fontWeight: "bolder",
-  marginTop: "-20px",
-  marginBottom: "20px",
-};
-
-const subTextStyle: React.CSSProperties = {
-  fontSize: "14px",
-  marginBottom: "20px",
-  color: "#666",
-};
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "12px",
-  margin: "10px 0",
-  borderRadius: "6px",
-  border: "1px solid #ddd",
-  fontSize: "14px",
-  boxSizing: "border-box",
-};
-
-const primaryButtonStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "12px",
-  backgroundColor: "#d32f2f",
-  color: "white",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontSize: "16px",
-  marginTop: "10px",
-};
-
-const footerTextStyle: React.CSSProperties = {
-  fontSize: "12px",
-  color: "#666",
-  marginTop: "15px",
-};
-
-const linkButtonStyle: React.CSSProperties = {
-  background: "none",
-  border: "none",
-  color: "#d32f2f",
-  cursor: "pointer",
-  textDecoration: "underline",
-  fontSize: "12px",
-};
-
-export default SignIn;
+export default Signin;
