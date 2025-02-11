@@ -1,8 +1,12 @@
 import { RiArrowRightSLine } from "react-icons/ri";
 
-export default function ResultCard() {
+interface ResultCardProps {
+  onClick?: () => void;
+}
+
+const ResultCard: React.FC<ResultCardProps> = ({ onClick }) => {
   return (
-    <div className="p-4 shadow-md my-5 rounded-md">
+    <div className="p-4 shadow-md my-5 rounded-md" onClick={onClick}>
       <p className="text-red-500 font-semibold text-sm ">Financial Health</p>
       <hr className="h-px mt-1 border-0 bg-gray-400" />
       <div className="flex flex-row items-center mt-3 justify-between">
@@ -21,4 +25,6 @@ export default function ResultCard() {
       </div>
     </div>
   );
-}
+};
+
+export default ResultCard;

@@ -12,6 +12,7 @@ import Welcome from "./pages/Welcome";
 import "./styles/globals.css";
 import Signin from "./pages/Signin";
 import Result from "./pages/Result";
+import ResultCategory from "./pages/ResultCategory";
 
 export default function App() {
   useViewportHeight();
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/completeAssessment" element={<CompleteAssessment />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/result" element={<Result />} />
+        <Route path="/result/:category" element={<ResultCategory />} />
 
         {/* App Pages with Bottom Navigation */}
         <Route path="/app" element={<AppLayout />}>

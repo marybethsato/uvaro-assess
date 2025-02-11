@@ -21,9 +21,6 @@ const Result = () => {
         <ResultCard
           onClick={() => navigate("/result/life-choice-fulfillment")}
         />
-        <ResultCard
-          onClick={() => navigate("/result/peer-community-fulfillment")}
-        />
         <div className="flex justify-center">
           <BaseButton
             className="mt-5 bg-black text-white w-full hover:bg-gray-700"

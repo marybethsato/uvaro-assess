@@ -38,3 +38,8 @@
 .smallText {
   @apply text-small;
 }
+
+.bg-green-custom {
+  background-color: #449B44;
+  color: white; /* Ensures contrast */
+}
