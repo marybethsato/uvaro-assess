@@ -24,8 +24,8 @@ export default function App() {
         <Route path="/signup" element={<SignIn />} />
         <Route path="/assessment" element={<Assessment />} />
         <Route
-          path="/introduction"
-          element={<CategoryIntroduction categoryName="categoryName" />}
+          path="/introduction/:category"
+          element={<CategoryIntroduction />}
         />
         <Route path="/completeAssessment" element={<CompleteAssessment />} />
         <Route path="/signin" element={<Signin />} />
