@@ -1,9 +1,28 @@
 import { RiArrowRightSLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
-export default function ResultCard() {
+type ResultCardProps = {
+  isGreen: boolean;
+  category: string;
+  // level: string;
+  // description: string;
+};
+
+export default function ResultCard({ isGreen, category }: ResultCardProps) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/detail/${category}`);
+  };
+
   return (
-    <div className="p-4 shadow-md my-5 rounded-md">
-      <p className="text-red-500 font-semibold text-sm ">Financial Health</p>
+    <div
+      className={`p-4 shadow-md my-5 rounded-md  ${
+        isGreen ? "bg-green-700 text-white" : "bg-gray-200"
+      }`}
+      onClick={handleClick}
+    >
+      <p className="font-semibold text-md ">{category}</p>
       <hr className="h-px mt-1 border-0 bg-gray-400" />
       <div className="flex flex-row items-center mt-3 justify-between">
         <div className="w-3/4">
