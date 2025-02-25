@@ -4,7 +4,6 @@ import useViewportHeight from "./hooks/useViewportHeight";
 import "./index.css";
 import Assessment from "./pages/Assessment";
 import AssessmentList from "./pages/AssessmentList";
-import CompleteAssessment from "./pages/CompleteAssessment";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import SignIn from "./pages/Signin";
@@ -12,6 +11,7 @@ import Welcome from "./pages/Welcome";
 import "./styles/globals.css";
 import Signin from "./pages/Signin";
 import Result from "./pages/Result";
+import CompleteCheckmark from "./pages/CompleteCheckmark";
 
 export default function App() {
   useViewportHeight();
@@ -23,7 +23,7 @@ export default function App() {
         <Route path="/" element={<Welcome />} />
         <Route path="/signup" element={<SignIn />} />
         <Route path="/assessment" element={<Assessment />} />
-        <Route path="/completeAssessment" element={<CompleteAssessment />} />
+        <Route path="/complete-checkmark" element={<CompleteCheckmark />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/result" element={<Result />} />
 
