@@ -24,7 +24,9 @@ const Welcome = () => {
               Find out where you stand and uncover your potential for growth.
               Take the first step toward achieving your career goals!
             </p>
-            <PrimaryButton className="" onClick={() => navigate("/assessment")}>
+            <PrimaryButton
+              onClick={() => navigate("/introduction/financial-health")}
+            >
               Take the Assessment Now!
             </PrimaryButton>
             <p>
