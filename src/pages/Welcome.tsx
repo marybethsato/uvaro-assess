@@ -5,9 +5,30 @@ import welcomeImage from "../images/welcome/welcomePage.jpg";
 import WelcomeInfo from "../components/welcome/welcomeInfo";
 import sectionsData from "../data/sectionsData";
 import { Link } from "react-router-dom";
+import { ADD_ASSESSMENT_AS_GUEST } from "../graphql/queries";
 
 const Welcome = () => {
   const navigate = useNavigate();
+
+  async function handleGuestAssessment() {
+    try {
+      const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: ADD_ASSESSMENT_AS_GUEST,
+        }),
+      });
+      const data = await res.json();
+      console.log(data);
+
+      if (data.errors) throw new Error("Failed to add assessment as guest");
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <Layout>
@@ -25,7 +46,10 @@ const Welcome = () => {
               Take the first step toward achieving your career goals!
             </p>
             <PrimaryButton
-              onClick={() => navigate("/introduction/financial-health")}
+              onClick={() => {
+                handleGuestAssessment();
+                navigate("/introduction/financial-health");
+              }}
             >
               Take the Assessment Now!
             </PrimaryButton>
