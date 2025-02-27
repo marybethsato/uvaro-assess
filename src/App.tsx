@@ -5,13 +5,14 @@ import "./index.css";
 import Assessment from "./pages/Assessment";
 import AssessmentList from "./pages/AssessmentList";
 import CategoryIntroduction from "./pages/CategoryIntroduction";
+import CompleteCheckmark from "./pages/CompleteCheckmark";
 import Home from "./pages/Home";
 import Result from "./pages/Result";
+import ResultCategory from "./pages/ResultCategory";
 import Settings from "./pages/Settings";
 import { default as SignIn, default as Signin } from "./pages/Signin";
 import Welcome from "./pages/Welcome";
 import "./styles/globals.css";
-import CompleteCheckmark from "./pages/CompleteCheckmark";
 
 export default function App() {
   useViewportHeight();
@@ -30,6 +31,7 @@ export default function App() {
         />
         <Route path="/signin" element={<Signin />} />
         <Route path="/result" element={<Result />} />
+        <Route path="/result/:category" element={<ResultCategory />} />
 
         {/* App Pages with Bottom Navigation */}
         <Route path="/app" element={<AppLayout />}>

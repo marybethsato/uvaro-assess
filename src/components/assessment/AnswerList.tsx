@@ -1,9 +1,10 @@
+import Answer from "../../interfaces/answer";
 import AnswerItem from "./AnswerItem";
 
 interface AnswerListProps {
-  options: string[];
-  selected: string | null;
-  onSelect: (answer: string) => void;
+  options: Answer[];
+  selected: Answer | null;
+  onSelect: (answer: Answer) => void;
 }
 export default function AnswerList({
   options,
@@ -15,7 +16,7 @@ export default function AnswerList({
       {options.map((option, index) => (
         <AnswerItem
           key={index}
-          text={option}
+          text={option.answer_text}
           isSelected={selected === option}
           onSelect={() => onSelect(option)}
         />

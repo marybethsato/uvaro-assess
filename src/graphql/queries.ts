@@ -12,7 +12,33 @@ export const ALL_CATEGORIES = `
           answer_id
           answer_text
         }
+        follow_up
       }
+    }
+  }
+`;
+
+export const INSERT_NOTES = `
+  mutation InsertNote($insertNoteAssessmentId2: Int!, $insertNoteCategoryId2: Int!, $noteText: String!) {
+    insertNote(assessment_id: $insertNoteAssessmentId2, category_id: $insertNoteCategoryId2, note_text: $noteText) {
+      note_text
+    }
+  }
+`;
+
+export const CALCULATE_LEVEL = `
+  mutation CalculateLevel($assessmentId: Int!, $categoryId: Int!) {
+    calculateLevel(assessment_id: $assessmentId, category_id: $categoryId) {
+      category_id,
+      category {
+        category_name
+        category_image,
+        category_description
+      },
+      level_id,
+      level_name,
+      level_statement,
+      required_weighting
     }
   }
 `;
@@ -47,4 +73,20 @@ export const END_ASSESSSMENT = `
       user_id
     }
   }
+`;
+
+export const GET_ASSESSMENT_BY_ID = `
+query GetAssessmentById($getAssessmentByIdId: Int!) {
+  getAssessmentById(id: $getAssessmentByIdId) {
+    id,
+    levels {
+      category_id,
+      level_name,
+      level_statement
+    },
+    notes {
+      note_text
+    }
+  }
+}
 `;
