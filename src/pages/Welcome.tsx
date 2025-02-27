@@ -22,9 +22,13 @@ const Welcome = () => {
         }),
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
 
-      if (data.errors) throw new Error("Failed to add assessment as guest");
+      if (data.errors) {
+        console.log("Failed to add assessment as guest: ", data.errors);
+      } else {
+        localStorage.setItem("assessmentId", data.data.addAssessmentAsGuest.id);
+      }
     } catch (error) {
       console.error(error);
     }

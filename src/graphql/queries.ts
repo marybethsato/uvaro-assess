@@ -3,6 +3,8 @@ export const ALL_CATEGORIES = `
     allCategories {
       category_id
       category_name
+      category_description
+      category_image
       questions {
         question_id
         question_text
