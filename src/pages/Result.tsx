@@ -1,6 +1,6 @@
 import ResultCard from "../components/result/ResultCard";
 import BaseButton from "../components/buttons/BaseButton";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 
 const Result = () => {
@@ -16,16 +16,24 @@ const Result = () => {
           Your results highlight your strengths and growth areas. Let’s turn
           these insights into your roadmap for success.
         </p>
-        <ResultCard />
-        <ResultCard />
-        <ResultCard />
-        <div className="flex justify-center">
+        <ResultCard isGreen={true} category="Financial Health" />
+        {/* <ResultCard isGreen={true} category={category} level={level} description={description}/> */}
+        <ResultCard isGreen={false} category="Work You Enjoy" />
+        <ResultCard isGreen={true} category="Life CHoice Fulfillment" />
+        <ResultCard isGreen={false} category="Peer Community Fulfillment" />
+        <div className="mb-10 space-y-5">
           <BaseButton
             className="mt-5 bg-black text-white w-full hover:bg-gray-700"
             onClick={() => navigate("/signin")}
           >
             Sign in to Save Assessment
           </BaseButton>
+          <p className="text-center text-sm">
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-red-500 font-semibold">
+              Sign up now!
+            </Link>
+          </p>
         </div>
       </div>
     </Layout>

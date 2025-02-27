@@ -3,9 +3,40 @@ import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
 import { FaArrowLeft } from "react-icons/fa";
 import checkmark from "../images/completeCheckmark.png";
+import { useEffect } from "react";
+import { END_ASSESSSMENT } from "../graphql/queries";
 
 export default function CompleteCheckmark() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchEndAssessment() {
+      try {
+        const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: END_ASSESSSMENT,
+            variables: {
+              assessmentId: localStorage.getItem("assessmentId"),
+            },
+          }),
+        });
+        const data = await res.json();
+
+        if (data.errors) {
+          console.error("GraphQL errors:", data.errors);
+        } else {
+          console.log("Assessment ended successfully");
+        }
+      } catch (error) {
+        console.error("Error ending assessment:", error);
+      }
+    }
+    fetchEndAssessment();
+  }, []);
 
   return (
     <Layout>

@@ -4,6 +4,15 @@ import IntroBackground from "../images/IntroBackground.png";
 import IntroVector from "../images/IntroVector.png";
 import BaseButton from "../components/buttons/BaseButton";
 import { FaArrowLeft } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { ALL_CATEGORIES } from "../graphql/queries";
+
+interface Category {
+  category_id: string;
+  category_name: string;
+  category_description: string;
+  category_image: string;
+}
 
 interface RouteParams {
   category: string;
@@ -19,8 +28,42 @@ const categoryMap: Record<string, string> = {
 
 const CategoryIntroduction = () => {
   const navigate = useNavigate();
-
   const { category } = useParams<RouteParams>();
+
+  const [fetchedCategory, setFetchedCategory] = useState<Category | null>(null);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: ALL_CATEGORIES,
+          }),
+        });
+        const data = await res.json();
+
+        if (data.errors) {
+          console.error("GraphQL errors:", data.errors);
+        } else {
+          const categories: Category[] = data.data.allCategories;
+          const mappedCategory = categoryMap[category as string];
+          const selectedCategory =
+            categories.find(
+              (category) => category.category_name === mappedCategory
+            ) || categories[0];
+          setFetchedCategory(selectedCategory);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    }
+
+    fetchCategories();
+  }, [category]);
 
   if (!category) {
     return null;
@@ -51,10 +94,11 @@ const CategoryIntroduction = () => {
           <h1 className="text-3xl font-bold">What is</h1>
           <h1 className="text-3xl font-bold">{categoryName}?</h1>
           <img src={IntroVector} alt="vector" className="mt-5" />
-          <p className=" mt-5">
-            This assessment will help you to understand the basics of the
-            category you choose. You will be asked a series of questions and you
-            will have to select the correct answer from the options provided.
+          {/* <img src={fetchedCategory?.category_image} alt="Category vector image" className="mt-5" /> */}
+          <p className="mt-5">
+            {fetchedCategory
+              ? fetchedCategory.category_description
+              : "Loading description..."}
           </p>
         </div>
         <div className="flex justify-center">
