@@ -1,11 +1,11 @@
+import { useEffect, useState } from "react";
+import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
+import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
+import { ALL_CATEGORIES } from "../graphql/queries";
 import IntroBackground from "../images/IntroBackground.png";
 import IntroVector from "../images/IntroVector.png";
-import BaseButton from "../components/buttons/BaseButton";
-import { FaArrowLeft } from "react-icons/fa";
-import { useEffect, useState } from "react";
-import { ALL_CATEGORIES } from "../graphql/queries";
 
 interface Category {
   category_id: string;
@@ -104,7 +104,7 @@ const CategoryIntroduction = () => {
         <div className="flex justify-center">
           <BaseButton
             className="w-2/3 bg-primary text-white hover:bg-red-700"
-            onClick={() => navigate("/assessment")}
+            onClick={() => navigate("/assessment?category="+category)}
           >
             Continue
           </BaseButton>

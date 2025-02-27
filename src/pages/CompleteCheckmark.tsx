@@ -1,10 +1,10 @@
+import { useEffect } from "react";
+import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
-import { FaArrowLeft } from "react-icons/fa";
-import checkmark from "../images/completeCheckmark.png";
-import { useEffect } from "react";
 import { END_ASSESSSMENT } from "../graphql/queries";
+import checkmark from "../images/completeCheckmark.png";
 
 export default function CompleteCheckmark() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export default function CompleteCheckmark() {
           body: JSON.stringify({
             query: END_ASSESSSMENT,
             variables: {
-              assessmentId: localStorage.getItem("assessmentId"),
+              assessmentId: Number(localStorage.getItem("assessmentId")),
             },
           }),
         });

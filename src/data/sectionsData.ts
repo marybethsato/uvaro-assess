@@ -1,6 +1,6 @@
-import personalGrowth from "../images/welcome/personalGrowth.png";
 import careerPath from "../images/welcome/careerPath.png";
 import opportunity from "../images/welcome/opportunity.png";
+import personalGrowth from "../images/welcome/personalGrowth.png";
 
 const sectionsData = [
   {

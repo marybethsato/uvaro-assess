@@ -1,17 +1,18 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import { PrimaryButton } from "../components/buttons/PrimaryButton";
-import welcomeImage from "../images/welcome/welcomePage.jpg";
 import WelcomeInfo from "../components/welcome/welcomeInfo";
 import sectionsData from "../data/sectionsData";
-import { Link } from "react-router-dom";
 import { ADD_ASSESSMENT_AS_GUEST } from "../graphql/queries";
+import welcomeImage from "../images/welcome/welcomePage.jpg";
 
 const Welcome = () => {
   const navigate = useNavigate();
 
   async function handleGuestAssessment() {
     try {
+      console.log("test:")
+      console.log(process.env.REACT_APP_GRAPHQL_URL);
       const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
         headers: {
@@ -26,6 +27,7 @@ const Welcome = () => {
 
       if (data.errors) {
         console.log("Failed to add assessment as guest: ", data.errors);
+        alert('Failed to add assessment as guest');
       } else {
         localStorage.setItem("assessmentId", data.data.addAssessmentAsGuest.id);
       }
