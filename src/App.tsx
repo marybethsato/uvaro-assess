@@ -4,15 +4,15 @@ import useViewportHeight from "./hooks/useViewportHeight";
 import "./index.css";
 import Assessment from "./pages/Assessment";
 import AssessmentList from "./pages/AssessmentList";
-import CompleteAssessment from "./pages/CompleteAssessment";
+import CategoryIntroduction from "./pages/CategoryIntroduction";
+import CompleteCheckmark from "./pages/CompleteCheckmark";
 import Home from "./pages/Home";
-import Settings from "./pages/Settings";
-import SignIn from "./pages/Signin";
-import Welcome from "./pages/Welcome";
-import "./styles/globals.css";
-import Signin from "./pages/Signin";
 import Result from "./pages/Result";
 import ResultCategory from "./pages/ResultCategory";
+import Settings from "./pages/Settings";
+import { default as SignIn, default as Signin } from "./pages/Signin";
+import Welcome from "./pages/Welcome";
+import "./styles/globals.css";
 
 export default function App() {
   useViewportHeight();
@@ -24,7 +24,11 @@ export default function App() {
         <Route path="/" element={<Welcome />} />
         <Route path="/signup" element={<SignIn />} />
         <Route path="/assessment" element={<Assessment />} />
-        <Route path="/completeAssessment" element={<CompleteAssessment />} />
+        <Route path="/complete-checkmark" element={<CompleteCheckmark />} />
+        <Route
+          path="/introduction/:category"
+          element={<CategoryIntroduction />}
+        />
         <Route path="/signin" element={<Signin />} />
         <Route path="/result" element={<Result />} />
         <Route path="/result/:category" element={<ResultCategory />} />

@@ -127,7 +127,7 @@ const Assessment = () => {
     } else {
       console.log("All answers:", selectedAnswers);
       console.log("All Notes:", notes);
-      navigate("/completeAssessment");
+      navigate("/complete-checkmark");
     }
   };
 

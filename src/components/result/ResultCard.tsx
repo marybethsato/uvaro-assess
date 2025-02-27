@@ -1,5 +1,6 @@
 import { RiArrowRightSLine } from "react-icons/ri";
 
+
 interface ResultCardProps {
   onClick?: () => void;
 }
