@@ -94,6 +94,7 @@ const CategoryIntroduction = () => {
           <h1 className="text-3xl font-bold">What is</h1>
           <h1 className="text-3xl font-bold">{categoryName}?</h1>
           <img src={IntroVector} alt="vector" className="mt-5" />
+          {/* <img src={fetchedCategory?.category_image} alt="Category vector image" className="mt-5" /> */}
           <p className="mt-5">
             {fetchedCategory
               ? fetchedCategory.category_description

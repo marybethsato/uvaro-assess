@@ -37,3 +37,14 @@ export const INSERT_ANSWER = `
     }
   }
 `;
+
+export const END_ASSESSSMENT = `
+  mutation Mutation($assessmentId: Int!) {
+    endAssessment(assessment_id: $assessmentId) {
+      id
+      start_date_time
+      end_date_time
+      user_id
+    }
+  }
+`;
