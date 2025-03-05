@@ -10,9 +10,10 @@ import Home from "./pages/Home";
 import Result from "./pages/Result";
 import ResultCategory from "./pages/ResultCategory";
 import Settings from "./pages/Settings";
-import { default as SignIn, default as Signin } from "./pages/Signin";
+import SignIn from "./pages/SignIn";
 import Welcome from "./pages/Welcome";
 import "./styles/globals.css";
+import SignUp from "./pages/SignUp";
 
 export default function App() {
   useViewportHeight();
@@ -22,14 +23,14 @@ export default function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Welcome />} />
-        <Route path="/signup" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/assessment" element={<Assessment />} />
         <Route path="/complete-checkmark" element={<CompleteCheckmark />} />
         <Route
           path="/introduction/:category"
           element={<CategoryIntroduction />}
         />
-        <Route path="/signin" element={<Signin />} />
+        <Route path="/signin" element={<SignIn />} />
         <Route path="/result" element={<Result />} />
         <Route path="/result/:category" element={<ResultCategory />} />
 

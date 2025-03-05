@@ -11,7 +11,7 @@ const Welcome = () => {
 
   async function handleGuestAssessment() {
     try {
-      console.log("test:")
+      console.log("test:");
       console.log(process.env.REACT_APP_GRAPHQL_URL);
       const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
@@ -27,7 +27,7 @@ const Welcome = () => {
 
       if (data.errors) {
         console.log("Failed to add assessment as guest: ", data.errors);
-        alert('Failed to add assessment as guest');
+        alert("Failed to add assessment as guest");
       } else {
         localStorage.setItem("assessmentId", data.data.addAssessmentAsGuest.id);
       }
@@ -61,7 +61,7 @@ const Welcome = () => {
             </PrimaryButton>
             <p>
               Have an account?{" "}
-              <Link to="/signup" className="text-red-500 font-medium">
+              <Link to="/signin" className="text-red-500 font-medium">
                 Sign in
               </Link>
             </p>
