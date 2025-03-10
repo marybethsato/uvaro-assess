@@ -3,11 +3,15 @@ import Layout from "../components/Layout";
 import logo from "../images/signup/logo.png";
 import { useNavigate } from "react-router-dom";
 import { PrimaryButton } from "../components/buttons/PrimaryButton";
+import TopNavBar from "../components/navigation/TopNavBar";
 
 const SignUp = () => {
   const navigate = useNavigate();
   return (
     <Layout>
+      <div className="p-3">
+        <TopNavBar />
+      </div>
       <div className="text-center mx-10 flex flex-col justify-center items-center h-screen">
         <div>
           <img className="mb-5" width={100} src={logo} alt="logo" />

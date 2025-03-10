@@ -1,5 +1,6 @@
 import { PrimaryButton } from "../components/buttons/PrimaryButton";
 import Layout from "../components/Layout";
+import TopNavBar from "../components/navigation/TopNavBar";
 import logo from "../images/signup/logo.png";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +9,9 @@ const SignIn = () => {
 
   return (
     <Layout>
+      <div className="p-3">
+        <TopNavBar />
+      </div>
       <div className="mx-10 text-center h-screen flex flex-col justify-center items-center">
         <div>
           <img className="mb-5" width={100} src={logo} alt="logo" />
@@ -16,7 +20,6 @@ const SignIn = () => {
           Career Assessment
         </h1>
         <p className="mb-5 text-gray-600">Sign in to continue</p>
-
         <input
           type="email"
           placeholder="Email"
