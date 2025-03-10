@@ -104,7 +104,7 @@ const CategoryIntroduction = () => {
         <div className="flex justify-center">
           <BaseButton
             className="w-2/3 bg-primary text-white hover:bg-red-700"
-            onClick={() => navigate("/assessment?category="+category)}
+            onClick={() => navigate("/assessment?category=" + category)}
           >
             Continue
           </BaseButton>
