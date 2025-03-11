@@ -1,4 +1,5 @@
-import React from 'react';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ProfileImageProps {
   url: string;
@@ -6,6 +7,8 @@ interface ProfileImageProps {
 }
 
 const ProfileImage: React.FC<ProfileImageProps> = ({ url, size = 56 }) => {
+  const navigate = useNavigate();
+
   return (
     <img
       src={url}
@@ -15,6 +18,7 @@ const ProfileImage: React.FC<ProfileImageProps> = ({ url, size = 56 }) => {
         width: size,
         height: size,
       }}
+      onClick={() => navigate("/app/settings")}
     />
   );
 };

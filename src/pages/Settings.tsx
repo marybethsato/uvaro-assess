@@ -1,23 +1,27 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import ProfileImage from '../components/home/ProfileImage';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import ProfileImage from "../components/home/ProfileImage";
+import TopNavBar from "../components/navigation/TopNavBar";
 
 const Settings: React.FC = () => {
   const navigate = useNavigate();
   const handleSignOut = () => {
     // Add your sign-out logic here
-    console.log('Sign out clicked');
-    navigate('/');
-   
+    console.log("Sign out clicked");
+    navigate("/");
   };
 
   return (
     <div className="h-screen flex flex-col justify-between p-6 pb-[100px]">
+      <TopNavBar />
       {/* Top Section (Profile + Terms and Conditions) */}
       <div className="flex flex-col items-center">
         {/* Profile Section */}
         <div className="flex flex-col items-center space-y-2">
-          <ProfileImage url="https://avatar.iran.liara.run/public/98" size={100} />
+          <ProfileImage
+            url="https://avatar.iran.liara.run/public/98"
+            size={100}
+          />
           <div className="text-center">
             <h2 className="text-lg font-bold">Jane Doe</h2>
             <p className="text-sm text-gray-500">jane.doe@example.com</p>
@@ -31,8 +35,8 @@ const Settings: React.FC = () => {
         <div className="text-center">
           <h3 className="text-lg font-bold mb-2">Terms and Conditions</h3>
           <p className="text-sm text-gray-600">
-            By using this application, you agree to our Terms and Conditions. Please make sure
-            to read and understand them.
+            By using this application, you agree to our Terms and Conditions.
+            Please make sure to read and understand them.
           </p>
           <a
             href="#"

@@ -6,6 +6,7 @@ import Layout from "../components/Layout";
 import { ALL_CATEGORIES } from "../graphql/queries";
 import IntroBackground from "../images/IntroBackground.png";
 import IntroVector from "../images/IntroVector.png";
+import TopNavBar from "../components/navigation/TopNavBar";
 
 interface Category {
   category_id: string;
@@ -75,14 +76,7 @@ const CategoryIntroduction = () => {
     <Layout>
       <div className="mx-auto overflow-hidden">
         <div className="absolute w-full ">
-          <div className="bg-[#181819]">
-            <button
-              className="hover:bg-gray-700 rounded text-white p-2 ml-2 mt-2"
-              onClick={() => navigate("/")}
-            >
-              <FaArrowLeft />
-            </button>
-          </div>
+          <TopNavBar isDark />
           <img
             src={IntroBackground}
             alt="illustration"
@@ -104,7 +98,7 @@ const CategoryIntroduction = () => {
         <div className="flex justify-center">
           <BaseButton
             className="w-2/3 bg-primary text-white hover:bg-red-700"
-            onClick={() => navigate("/assessment?category="+category)}
+            onClick={() => navigate("/assessment?category=" + category)}
           >
             Continue
           </BaseButton>

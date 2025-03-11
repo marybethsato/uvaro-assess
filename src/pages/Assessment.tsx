@@ -11,8 +11,6 @@ import Answer from "../interfaces/answer";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 import getCategoryKeyByValue from "../utils/get_category_key_by_value";
 
-
-
 interface Question {
   question_id: number;
   question_text: string;
@@ -28,7 +26,7 @@ interface Category {
 
 interface SelectedAnswer {
   questionId: number;
-  answer: Answer
+  answer: Answer;
 }
 
 interface Note {
@@ -44,8 +42,8 @@ const Assessment = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const [searchParams] = useSearchParams();
-  const category = searchParams.get("category") || 'financial-health';
-  const isFollowUp = searchParams.get('is_follow_up') === 'true' ? true : false;
+  const category = searchParams.get("category") || "financial-health";
+  const isFollowUp = searchParams.get("is_follow_up") === "true" ? true : false;
 
   const navigate = useNavigate();
 
@@ -53,21 +51,21 @@ const Assessment = () => {
 
   const addQuestion = (newQuestion: Question) => {
     setQuestions((prevQuestions) => {
-      const exists = prevQuestions.some((q) => q.question_id === newQuestion.question_id);
+      const exists = prevQuestions.some(
+        (q) => q.question_id === newQuestion.question_id
+      );
 
       if (exists) {
-
         return prevQuestions.map((q) =>
-          q.question_id === newQuestion.question_id ? { ...q, ...newQuestion } : q
+          q.question_id === newQuestion.question_id
+            ? { ...q, ...newQuestion }
+            : q
         );
       } else {
-
         return [...prevQuestions, newQuestion];
       }
     });
   };
-
-
 
   useEffect(() => {
     setQuestions([]);
@@ -105,18 +103,17 @@ const Assessment = () => {
           if (data.allCategories.length > 0) {
             const categoryIndex = getCategoryIndexByKey(category);
 
-            data.allCategories[categoryIndex].questions.forEach((question: Question) => {
-
-              if (isFollowUp && question.follow_up == true) {
-                console.log('here');
-                addQuestion(question);
-              } else if (isFollowUp == false && question.follow_up == false) {
-                console.log('hi');
-                addQuestion(question);
+            data.allCategories[categoryIndex].questions.forEach(
+              (question: Question) => {
+                if (isFollowUp && question.follow_up == true) {
+                  console.log("here");
+                  addQuestion(question);
+                } else if (isFollowUp == false && question.follow_up == false) {
+                  console.log("hi");
+                  addQuestion(question);
+                }
               }
-            });
-
-
+            );
           } else {
             setCategories([]);
             setQuestions([]);
@@ -135,7 +132,6 @@ const Assessment = () => {
   const currentQuestion = questions[currentQuestionIndex];
 
   const handleSelectAnswer = (answer: Answer) => {
-
     setSelectedAnswers((prev) => {
       const existing = prev.find(
         (a) => a.questionId === currentQuestion.question_id
@@ -148,9 +144,7 @@ const Assessment = () => {
         return [...prev, { questionId: currentQuestion.question_id, answer }];
       }
     });
-
   };
-
 
   const handleNext = async () => {
     if (
@@ -166,9 +160,12 @@ const Assessment = () => {
       (item) => item.questionId === currentQuestion.question_id
     )!.answer;
 
-    const isSubmitted = await submitAnswer(currentQuestion.question_id, selectedAnswer.answer_id);
+    const isSubmitted = await submitAnswer(
+      currentQuestion.question_id,
+      selectedAnswer.answer_id
+    );
     if (isSubmitted == false) {
-      alert('Error. Answer not submitted');
+      alert("Error. Answer not submitted");
       return;
     }
     // next question
@@ -178,11 +175,14 @@ const Assessment = () => {
       //console.log("Note:", notes);
     }
     // initial results category
-    else  {
-      const currentCategoryKey = getCategoryKeyByValue(currentCategory!.category_name);
-      navigate('/result/' + currentCategoryKey + '?is_completed_full_assessment=false');
+    else {
+      const currentCategoryKey = getCategoryKeyByValue(
+        currentCategory!.category_name
+      );
+      navigate(
+        "/result/" + currentCategoryKey + "?is_completed_full_assessment=false"
+      );
     }
- 
   };
 
   const currentCategory = categories.find((_category) =>
@@ -208,7 +208,6 @@ const Assessment = () => {
 
   const submitAnswer = async (questionId: number, answerId: number) => {
     try {
-
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
         headers: {
@@ -252,7 +251,7 @@ const Assessment = () => {
 
   return (
     <Layout>
-      <Header />
+      <Header title="Assessment" />
       <div className="mx-5 flex flex-col">
         <QuestionCard
           number={currentNumber}
@@ -265,7 +264,6 @@ const Assessment = () => {
         <AnswerList
           options={currentQuestion.answers}
           selected={
-
             selectedAnswers.find(
               (a) => a.questionId === currentQuestion.question_id
             )?.answer ?? null
@@ -295,4 +293,3 @@ export default Assessment;
 function getKeyByValue(arg0: string) {
   throw new Error("Function not implemented.");
 }
-

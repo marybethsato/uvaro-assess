@@ -1,57 +1,46 @@
-import { useState } from "react";
+import { PrimaryButton } from "../components/buttons/PrimaryButton";
+import Layout from "../components/Layout";
+import TopNavBar from "../components/navigation/TopNavBar";
 import logo from "../images/signup/logo.png";
+import { useNavigate } from "react-router-dom";
 
-const Signin = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
+const SignIn = () => {
+  const navigate = useNavigate();
 
   return (
-    <div className="flex justify-center items-center min-h-screen p-5 bg-gray-100 box-border">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-md p-5 text-center">
-        <div className="flex justify-center pb-5">
-          <img className="w-1/5 h-1/5" src={logo} alt="logo" />
+    <Layout>
+      <div className="p-3">
+        <TopNavBar />
+      </div>
+      <div className="mx-10 text-center h-screen flex flex-col justify-center items-center">
+        <div>
+          <img className="mb-5" width={100} src={logo} alt="logo" />
         </div>
-        <h1 className="text-4xl font-extrabold text-center">Uvaro</h1>
-        <h1 className="text-4xl font-extrabold text-center mb-5">Assess</h1>
-        <p className="text-sm mb-5 text-gray-600">
-          {isSignUp ? "Sign up to continue" : "Sign in to continue"}
-        </p>
-
-        {isSignUp && (
-          <div>
-            <input
-              type="text"
-              placeholder="First Name"
-              className="w-full p-3 my-2 border border-gray-300 rounded-md text-sm box-border"
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              className="w-full p-3 my-2 border border-gray-300 rounded-md text-sm box-border"
-            />
-          </div>
-        )}
+        <h1 className="text-4xl font-extrabold text-center mb-5 mx-10">
+          Career Assessment
+        </h1>
+        <p className="mb-5 text-gray-600">Sign in to continue</p>
         <input
           type="email"
           placeholder="Email"
-          className="w-full p-3 my-2 border border-gray-300 rounded-md text-sm box-border"
+          className="w-full p-3 mb-5 border border-gray-300 rounded-md text-sm box-border"
         />
+        <PrimaryButton onClick={() => navigate("/app/home")}>
+          Sign In
+        </PrimaryButton>
 
-        <button className="w-full p-3 mt-2 bg-[#d32f2f] text-white border-none rounded-md cursor-pointer text-base">
-          {isSignUp ? "Sign Up" : "Sign In"}
-        </button>
-
-        <p className="text-xs text-gray-600 mt-4">
-          {isSignUp ? "Already have an account? " : "Don’t have an account? "}
+        <p className="text-sm text-gray-600 mt-4">
+          Don’t have an account?{" "}
           <button
-            className="bg-none border-none text-[#d32f2f] cursor-pointer underline text-xs"
-            onClick={() => setIsSignUp(!isSignUp)}
+            className="text-sm text-red-500 cursor-pointer underline"
+            onClick={() => navigate("/signup")}
           >
-            {isSignUp ? "Sign In" : "Sign Up"}
+            Sign Up
           </button>
         </p>
       </div>
-    </div>
+    </Layout>
   );
 };
 
-export default Signin;
+export default SignIn;

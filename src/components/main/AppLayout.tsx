@@ -11,7 +11,7 @@ const AppLayout: React.FC = () => {
       </div>
 
       {/* Bottom Navigation Bar */}
-      <BottomNavBar />
+      {/* <BottomNavBar /> */}
     </div>
   );
 };

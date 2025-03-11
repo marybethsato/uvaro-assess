@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
 import { END_ASSESSSMENT } from "../graphql/queries";
 import checkmark from "../images/completeCheckmark.png";
+import TopNavBar from "../components/navigation/TopNavBar";
 
 export default function CompleteCheckmark() {
   const navigate = useNavigate();
@@ -40,12 +40,9 @@ export default function CompleteCheckmark() {
 
   return (
     <Layout>
-      <button
-        className="hover:bg-gray-700 rounded p-2 ml-2 mt-2"
-        onClick={() => navigate("/")}
-      >
-        <FaArrowLeft />
-      </button>
+      <div className="p-3">
+        <TopNavBar />
+      </div>
       <div className="flex flex-col justify-center items-center mx-8 mb-10 h-screen">
         <div className="">
           <div className="flex justify-center">
