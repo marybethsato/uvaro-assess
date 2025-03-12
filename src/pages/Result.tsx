@@ -7,21 +7,18 @@ import { GET_ASSESSMENT_BY_ID } from "../graphql/queries";
 import getCategoryKeyByIndex from "../utils/get_category_key_by_index";
 
 interface Level {
-  category_id: number,
-  level_name: string,
-  level_statement: string,
-
+  category_id: number;
+  level_name: string;
+  level_statement: string;
 }
 
 const Result = () => {
   const navigate = useNavigate();
   const [levels, setLevels] = useState<Level[]>([]);
 
-
   useEffect(() => {
     getResults();
   }, []);
-
 
   const getResults = async () => {
     const assessmentId = localStorage.getItem("assessmentId");
@@ -44,8 +41,6 @@ const Result = () => {
       if (!result.errors) {
         setLevels(result.data.getAssessmentById.levels);
       }
-
-
     } catch (e) {
       console.log(e);
     }
@@ -64,29 +59,37 @@ const Result = () => {
         {levels.map((level, index) => (
           <ResultCard
             key={index}
-            category_key={getCategoryKeyByIndex(index) ?? ''}
+            category_key={getCategoryKeyByIndex(index) ?? ""}
             level_name={level.level_name}
             level_statement={level.level_statement}
-
+            style={
+              index % 2 === 0
+                ? { backgroundColor: "#449b44", color: "white" }
+                : {}
+            }
           />
         ))}
 
         <BaseButton
-          className="mt-5 bg-black text-white w-full hover:bg-gray-700"
+          className="mt-5 green-button"
+          onClick={() => navigate("/signin")}
+        >
+          Book Appointment with Advisor
+        </BaseButton>
+        <BaseButton
+          className="mt-3 w-full white-button"
           onClick={() => navigate("/signin")}
         >
           Sign in to Save Assessment
         </BaseButton>
 
-
         <p className="text-center text-sm my-5 mb-10">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-red-500 font-semibold">
+          <Link to="/signup" className="text-button">
             Sign up now!
           </Link>
         </p>
       </div>
-
     </Layout>
   );
 };

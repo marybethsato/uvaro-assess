@@ -6,16 +6,31 @@ interface NotesModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (note: string) => void;
+  onSkip: () => void;
 }
 
-const NotesModal: React.FC<NotesModalProps> = ({ isOpen, onClose, onSave }) => {
+const NotesModal: React.FC<NotesModalProps> = ({
+  isOpen,
+  onClose,
+  onSave,
+  onSkip,
+}) => {
   const [note, setNote] = useState("");
 
   if (!isOpen) return null; // Hide modal when it's closed
 
   const handleSave = () => {
-    onSave(note);
-    setNote("");
+    if (note) {
+      onSave(note);
+      setNote("");
+      onClose();
+    } else {
+      alert("Please type something to save.");
+    }
+  };
+
+  const handleSkip = () => {
+    onSkip();
     onClose();
   };
 
@@ -42,7 +57,7 @@ const NotesModal: React.FC<NotesModalProps> = ({ isOpen, onClose, onSave }) => {
 
         {/* Save Button */}
         <div className="flex gap-3 mt-3">
-          <BaseButton className="flex-1 white-button" onClick={handleSave}>
+          <BaseButton className="flex-1 white-button" onClick={handleSkip}>
             Skip
           </BaseButton>
           <BaseButton className="flex-1 green-button" onClick={handleSave}>

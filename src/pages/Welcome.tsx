@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
-import { PrimaryButton } from "../components/buttons/PrimaryButton";
+import BaseButton from "../components/buttons/BaseButton";
 import WelcomeInfo from "../components/welcome/welcomeInfo";
 import sectionsData from "../data/sectionsData";
 import { ADD_ASSESSMENT_AS_GUEST } from "../graphql/queries";
@@ -51,17 +51,18 @@ const Welcome = () => {
               Find out where you stand and uncover your potential for growth.
               Take the first step toward achieving your career goals!
             </p>
-            <PrimaryButton
+            <BaseButton
+              className="w-full mb-5 red-button"
               onClick={() => {
                 handleGuestAssessment();
                 navigate("/introduction/financial-health");
               }}
             >
               Take the Assessment Now!
-            </PrimaryButton>
+            </BaseButton>
             <p>
-              Have an account?{" "}
-              <Link to="/signin" className="text-red-500 font-medium">
+              Already have an account?{" "}
+              <Link to="/signin" className="text-button">
                 Sign in
               </Link>
             </p>

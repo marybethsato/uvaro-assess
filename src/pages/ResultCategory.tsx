@@ -1,4 +1,3 @@
-import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import { useEffect, useState } from "react";
@@ -97,6 +96,18 @@ const ResultCategory = () => {
     }
   };
 
+  const handleSkip = () => {
+    const categoryKey = getCategoryKeyByIndex(
+      getCategoryIndexByKey(category!) + 1
+    );
+
+    if (getCategoryIndexByKey(categoryKey!) == -1) {
+      navigate("/complete-checkmark");
+    } else {
+      navigate("/introduction/" + categoryKey);
+    }
+  };
+
   const submitNotes = async (note: string) => {
     try {
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
@@ -124,18 +135,8 @@ const ResultCategory = () => {
 
   return (
     <Layout>
-      <div className="p-3">
-        <TopNavBar />
-      </div>
       <div className="mx-5 my-5 flex flex-col">
-        {isCompletedFullAssessment ? (
-          <button
-            className="hover:bg-gray-700 p-2 rounded"
-            onClick={() => navigate("/result")}
-          >
-            <FaArrowLeft />
-          </button>
-        ) : null}
+        {isCompletedFullAssessment ? <TopNavBar /> : null}
 
         <div className="mx-5 my-5">
           <div className="flex justify-center mt-10">
@@ -179,6 +180,7 @@ const ResultCategory = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
+        onSkip={handleSkip}
       />
     </Layout>
   );

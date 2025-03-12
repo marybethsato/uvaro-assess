@@ -31,17 +31,8 @@
   }
 }
 
-.heading2 {
-  @apply font-bold mb-2;
-}
-
-.smallText {
-  @apply text-small;
-}
-
-.bg-green-custom {
-  background-color: #449b44;
-  color: white; /* Ensures contrast */
+.red-button {
+  @apply bg-primary text-white hover:bg-red-700;
 }
 
 .green-button {
@@ -50,4 +41,8 @@
 
 .white-button {
   @apply hover:bg-gray-200 border-custom-green border-2 w-full;
+}
+
+.text-button {
+  @apply text-sm text-red-500 font-semibold underline;
 }
