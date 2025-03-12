@@ -4,24 +4,25 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
+import TopNavBar from "../components/navigation/TopNavBar";
 import categoryMap from "../data/category_map";
 import { CALCULATE_LEVEL, INSERT_NOTES } from "../graphql/queries";
 import resultcategory from "../images/result/result-category.png";
+import "../styles/globals.css";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 import getCategoryKeyByIndex from "../utils/get_category_key_by_index";
 import NotesModal from "./NodesModal";
 
-
-
 const ResultCategory = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const isCompletedFullAssessment = searchParams.get("is_completed_full_assessment") === "false" ? false : true;
+  const isCompletedFullAssessment =
+    searchParams.get("is_completed_full_assessment") === "false" ? false : true;
 
   const { category } = useParams<{ category: string }>();
   const categoryName = getCategoryName(category || "default");
-  const [categoryLevel, setCategoryLevel] = useState<string>('');
-  const [categoryDescription, setCategoryDescription] = useState<string>('');
+  const [categoryLevel, setCategoryLevel] = useState<string>("");
+  const [categoryDescription, setCategoryDescription] = useState<string>("");
   const assessmentId = localStorage.getItem("assessmentId");
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const ResultCategory = () => {
           query: CALCULATE_LEVEL,
           variables: {
             assessmentId: Number(assessmentId),
-            categoryId: (getCategoryIndexByKey(category!) + 1)
+            categoryId: getCategoryIndexByKey(category!) + 1,
           },
         }),
       });
@@ -49,12 +50,11 @@ const ResultCategory = () => {
 
       if (!result.errors) {
         setCategoryLevel(result.data.calculateLevel.level_name);
-        setCategoryDescription(result.data.calculateLevel.level_statement.toString());
+        setCategoryDescription(
+          result.data.calculateLevel.level_statement.toString()
+        );
       }
-
-    } catch (e) {
-
-    }
+    } catch (e) {}
   };
 
   function getCategoryName(key: string): string {
@@ -66,7 +66,6 @@ const ResultCategory = () => {
   };
 
   function navigateToNextCategory() {
-
     setIsModalOpen(true);
 
     // const categoryKey = getCategoryKeyByIndex(getCategoryIndexByKey(category!) + 1);
@@ -79,13 +78,14 @@ const ResultCategory = () => {
     navigate("/assessment?" + "is_follow_up=true&category=" + categoryKey);
   }
 
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSave = async (note: string) => {
     const isSubmittedNotes = await submitNotes(note);
     if (isSubmittedNotes) {
-      const categoryKey = getCategoryKeyByIndex(getCategoryIndexByKey(category!) + 1);
+      const categoryKey = getCategoryKeyByIndex(
+        getCategoryIndexByKey(category!) + 1
+      );
 
       if (getCategoryIndexByKey(categoryKey!) == -1) {
         navigate("/complete-checkmark");
@@ -97,10 +97,8 @@ const ResultCategory = () => {
     }
   };
 
-
   const submitNotes = async (note: string) => {
     try {
-
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
         headers: {
@@ -111,7 +109,7 @@ const ResultCategory = () => {
           variables: {
             insertNoteAssessmentId2: Number(assessmentId),
             insertNoteCategoryId2: getCategoryIndexByKey(category!) + 1,
-            noteText: note
+            noteText: note,
           },
         }),
       });
@@ -126,7 +124,10 @@ const ResultCategory = () => {
 
   return (
     <Layout>
-      <div className="mx-5 my-5">
+      <div className="p-3">
+        <TopNavBar />
+      </div>
+      <div className="mx-5 my-5 flex flex-col">
         {isCompletedFullAssessment ? (
           <button
             className="hover:bg-gray-700 p-2 rounded"
@@ -147,25 +148,27 @@ const ResultCategory = () => {
           <h1 className="text-3xl font-bold text-center mt-10 ">
             {categoryName}
           </h1>
-          <h1 className="text-2xl font-bold text-center ">{getCategoryLevel()}</h1>
+          <h1 className="text-2xl font-bold text-center ">
+            {getCategoryLevel()}
+          </h1>
           <p className="text-center mt-4">{categoryDescription}</p>
           {!isCompletedFullAssessment ? (
             <div>
               <div className="flex justify-center">
                 <BaseButton
-                  className="mt-5 bg-green-custom text-white font-bold w-full hover:bg-gray-700"
+                  className="mt-5 green-button font-bold"
                   onClick={() => navigateToNextCategory()}
                 >
-                  Complete This Category
+                  This Represents Me
                 </BaseButton>
               </div>
 
               <div className="flex justify-center">
                 <BaseButton
-                  className="mt-5 bg-green-custom text-white font-bold w-full hover:bg-gray-700"
+                  className="mt-5 font-bold white-button"
                   onClick={() => navigateToFollowUpQuestions()}
                 >
-                  Ask Follow-Up Questions
+                  More Questions
                 </BaseButton>
               </div>
             </div>

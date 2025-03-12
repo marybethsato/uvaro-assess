@@ -40,6 +40,14 @@
 }
 
 .bg-green-custom {
-  background-color: #449B44;
+  background-color: #449b44;
   color: white; /* Ensures contrast */
+}
+
+.green-button {
+  @apply bg-custom-green text-white w-full hover:bg-green-700;
+}
+
+.white-button {
+  @apply hover:bg-gray-200 border-custom-green border-2 w-full;
 }
