@@ -5,6 +5,7 @@ import AnswerList from "../components/assessment/AnswerList";
 import Header from "../components/assessment/Header";
 import QuestionCard from "../components/assessment/QuestionCard";
 
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ALL_CATEGORIES, INSERT_ANSWER } from "../graphql/queries";
 import Answer from "../interfaces/answer";
@@ -185,6 +186,14 @@ const Assessment = () => {
     }
   };
 
+  const handleBack = async () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex((prev) => prev - 1);
+    } else {
+      navigate(-1);
+    }
+  };
+
   const currentCategory = categories.find((_category) =>
     _category.questions.some(
       (q) => q.question_id === currentQuestion.question_id
@@ -278,12 +287,28 @@ const Assessment = () => {
               ?.content
           }
         /> */}
-        <button
-          className="mt-10 px-4 py-2 border border-gray-300 font-bold hover:bg-gray-100 self-end rounded-md cursor-pointer"
-          onClick={handleNext}
+        <div
+          className={`flex flex-row ${
+            currentQuestionIndex > 0 ? "justify-between" : "justify-end"
+          }`}
         >
-          → NEXT
-        </button>
+          {currentQuestionIndex > 0 && (
+            <button
+              className="mt-10 px-4 py-2 border border-gray-300 hover:bg-gray-100 self-end rounded-md cursor-pointer flex items-center gap-3"
+              onClick={handleBack}
+            >
+              <FaArrowLeft />
+              <span>Back</span>
+            </button>
+          )}
+          <button
+            className="mt-10 px-4 py-2 border border-gray-300 hover:bg-gray-100 self-end rounded-md cursor-pointer flex items-center gap-3"
+            onClick={handleNext}
+          >
+            <span>Next</span>
+            <FaArrowRight />
+          </button>
+        </div>
       </div>
     </Layout>
   );

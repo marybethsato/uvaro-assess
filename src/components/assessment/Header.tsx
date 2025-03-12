@@ -1,6 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   title?: string;
