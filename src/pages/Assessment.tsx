@@ -11,6 +11,7 @@ import { ALL_CATEGORIES, INSERT_ANSWER } from "../graphql/queries";
 import Answer from "../interfaces/answer";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 import getCategoryKeyByValue from "../utils/get_category_key_by_value";
+import ProgressBar from "../components/assessment/ProgressBar";
 
 interface Question {
   question_id: number;
@@ -261,6 +262,18 @@ const Assessment = () => {
   return (
     <Layout>
       <Header title="Assessment" />
+      <ProgressBar
+        activeCategoryIndex={categories.findIndex(
+          (c) => c.category_name === currentCategory?.category_name
+        )}
+        categories={categories.map((c) => ({
+          name: c.category_name,
+          totalQuestions: c.questions.length,
+          answered: selectedAnswers.filter((a) =>
+            c.questions.some((q) => q.question_id === a.questionId)
+          ).length,
+        }))}
+      />
       <div className="mx-5 flex flex-col">
         <QuestionCard
           number={currentNumber}
