@@ -31,15 +31,18 @@
   }
 }
 
-.heading2 {
-  @apply font-bold mb-2;
+.red-button {
+  @apply bg-primary text-white hover:bg-red-700;
 }
 
-.smallText {
-  @apply text-small;
+.green-button {
+  @apply bg-custom-green text-white w-full hover:bg-green-700;
 }
 
-.bg-green-custom {
-  background-color: #449B44;
-  color: white; /* Ensures contrast */
+.white-button {
+  @apply hover:bg-gray-200 border-custom-green border-2 w-full;
+}
+
+.text-button {
+  @apply text-sm text-red-500 font-semibold underline;
 }

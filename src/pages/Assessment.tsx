@@ -5,11 +5,13 @@ import AnswerList from "../components/assessment/AnswerList";
 import Header from "../components/assessment/Header";
 import QuestionCard from "../components/assessment/QuestionCard";
 
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ALL_CATEGORIES, INSERT_ANSWER } from "../graphql/queries";
 import Answer from "../interfaces/answer";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 import getCategoryKeyByValue from "../utils/get_category_key_by_value";
+import ProgressBar from "../components/assessment/ProgressBar";
 
 interface Question {
   question_id: number;
@@ -185,6 +187,14 @@ const Assessment = () => {
     }
   };
 
+  const handleBack = async () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex((prev) => prev - 1);
+    } else {
+      navigate(-1);
+    }
+  };
+
   const currentCategory = categories.find((_category) =>
     _category.questions.some(
       (q) => q.question_id === currentQuestion.question_id
@@ -252,6 +262,18 @@ const Assessment = () => {
   return (
     <Layout>
       <Header title="Assessment" />
+      <ProgressBar
+        activeCategoryIndex={categories.findIndex(
+          (c) => c.category_name === currentCategory?.category_name
+        )}
+        categories={categories.map((c) => ({
+          name: c.category_name,
+          totalQuestions: c.questions.length,
+          answered: selectedAnswers.filter((a) =>
+            c.questions.some((q) => q.question_id === a.questionId)
+          ).length,
+        }))}
+      />
       <div className="mx-5 flex flex-col">
         <QuestionCard
           number={currentNumber}
@@ -278,12 +300,28 @@ const Assessment = () => {
               ?.content
           }
         /> */}
-        <button
-          className="mt-10 px-4 py-2 border border-gray-300 font-bold hover:bg-gray-100 self-end rounded-md cursor-pointer"
-          onClick={handleNext}
+        <div
+          className={`flex flex-row ${
+            currentQuestionIndex > 0 ? "justify-between" : "justify-end"
+          }`}
         >
-          → NEXT
-        </button>
+          {currentQuestionIndex > 0 && (
+            <button
+              className="mt-10 px-4 py-2 border border-gray-300 hover:bg-gray-100 self-end rounded-md cursor-pointer flex items-center gap-3"
+              onClick={handleBack}
+            >
+              <FaArrowLeft />
+              <span>Back</span>
+            </button>
+          )}
+          <button
+            className="mt-10 px-4 py-2 border border-gray-300 hover:bg-gray-100 self-end rounded-md cursor-pointer flex items-center gap-3"
+            onClick={handleNext}
+          >
+            <span>Next</span>
+            <FaArrowRight />
+          </button>
+        </div>
       </div>
     </Layout>
   );

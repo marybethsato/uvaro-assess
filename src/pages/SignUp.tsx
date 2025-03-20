@@ -1,9 +1,8 @@
-import React from "react";
-import Layout from "../components/Layout";
-import logo from "../images/signup/logo.png";
 import { useNavigate } from "react-router-dom";
-import { PrimaryButton } from "../components/buttons/PrimaryButton";
+import BaseButton from "../components/buttons/BaseButton";
+import Layout from "../components/Layout";
 import TopNavBar from "../components/navigation/TopNavBar";
+import logo from "../images/signup/logo.png";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -35,15 +34,15 @@ const SignUp = () => {
           placeholder="Email"
           className="w-full p-3 mt-2 mb-5 border border-gray-300 rounded-md text-sm box-border"
         />
-        <PrimaryButton onClick={() => navigate("/app/home")}>
+        <BaseButton
+          className="w-full mb-5 red-button"
+          onClick={() => navigate("/app/home")}
+        >
           Sign Up
-        </PrimaryButton>
+        </BaseButton>
         <p className="text-sm text-gray-600 mt-4">
           Already have an account?{" "}
-          <button
-            className="text-sm text-red-500 cursor-pointer underline"
-            onClick={() => navigate("/signin")}
-          >
+          <button className="text-button" onClick={() => navigate("/signin")}>
             Sign In
           </button>
         </p>

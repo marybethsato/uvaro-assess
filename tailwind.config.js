@@ -4,14 +4,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#DD2727",
-        secondary: "#f0f0f0",
-        // background: "#",
-        text: "#000",
-        // white: "#fff",
+        primary: "#dd2727",
         lightGray: "#f0f0f0",
-        error: "#",
-        success: "#",
+        "custom-green": "#449b44",
       },
       fontSize: {
         xsmall: "12px",
