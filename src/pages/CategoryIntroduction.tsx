@@ -37,6 +37,7 @@ const CategoryIntroduction = () => {
       try {
         const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },

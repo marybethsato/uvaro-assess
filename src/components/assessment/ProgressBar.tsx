@@ -1,4 +1,3 @@
-import React from "react";
 
 interface Category {
   name: string;
@@ -16,8 +15,8 @@ const ProgressBar = ({ categories, activeCategoryIndex }: ProgressBarProps) => {
   const strokeWidth = 4;
 
   return (
-    <div className="flex flex-col items-center mt-5 text-center">
-      <div className="flex space-x-6">
+    <div className="w-full px-4 mt-5 flex justify-center">
+      <div className="flex items-center justify-center w-full max-w-4xl">
         {categories.map((category, index) => {
           const computedPercentage = Math.round(
             (category.answered / category.totalQuestions) * 100
@@ -31,10 +30,10 @@ const ProgressBar = ({ categories, activeCategoryIndex }: ProgressBarProps) => {
           const isLastStep = index === categories.length - 1;
 
           return (
-            <div key={index} className="flex items-center ">
-              <div className="flex flex-col items-center">
+            <div key={index} className="flex items-center flex-1 justify-center">
+              <div className="flex flex-col items-center w-[50px] shrink-0">
                 <svg width={size} height={size}>
-                  {/* Backgrond Circle */}
+                  {/* Background Circle */}
                   <circle
                     stroke="#e5e7eb"
                     fill="transparent"
@@ -67,9 +66,10 @@ const ProgressBar = ({ categories, activeCategoryIndex }: ProgressBarProps) => {
                     {percentage}%
                   </text>
                 </svg>
-                <span className="mt-2 text-xs">{category.name}</span>
+                <span className="mt-2 text-xs text-center break-words">{category.name}</span>
               </div>
-              {!isLastStep && <div className="w-12 h-[1px] bg-gray-500" />}
+
+          
             </div>
           );
         })}

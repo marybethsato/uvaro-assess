@@ -14,7 +14,7 @@
   body {
     height: 100%;
     width: 100%;
-    font-family: "Arial", sans-serif;
+    font-family: "Poppins", sans-serif;
     background-color: theme("colors.lightGray");
     overflow-x: hidden;
   }

@@ -1,4 +1,3 @@
-import React from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -12,12 +11,12 @@ const TopNavBar = ({ isDark }: TopNavBarProps) => {
   return (
     <div
       className={`${
-        isDark ? "bg-black text-white p-3" : "bg-white text-black"
+        isDark ? "bg-black text-white p-3" : "text-black"
       }`}
     >
       <button
         className={`rounded p-2 hover:bg-gray-300 ${
-          isDark ? "bg-black hover:text-black" : "bg-white text-black"
+          isDark ? "bg-black hover:text-black" : "text-black"
         }`}
         onClick={() => navigate(-1)}
       >

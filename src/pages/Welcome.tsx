@@ -9,9 +9,10 @@ import welcomeImage from "../images/welcome/welcomePage.jpg";
 const Welcome = () => {
   const navigate = useNavigate();
 
+
+
   async function handleGuestAssessment() {
     try {
-      console.log("test:");
       console.log(process.env.REACT_APP_GRAPHQL_URL);
       const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
@@ -23,7 +24,6 @@ const Welcome = () => {
         }),
       });
       const data = await res.json();
-      // console.log(data);
 
       if (data.errors) {
         console.log("Failed to add assessment as guest: ", data.errors);

@@ -32,6 +32,7 @@ const ResultCategory = () => {
     try {
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -112,6 +113,7 @@ const ResultCategory = () => {
     try {
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
