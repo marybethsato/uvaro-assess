@@ -68,11 +68,6 @@ const CategoryIntroduction = () => {
               (category) => category.category_name === mappedCategory
             ) || categories[0];
           setFetchedCategory(foundCategory);
-          if (fetchedCategory) {
-            console.log("Fetched category:", fetchedCategory.category_name);
-          } else {
-            console.log("No fetched category");
-          }
         }
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -85,6 +80,8 @@ const CategoryIntroduction = () => {
   if (!category) {
     return null;
   }
+
+  console.log(fetchedCategory?.category_name);
 
   const categoryName = categoryMap[category] || "Unknown Category";
 
@@ -108,7 +105,18 @@ const CategoryIntroduction = () => {
             <img
               src={categoryImages[fetchedCategory.category_name]}
               alt={`${fetchedCategory.category_name} Introduction`}
-              className="absolute top-5 z-50"
+              className={`absolute ${
+                fetchedCategory.category_name === "Financial Health"
+                  ? "top-10 left-5"
+                  : fetchedCategory.category_name === "Work You Enjoy"
+                  ? "top-20"
+                  : fetchedCategory.category_name ===
+                      "Life Choice Fulfillment" ||
+                    fetchedCategory.category_name ===
+                      "Peer Community Fulfillment"
+                  ? "top-10 left-2"
+                  : ""
+              }`}
               width={400}
             />
           )}
