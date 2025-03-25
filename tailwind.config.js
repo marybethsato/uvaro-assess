@@ -7,6 +7,7 @@ module.exports = {
         primary: "#dd2727",
         lightGray: "#f0f0f0",
         "custom-green": "#449b44",
+        "custom-black": "#181819",
       },
       fontSize: {
         xsmall: "12px",
