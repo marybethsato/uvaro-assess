@@ -1,18 +1,69 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import Assessment from '../../interfaces/assessment';
 import AssessmentCard from '../assessment_list/AssessmentCard';
-
-
-interface Assessment {
-  title: string;
-  date: string;
-  description: string;
-}
 
 interface PreviousAssessmentProps {
   assessments: Assessment[];
 }
 
+// ✅ Converts a value to a Date object, handling string, number, or Date input
+export const toDate = (date: string | number | Date): Date => {
+  if (date instanceof Date) return date;
+  return new Date(typeof date === 'string' ? parseInt(date) : date);
+};
+
+// ✅ Formats a date to "Nov 10, 2023"
+export const formatDate = (date: string | number | Date): string => {
+  const d = toDate(date);
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
+// ✅ Converts index to "1st Assessment", "2nd Assessment", etc.
+export const getOrdinalAssessmentLabel = (index: number, isOngoing?: boolean): string => {
+  const number = index + 1;
+
+  const getOrdinalSuffix = (n: number) => {
+    const j = n % 10,
+      k = n % 100;
+
+    if (j === 1 && k !== 11) return `${n}st`;
+    if (j === 2 && k !== 12) return `${n}nd`;
+    if (j === 3 && k !== 13) return `${n}rd`;
+    return `${n}th`;
+  };
+
+  return `${getOrdinalSuffix(number)}${isOngoing ? ' Ongoing' : ''} Assessment`;
+};
+
 const PreviousAssessments: React.FC<PreviousAssessmentProps> = ({ assessments }) => {
+  const navigate = useNavigate();
+
+  function goToResults(id: string) {
+    localStorage.setItem('assessmentId', id);
+    navigate('/result?assessmentId=' + id);
+  }
+
+  // ✅ Step 1: Sort all assessments chronologically (oldest → newest)
+  const chronological = [...assessments].sort(
+    (a, b) => toDate(a.end_date_time).getTime() - toDate(b.end_date_time).getTime()
+  );
+
+  // ✅ Step 2: Build ordinal title map from original chronological order
+  const ordinalLabelMap: Record<number, string> = {};
+  chronological.forEach((assessment, index) => {
+    ordinalLabelMap[assessment.id] = getOrdinalAssessmentLabel(index);
+  });
+
+  // ✅ Step 3: Get the 3 most recent assessments (newest → oldest)
+  const mostRecentThree = [...assessments]
+    .sort((a, b) => toDate(b.end_date_time).getTime() - toDate(a.end_date_time).getTime())
+    .slice(0, 3);
+
   return (
     <div className="mt-5">
       {/* Header */}
@@ -23,13 +74,14 @@ const PreviousAssessments: React.FC<PreviousAssessmentProps> = ({ assessments })
         </a>
       </div>
 
-      {/* Render Assessment Cards */}
-      {assessments.map((assessment, index) => (
+      {/* Render the most recent 3 assessments with correct ordinal titles */}
+      {mostRecentThree.map((assessment) => (
         <AssessmentCard
-          key={index}
-          title={assessment.title}
-          date={assessment.date}
-          description={assessment.description}
+          key={assessment.id}
+          onClick={() => goToResults(assessment.id.toString())}
+          title={ordinalLabelMap[assessment.id]} // ✅ consistent title
+          date={formatDate(assessment.end_date_time)}
+          description="Tap to learn more!"
         />
       ))}
     </div>

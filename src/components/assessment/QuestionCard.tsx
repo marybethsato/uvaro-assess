@@ -13,9 +13,9 @@ export default function Question({
 }: QuestionProps) {
   return (
     <div className="my-5">
-      <h4>
+      {/* <h4>
         Question {number}/{total}
-      </h4>
+      </h4> */}
       <div className="mb-5">
         <p className="text-red-500 font-semibold text-sm mb-5">{category}</p>
         <hr />
