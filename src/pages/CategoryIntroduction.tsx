@@ -4,7 +4,12 @@ import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
 import TopNavBar from "../components/navigation/TopNavBar";
 import { ALL_CATEGORIES } from "../graphql/queries";
-import IntroBackground from "../images/IntroBackground.png";
+// import IntroBackground from "../images/IntroBackground.png";
+import IntroBackground from "../images/IntroBackground2.png";
+import FinancialHealth from "../images/financialhealth/Financialhealth.png";
+import WorkYouEnjoy from "../images/workyouenjoy/Workyouenjoy.png";
+import LifeChoiceFulfillment from "../images/lifechoice.png";
+import PeerCommunityFulfillment from "../images/projectcommunity.png";
 import IntroVector from "../images/IntroVector.png";
 
 interface Category {
@@ -24,6 +29,13 @@ const categoryMap: Record<string, string> = {
   "work-you-enjoy": "Work You Enjoy",
   "life-choice-fulfillment": "Life Choice Fulfillment",
   "peer-community-fulfillment": "Peer Community Fulfillment",
+};
+
+const categoryImages: Record<string, string> = {
+  "Financial Health": FinancialHealth,
+  "Work You Enjoy": WorkYouEnjoy,
+  "Life Choice Fulfillment": LifeChoiceFulfillment,
+  "Peer Community Fulfillment": PeerCommunityFulfillment,
 };
 
 const CategoryIntroduction = () => {
@@ -52,11 +64,11 @@ const CategoryIntroduction = () => {
         } else {
           const categories: Category[] = data.data.allCategories;
           const mappedCategory = categoryMap[category as string];
-          const selectedCategory =
+          const foundCategory =
             categories.find(
               (category) => category.category_name === mappedCategory
             ) || categories[0];
-          setFetchedCategory(selectedCategory);
+          setFetchedCategory(foundCategory);
         }
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -70,6 +82,8 @@ const CategoryIntroduction = () => {
     return null;
   }
 
+  console.log(fetchedCategory?.category_name);
+
   const categoryName = categoryMap[category] || "Unknown Category";
 
   return (
@@ -82,6 +96,31 @@ const CategoryIntroduction = () => {
             alt="illustration"
             className="w-full mx-auto"
           />
+          {/* <img
+            src={FinancialHealth}
+            alt="Financial Health Introduction"
+            className="absolute top-5"
+            width={400}
+          /> */}
+          {fetchedCategory && (
+            <img
+              src={categoryImages[fetchedCategory.category_name]}
+              alt={`${fetchedCategory.category_name} Introduction`}
+              className={`absolute ${
+                fetchedCategory.category_name === "Financial Health"
+                  ? "top-10 left-5"
+                  : fetchedCategory.category_name === "Work You Enjoy"
+                  ? "top-20"
+                  : fetchedCategory.category_name ===
+                      "Life Choice Fulfillment" ||
+                    fetchedCategory.category_name ===
+                      "Peer Community Fulfillment"
+                  ? "top-10 left-2"
+                  : ""
+              }`}
+              width={400}
+            />
+          )}
         </div>
         <div className="text-left mb-10 mt-[50vh] mx-5">
           <h3 className="text-xl mb-2">Introduction</h3>
