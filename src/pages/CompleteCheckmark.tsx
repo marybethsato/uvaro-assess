@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
+import TopNavBar from "../components/navigation/TopNavBar";
 import { END_ASSESSSMENT } from "../graphql/queries";
 import checkmark from "../images/completeCheckmark.png";
-import TopNavBar from "../components/navigation/TopNavBar";
 
 export default function CompleteCheckmark() {
   const navigate = useNavigate();
@@ -14,6 +14,7 @@ export default function CompleteCheckmark() {
       try {
         const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },

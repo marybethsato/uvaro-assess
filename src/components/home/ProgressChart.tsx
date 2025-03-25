@@ -1,5 +1,6 @@
 import {
     CategoryScale,
+    ChartData,
     Chart as ChartJS,
     ChartOptions,
     Legend,
@@ -9,8 +10,11 @@ import {
     Title,
     Tooltip,
 } from 'chart.js';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
+import { getFormattedEndDates, processAssessments } from '../../data/format_chart_data';
+import Assessment from '../../interfaces/assessment';
+
 
 ChartJS.register(
     CategoryScale,
@@ -22,53 +26,69 @@ ChartJS.register(
     Legend
 );
 
-const ProgressChart: React.FC = () => {
-    const data = {
-        labels: ['Oct 12, 2024', 'Oct 13, 2024', 'Oct 14, 2024', 'Oct 15, 2024'],
-        datasets: [
-            {
-                label: 'Financial Health',
-                data: [3, 4, 3, 3],
-                borderColor: 'red',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                tension: 0.4, // Smooth curve
-            },
-            {
-                label: 'Work You Enjoy',
-                data: [5, 3, 4, 4],
-                borderColor: 'blue',
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                tension: 0.4, // Smooth curve
-            },
-            {
-                label: 'Life Choice Fulfillment',
-                data: [4, 3, 3, 5],
-                borderColor: 'orange',
-                backgroundColor: 'rgba(255, 165, 0, 0.5)',
-                tension: 0, // Straight line
-            },
-            {
-                label: 'Peer Community Fulfillment',
-                data: [2, 3, 4, 5],
-                borderColor: 'green',
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                tension: 0, // Straight line
-            },
-        ],
-    };
+interface ProgressChartProps {
+    assessments: Assessment[];
+}
+
+const ProgressChart: React.FC<ProgressChartProps> = ({ assessments }) => {
+    const [data, setData] = useState<ChartData<'line', (number | null)[], string>>();
+
+    useEffect(() => {
+        console.log(assessments);
+        const groupedLevels: Record<number, number[]> = processAssessments(assessments);
+        const labels: string[] = getFormattedEndDates(assessments);
+        console.log(groupedLevels);
+    
+        setData({
+            labels:labels,
+            datasets: [
+                {
+                    label: 'Financial Health',
+                    data: groupedLevels[1] ?? [],
+                    borderColor: 'red',
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    tension: 0.4, // Smooth curve
+                },
+                {
+                    label: 'Work You Enjoy',
+                    data: groupedLevels[2] ?? [],
+                    borderColor: 'blue',
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    tension: 0.4, // Smooth curve
+                },
+                {
+                    label: 'Life Choice Fulfillment',
+                    data:groupedLevels[3] ?? [],
+                    borderColor: 'orange',
+                    backgroundColor: 'rgba(255, 165, 0, 0.5)',
+                    tension: 0, // Straight line
+                },
+                {
+                    label: 'Peer Community Fulfillment',
+                    data: groupedLevels[4] ?? [],
+                    borderColor: 'green',
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    tension: 0, // Straight line
+                },
+            ],
+        })
+    }, [assessments]);
+
+
+
 
     const options: ChartOptions<'line'> = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                display: true, // Enable the legend
-                position: 'top', // Position it at the top
+                display: true,
+                position: 'top',
                 labels: {
-                    boxWidth: 10, // Smaller legend box width
-                    boxHeight: 10, // Smaller legend box height
+                    boxWidth: 10,
+                    boxHeight: 10,
                     font: {
-                        size: 10, // Smaller font size for the legend
+                        size: 10,
                     },
                 },
             },
@@ -78,7 +98,7 @@ const ProgressChart: React.FC = () => {
                 min: 1,
                 max: 5,
                 ticks: {
-                    stepSize: 1, // Only show whole numbers
+                    stepSize: 1,
                 },
             },
         },
@@ -86,7 +106,6 @@ const ProgressChart: React.FC = () => {
 
     return (
         <div className="mt-5">
-            {/* Header */}
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-sm font-bold">Progress</h2>
                 <a href="#" className="text-sm text-red-600 hover:underline">
@@ -94,9 +113,9 @@ const ProgressChart: React.FC = () => {
                 </a>
             </div>
             <div className="bg-white shadow rounded-lg p-4">
-                {/* Chart */}
                 <div className="h-64">
-                    <Line data={data} options={options} />
+                    {data && <Line data={data} options={options} />}
+
                 </div>
             </div>
         </div>
@@ -104,3 +123,4 @@ const ProgressChart: React.FC = () => {
 };
 
 export default ProgressChart;
+

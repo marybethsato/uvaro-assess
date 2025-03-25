@@ -7,11 +7,11 @@ import QuestionCard from "../components/assessment/QuestionCard";
 
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import ProgressBar from "../components/assessment/ProgressBar";
 import { ALL_CATEGORIES, INSERT_ANSWER } from "../graphql/queries";
 import Answer from "../interfaces/answer";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 import getCategoryKeyByValue from "../utils/get_category_key_by_value";
-import ProgressBar from "../components/assessment/ProgressBar";
 
 interface Question {
   question_id: number;
@@ -74,9 +74,9 @@ const Assessment = () => {
 
     async function fetchCategories() {
       try {
-        console.log(process.env.REACT_APP_GRAPHQL_URL);
         const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -220,6 +220,7 @@ const Assessment = () => {
     try {
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },

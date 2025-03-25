@@ -1,7 +1,27 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import Assessment from '../../interfaces/assessment';
+import getCategoryKeyByIndex from '../../utils/get_category_key_by_index';
 import AssessmentCard from '../assessment_list/AssessmentCard';
+import { formatDate, getOrdinalAssessmentLabel } from './PreviousAssessments';
 
-const OngoingAssessment: React.FC = () => {
+
+interface OngoingAssessmentProps {
+  assessments: Assessment[];
+}
+
+const OngoingAssessments: React.FC<OngoingAssessmentProps> = ({ assessments }) => {
+  const navigate = useNavigate();
+
+
+  function onClickOngoingAssessment(id: string, assessment: Assessment) {
+    localStorage.setItem("assessmentId", id);
+    
+
+    navigate("/introduction/"+ getCategoryKeyByIndex(assessment.levels.length))
+  }
+
+
   return (
     <div className="mt-5">
       {/* Header */}
@@ -10,13 +30,19 @@ const OngoingAssessment: React.FC = () => {
       </div>
 
       {/* Assessment Cards */}
-      <AssessmentCard
-        title="First Assessment"
-        date="Started on Nov 12, 2023"
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing, sed do.."
-      />
+      {assessments.map((assessment, index) => (
+
+        <AssessmentCard
+          key={index}
+          onClick={()=> onClickOngoingAssessment(assessment.id.toString(), assessment)}
+          title={getOrdinalAssessmentLabel(index, true)}
+          date={'Started ' +(formatDate(assessment.start_date_time))}
+          description={'Tap to continue!'}
+          isOngoing={true}
+        />
+      ))}
     </div>
   );
 };
 
-export default OngoingAssessment;
+export default OngoingAssessments;

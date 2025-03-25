@@ -54,6 +54,30 @@ export const ADD_ASSESSMENT_AS_GUEST = `
   }
 `;
 
+export const ADD_ASSESSMENT = `
+  mutation Mutation {
+  addAssessment {
+    start_date_time
+    user_id
+    id
+    end_date_time
+  }
+}
+`;
+
+export const GET_USER = `
+query Query {
+  getUser {
+    user_id
+    first_name
+    last_name
+    email
+  }
+}
+`;
+
+
+
 export const INSERT_ANSWER = `
   mutation Mutation($assessmentId: Int!, $questionId: Int!, $answerId: Int!) {
     insertAnswer(assessment_id: $assessmentId, question_id: $questionId, answer_id: $answerId) {
@@ -87,6 +111,35 @@ query GetAssessmentById($getAssessmentByIdId: Int!) {
     notes {
       note_text
     }
+  }
+}
+`;
+
+export const GET_USER_ASSESSMENTS = `
+query Query {
+  getUserAssessments {
+    start_date_time
+    notes {
+      note_text
+      category_id
+      assessment_id
+    }
+    levels {
+      category_id
+      level_id
+      level_name
+      level_statement
+      required_weighting
+    }
+    id
+    end_date_time
+    answers {
+      answer_id
+      answer_text
+      question_id
+      weighting
+    }
+    user_id
   }
 }
 `;

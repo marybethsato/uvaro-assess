@@ -1,3 +1,4 @@
+// src/App.tsx
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/main/AppLayout";
 import useViewportHeight from "./hooks/useViewportHeight";
@@ -10,10 +11,11 @@ import Home from "./pages/Home";
 import Result from "./pages/Result";
 import ResultCategory from "./pages/ResultCategory";
 import Settings from "./pages/Settings";
-import SignIn from "./pages/SignIn";
-import Welcome from "./pages/Welcome";
-import "./styles/globals.css";
+import SignIn from "./pages/Signin";
 import SignUp from "./pages/SignUp";
+import Welcome from "./pages/Welcome";
+import PublicRoute from "./routes/PublicRoute";
+import "./styles/globals.css";
 
 export default function App() {
   useViewportHeight();
@@ -21,20 +23,38 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Welcome />} />
-        <Route path="/signup" element={<SignUp />} />
+        {/* Public Routes (wrapped in PublicRoute for redirect if logged in) */}
+        <Route
+          path="/"
+          element={
+            <PublicRoute>
+              <Welcome />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <SignUp />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signin"
+          element={
+            <PublicRoute>
+              <SignIn />
+            </PublicRoute>
+          }
+        />
         <Route path="/assessment" element={<Assessment />} />
         <Route path="/complete-checkmark" element={<CompleteCheckmark />} />
-        <Route
-          path="/introduction/:category"
-          element={<CategoryIntroduction />}
-        />
-        <Route path="/signin" element={<SignIn />} />
+        <Route path="/introduction/:category" element={<CategoryIntroduction />} />
         <Route path="/result" element={<Result />} />
         <Route path="/result/:category" element={<ResultCategory />} />
 
-        {/* App Pages with Bottom Navigation */}
+        {/* Protected App Pages with Bottom Navigation */}
         <Route path="/app" element={<AppLayout />}>
           <Route path="home" element={<Home />} />
           <Route path="assessment-list" element={<AssessmentList />} />
