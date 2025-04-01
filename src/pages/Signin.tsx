@@ -5,15 +5,19 @@ const Signin = () => {
   const [isSignUp, setIsSignUp] = useState(false);
 
   async function signIn() {
-    const loginPath = '/login';
+    const loginPath = "/login";
     const baseUrl = window.location.origin;
-    const redirectPath = baseUrl + '/app/home'
-    const url = process.env.REACT_APP_BACKEND_URL + loginPath + '?referer=' + redirectPath;
+    const redirectPath = baseUrl + "/app/home";
+    const url =
+      process.env.REACT_APP_BACKEND_URL +
+      loginPath +
+      "?referer=" +
+      redirectPath;
 
     const res = await fetch(url, {
       method: "GET",
       credentials: "include",
-      redirect: 'manual'
+      redirect: "manual",
     });
 
     window.location.href = res.url;
@@ -31,30 +35,11 @@ const Signin = () => {
           {isSignUp ? "Sign up to continue" : "Sign in to continue"}
         </p>
 
-        {/* {isSignUp && (
-          <div>
-            <input
-              type="text"
-              placeholder="First Name"
-              className="w-full p-3 my-2 border border-gray-300 rounded-md text-sm box-border"
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              className="w-full p-3 my-2 border border-gray-300 rounded-md text-sm box-border"
-            />
-          </div>
-        )}
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-3 my-2 border border-gray-300 rounded-md text-sm box-border"
-        /> */}
-
-        <button className="w-full p-3 mt-2 bg-[#d32f2f] text-white border-none rounded-md cursor-pointer text-base"
-          onClick={() => isSignUp ? {} : signIn()}>
+        <button
+          className="w-full p-3 mt-2 bg-[#d32f2f] text-white border-none rounded-md cursor-pointer text-base"
+          onClick={() => (isSignUp ? {} : signIn())}
+        >
           {isSignUp ? "Sign Up" : "Sign In"}
-
         </button>
 
         <p className="text-xs text-gray-600 mt-4">

@@ -54,7 +54,10 @@ const Result = () => {
   return (
     <Layout>
       <div className="mt-8"></div>
-      <div className="ml-5 mb-2">  <TopNavBar /></div>
+      <div className="ml-5 mb-2">
+        {" "}
+        <TopNavBar />
+      </div>
       <div className="mx-10">
         <h1 className="text-3xl font-bold text-center mt-2 mb-3">
           Your Career Assessment Results
@@ -67,20 +70,19 @@ const Result = () => {
           <ResultCard
             key={index}
             category_key={getCategoryKeyByIndex(index) ?? ""}
-            level_name={'Level ' + levelMap[level.level_name]}
+            level_name={"Level " + levelMap[level.level_name]}
             level_statement={level.level_statement}
-
           />
         ))}
 
         <BaseButton
           className="mt-6 green-button"
-          onClick={() => window.open('https://uvaro.com', '_blank')}
+          onClick={() => window.open("https://uvaro.com", "_blank")}
         >
           Book Appointment with Advisor
         </BaseButton>
-        {
-          !isLoggedIn ? <div>
+        {!isLoggedIn ? (
+          <div>
             <BaseButton
               className="mt-3 w-full white-button"
               onClick={() => navigate("/signin")}
@@ -93,18 +95,15 @@ const Result = () => {
                 Sign up now!
               </Link>
             </p>
-          </div> :
-            <BaseButton
-              className="mt-3 w-full white-button mb-10"
-              onClick={() => navigate("/app/home")}
-            >
-              Back to Home
-            </BaseButton>
-        }
-
-
-
-
+          </div>
+        ) : (
+          <BaseButton
+            className="mt-3 w-full white-button mb-10"
+            onClick={() => navigate("/app/home")}
+          >
+            Back to Home
+          </BaseButton>
+        )}
       </div>
     </Layout>
   );

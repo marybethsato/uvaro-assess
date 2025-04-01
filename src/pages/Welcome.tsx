@@ -9,8 +9,6 @@ import welcomeImage from "../images/welcome/welcomePage.jpg";
 const Welcome = () => {
   const navigate = useNavigate();
 
-
-
   async function handleGuestAssessment() {
     try {
       console.log(process.env.REACT_APP_GRAPHQL_URL);
@@ -45,7 +43,7 @@ const Welcome = () => {
         >
           <div className="mx-16">
             <h1 className="font-bold text-5xl mb-3 leading-tight">
-              Discover Your Next Carrer Move
+              Discover Your Next Career Move
             </h1>
             <p className="mb-10">
               Find out where you stand and uncover your potential for growth.

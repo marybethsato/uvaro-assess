@@ -49,8 +49,6 @@ const Assessment = () => {
 
   const navigate = useNavigate();
 
-  const [notes, setNotes] = useState<Note[]>([]);
-
   const addQuestion = (newQuestion: Question) => {
     setQuestions((prevQuestions) => {
       const exists = prevQuestions.some(
@@ -107,10 +105,13 @@ const Assessment = () => {
 
             data.allCategories[categoryIndex].questions.forEach(
               (question: Question) => {
-                if (isFollowUp && question.follow_up == true) {
+                if (isFollowUp && question.follow_up === true) {
                   console.log("here");
                   addQuestion(question);
-                } else if (isFollowUp == false && question.follow_up == false) {
+                } else if (
+                  isFollowUp === false &&
+                  question.follow_up === false
+                ) {
                   console.log("hi");
                   addQuestion(question);
                 }
@@ -166,15 +167,13 @@ const Assessment = () => {
       currentQuestion.question_id,
       selectedAnswer.answer_id
     );
-    if (isSubmitted == false) {
+    if (isSubmitted === false) {
       alert("Error. Answer not submitted");
       return;
     }
     // next question
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
-
-      //console.log("Note:", notes);
     }
     // initial results category
     else {
@@ -242,20 +241,6 @@ const Assessment = () => {
     }
   };
 
-  const handleNoteChange = (questionId: number, newContent: string) => {
-    setNotes((prev) => {
-      const existing = prev.findIndex((n) => n.questionId === questionId);
-
-      if (existing !== -1) {
-        const updatedNotes = [...prev];
-        updatedNotes[existing].content = newContent;
-        return updatedNotes;
-      } else {
-        return [...prev, { questionId, content: newContent }];
-      }
-    });
-  };
-
   if (!currentQuestion) {
     return <p>Error...</p>;
   }
@@ -293,14 +278,6 @@ const Assessment = () => {
           }
           onSelect={(answer) => handleSelectAnswer(answer)}
         />
-        {/* <NoteCard
-          questionId={currentQuestion.question_id}
-          onNoteChange={handleNoteChange}
-          existingNote={
-            notes.find((n) => n.questionId === currentQuestion.question_id)
-              ?.content
-          }
-        /> */}
         <div
           className={`flex flex-row ${
             currentQuestionIndex > 0 ? "justify-between" : "justify-end"
@@ -329,6 +306,3 @@ const Assessment = () => {
 };
 
 export default Assessment;
-function getKeyByValue(arg0: string) {
-  throw new Error("Function not implemented.");
-}
