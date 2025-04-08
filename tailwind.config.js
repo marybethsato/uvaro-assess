@@ -15,6 +15,12 @@ module.exports = {
         large: "",
         heading: "48px",
       },
+      // screens: {
+      //   xs: "375px",
+      //   sm: "425px",
+      //   md: "768px",
+      //   lg: "1024px",
+      // },
     },
   },
   plugins: [],

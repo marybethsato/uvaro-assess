@@ -87,7 +87,7 @@ const ResultCategory = () => {
         getCategoryIndexByKey(category!) + 1
       );
 
-      if (getCategoryIndexByKey(categoryKey!) == -1) {
+      if (getCategoryIndexByKey(categoryKey!) === -1) {
         navigate("/complete-checkmark");
       } else {
         navigate("/introduction/" + categoryKey);
@@ -102,7 +102,7 @@ const ResultCategory = () => {
       getCategoryIndexByKey(category!) + 1
     );
 
-    if (getCategoryIndexByKey(categoryKey!) == -1) {
+    if (getCategoryIndexByKey(categoryKey!) === -1) {
       navigate("/complete-checkmark");
     } else {
       navigate("/introduction/" + categoryKey);

@@ -1,12 +1,17 @@
 // src/pages/Home.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BaseButton from "../components/buttons/BaseButton";
 import OngoingAssessments from "../components/home/ContinueAssessment";
 import PreviousAssessment from "../components/home/PreviousAssessments";
 import ProgressChart from "../components/home/ProgressChart";
 import ReminderComponent from "../components/home/Reminder";
 import WelcomeBack from "../components/home/WelcomeBack";
-import { ADD_ASSESSMENT, GET_USER, GET_USER_ASSESSMENTS } from "../graphql/queries";
+import {
+  ADD_ASSESSMENT,
+  GET_USER,
+  GET_USER_ASSESSMENTS,
+} from "../graphql/queries";
 import Assessment from "../interfaces/assessment";
 import User from "../interfaces/user";
 
@@ -15,8 +20,9 @@ const Home: React.FC = () => {
 
   const rProfileUrl = "https://avatar.iran.liara.run/public/98";
 
-
-  const getLatestAssessment = (assessments: Assessment[]): Assessment | undefined => {
+  const getLatestAssessment = (
+    assessments: Assessment[]
+  ): Assessment | undefined => {
     return assessments.reduce((latest, current) => {
       const latestDate = new Date(latest.start_date_time).getTime();
       const currentDate = new Date(current.start_date_time).getTime();
@@ -50,26 +56,25 @@ const Home: React.FC = () => {
           },
           body: JSON.stringify({
             query: GET_USER_ASSESSMENTS,
-
           }),
         });
 
         const result = await response.json();
         if (!response.ok) {
-          alert('Error getting assessments');
+          alert("Error getting assessments");
         }
 
         result.data.getUserAssessments.forEach((assessment: Assessment) => {
-          setAllAssessments(prev => {
-            const exists = prev.some(a => a.id === assessment.id);
+          setAllAssessments((prev) => {
+            const exists = prev.some((a) => a.id === assessment.id);
             if (!exists) {
               return [...prev, assessment];
             }
             return prev;
           });
 
-          setAssessments(prev => {
-            const exists = prev.some(a => a.id === assessment.id);
+          setAssessments((prev) => {
+            const exists = prev.some((a) => a.id === assessment.id);
             if (!exists && assessment.end_date_time != null) {
               return [...prev, assessment];
             }
@@ -78,11 +83,10 @@ const Home: React.FC = () => {
         });
 
         setLatestAssessment(getLatestAssessment(assessments));
-
       } catch (e) {
         console.log(e);
       }
-    };
+    }
 
     async function getUser() {
       try {
@@ -94,22 +98,20 @@ const Home: React.FC = () => {
           },
           body: JSON.stringify({
             query: GET_USER,
-
           }),
         });
 
         const result = await response.json();
         if (!response.ok) {
-          alert('Error getting assessments');
+          alert("Error getting assessments");
         }
 
         setUser(result.data.getUser);
-        localStorage.setItem('userId', user!.user_id.toString());
-     
+        localStorage.setItem("userId", user!.user_id.toString());
       } catch (e) {
         console.log(e);
       }
-    };
+    }
     getUser();
     getUserAssessments();
   }, []);
@@ -119,7 +121,7 @@ const Home: React.FC = () => {
       console.log(process.env.REACT_APP_GRAPHQL_URL);
       const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
-        credentials: 'include',
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -134,33 +136,38 @@ const Home: React.FC = () => {
         alert("Failed to start assessment: " + data.errors);
       } else {
         localStorage.setItem("assessmentId", data.data.addAssessment.id);
-        navigate("/introduction/financial-health")
+        navigate("/introduction/financial-health");
       }
     } catch (error) {
       console.error(error);
     }
   }
 
-
   return (
     <div className="p-6 mb-[70px]">
-      <WelcomeBack profileUrl={rProfileUrl} name={user != null ? (user?.first_name + ' ' + user?.last_name) : ''}></WelcomeBack>
-      <ReminderComponent onStartAssessment={() => handleAssessment()} lastAssessmentDate={formatToYMD(latestAssessment?.end_date_time ?? '')}></ReminderComponent>
+      <WelcomeBack
+        profileUrl={rProfileUrl}
+        name={user != null ? user?.first_name + " " + user?.last_name : ""}
+      ></WelcomeBack>
+      <ReminderComponent
+        onStartAssessment={() => handleAssessment()}
+        lastAssessmentDate={formatToYMD(latestAssessment?.end_date_time ?? "")}
+      ></ReminderComponent>
       <ProgressChart assessments={assessments} />
-      <button
+      <BaseButton
+        className="red-button w-full font-medium mt-8 mb-4"
         onClick={handleAssessment}
-        className="w-full px-4 py-3 mt-8 mb-4 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition"
       >
         Start a New Assessment
-      </button>
-      <OngoingAssessments assessments={allAssessments.filter(
-        (a) => a.end_date_time === null || a.end_date_time === undefined
-      )} />
+      </BaseButton>
+      <OngoingAssessments
+        assessments={allAssessments.filter(
+          (a) => a.end_date_time === null || a.end_date_time === undefined
+        )}
+      />
       <PreviousAssessment assessments={assessments} />
     </div>
   );
 };
 
 export default Home;
-
-

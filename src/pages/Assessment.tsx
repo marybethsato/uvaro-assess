@@ -107,10 +107,13 @@ const Assessment = () => {
 
             data.allCategories[categoryIndex].questions.forEach(
               (question: Question) => {
-                if (isFollowUp && question.follow_up == true) {
+                if (isFollowUp && question.follow_up === true) {
                   console.log("here");
                   addQuestion(question);
-                } else if (isFollowUp == false && question.follow_up == false) {
+                } else if (
+                  isFollowUp === false &&
+                  question.follow_up === false
+                ) {
                   console.log("hi");
                   addQuestion(question);
                 }
