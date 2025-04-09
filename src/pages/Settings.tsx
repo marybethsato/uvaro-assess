@@ -5,9 +5,9 @@ import { GET_USER } from "../graphql/queries";
 import User from "../interfaces/user";
 
 const Settings: React.FC = () => {
-
   const [user, setUser] = useState<User>();
 
+  // Fetch user data from the backend
   useEffect(() => {
     async function getUser() {
       try {
@@ -19,36 +19,41 @@ const Settings: React.FC = () => {
           },
           body: JSON.stringify({
             query: GET_USER,
-
           }),
         });
 
         const result = await response.json();
         if (!response.ok) {
-          alert('Error getting assessments');
+          alert("Error getting assessments");
         }
 
         setUser(result.data.getUser);
       } catch (e) {
         console.log(e);
       }
-    };
+    }
     getUser();
   }, []);
 
+  // Handle sign out
+  // This function will remove the userId and assessmentId from local storage and redirect to the logout URL
   async function handleSignOut() {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('assessmentId');
+    localStorage.removeItem("userId");
+    localStorage.removeItem("assessmentId");
 
-    const loginPath = '/logout';
+    const loginPath = "/logout";
     const baseUrl = window.location.origin;
-    const redirectPath = baseUrl
-    const url = process.env.REACT_APP_BACKEND_URL + loginPath + '?referer=' + redirectPath;
+    const redirectPath = baseUrl;
+    const url =
+      process.env.REACT_APP_BACKEND_URL +
+      loginPath +
+      "?referer=" +
+      redirectPath;
 
     const res = await fetch(url, {
       method: "GET",
       credentials: "include",
-      redirect: 'manual'
+      redirect: "manual",
     });
 
     window.location.href = res.url;
@@ -65,7 +70,9 @@ const Settings: React.FC = () => {
             size={100}
           />
           <div className="text-center">
-            <h2 className="text-lg font-bold">{user?.first_name + ' ' + user?.last_name}</h2>
+            <h2 className="text-lg font-bold">
+              {user?.first_name + " " + user?.last_name}
+            </h2>
             <p className="text-sm text-gray-500">{user?.email}</p>
           </div>
         </div>

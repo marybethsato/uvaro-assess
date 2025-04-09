@@ -20,10 +20,12 @@ const Result = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
+    // Check if the user is logged in based on the presence of userId in localStorage
     setIsLoggedIn(localStorage.getItem("userId") !== null);
     getResults();
   }, []);
 
+  // Function to get the assessment results from the backend
   const getResults = async () => {
     const assessmentId = localStorage.getItem("assessmentId");
     try {
@@ -59,6 +61,7 @@ const Result = () => {
         <TopNavBar />
       </div>
       <div className="mx-10">
+        {/* Title and description for the results page */}
         <h1 className="text-3xl font-bold text-center mt-2 mb-3">
           Your Career Assessment Results
         </h1>
@@ -66,6 +69,8 @@ const Result = () => {
           Your results highlight your strengths and growth areas. Let’s turn
           these insights into your roadmap for success.
         </p>
+
+        {/* Display the assessment levels using ResultCard component */}
         {levels.map((level, index) => (
           <ResultCard
             key={index}
@@ -75,12 +80,15 @@ const Result = () => {
           />
         ))}
 
+        {/* Button to open Uvaro website */}
         <BaseButton
           className="mt-6 green-button"
           onClick={() => window.open("https://uvaro.com", "_blank")}
         >
           Book Appointment with Advisor
         </BaseButton>
+
+        {/* Conditional rendering based on whether the user is logged in */}
         {!isLoggedIn ? (
           <div>
             <BaseButton
@@ -97,6 +105,7 @@ const Result = () => {
             </p>
           </div>
         ) : (
+          // Button to navigate back to the home page if the user is logged in
           <BaseButton
             className="mt-3 w-full white-button mb-10"
             onClick={() => navigate("/app/home")}

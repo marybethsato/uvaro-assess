@@ -1,58 +1,44 @@
-import { useState } from "react";
 import logo from "../images/signup/logo.png";
+import BaseButton from "../components/buttons/BaseButton";
+import { useNavigate } from "react-router-dom";
+import Layout from "../components/Layout";
 
 const Signin = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
-
-  async function signIn() {
-    const loginPath = "/login";
-    const baseUrl = window.location.origin;
-    const redirectPath = baseUrl + "/app/home";
-    const url =
-      process.env.REACT_APP_BACKEND_URL +
-      loginPath +
-      "?referer=" +
-      redirectPath;
-
-    const res = await fetch(url, {
-      method: "GET",
-      credentials: "include",
-      redirect: "manual",
-    });
-
-    window.location.href = res.url;
-  }
+  const navigate = useNavigate();
 
   return (
-    <div className="flex justify-center items-center min-h-screen p-5 bg-gray-100 box-border">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-md p-5 text-center">
-        <div className="flex justify-center pb-5">
-          <img className="w-1/5 h-1/5" src={logo} alt="logo" />
+    <Layout>
+      <div className="flex items-center h-screen text-center p-5 ">
+        <div className="w-full  bg-white ">
+          {/* Logo Section */}
+          <div className="flex justify-center pb-5">
+            <img className="w-1/5 h-1/5" src={logo} alt="logo" />
+          </div>
+
+          {/* App Name */}
+          <h1 className="text-4xl font-extrabold text-center">Career</h1>
+          <h1 className="text-4xl font-extrabold text-center mb-5">
+            Assessment
+          </h1>
+
+          {/* Conditional Text based on whether it's Sign In or Sign Up */}
+          <p className="text-sm mb-5 text-gray-600">Sign in to continue</p>
+
+          <BaseButton className="red-button w-full">Sign In</BaseButton>
+
+          {/* Toggle link between Sign In and Sign Up */}
+          <p className="text-xs text-gray-600 mt-4">
+            Don’t have an account?{" "}
+            <button
+              className="bg-none border-none text-[#d32f2f] cursor-pointer underline text-xs"
+              onClick={() => navigate("/signup")}
+            >
+              Sign Up
+            </button>
+          </p>
         </div>
-        <h1 className="text-4xl font-extrabold text-center">Uvaro</h1>
-        <h1 className="text-4xl font-extrabold text-center mb-5">Assess</h1>
-        <p className="text-sm mb-5 text-gray-600">
-          {isSignUp ? "Sign up to continue" : "Sign in to continue"}
-        </p>
-
-        <button
-          className="w-full p-3 mt-2 bg-[#d32f2f] text-white border-none rounded-md cursor-pointer text-base"
-          onClick={() => (isSignUp ? {} : signIn())}
-        >
-          {isSignUp ? "Sign Up" : "Sign In"}
-        </button>
-
-        <p className="text-xs text-gray-600 mt-4">
-          {isSignUp ? "Already have an account? " : "Don’t have an account? "}
-          <button
-            className="bg-none border-none text-[#d32f2f] cursor-pointer underline text-xs"
-            onClick={() => setIsSignUp(!isSignUp)}
-          >
-            {isSignUp ? "Sign In" : "Sign Up"}
-          </button>
-        </p>
       </div>
-    </div>
+    </Layout>
   );
 };
 

@@ -4,7 +4,6 @@ import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
 import TopNavBar from "../components/navigation/TopNavBar";
 import { ALL_CATEGORIES } from "../graphql/queries";
-// import IntroBackground from "../images/IntroBackground.png";
 import IntroBackground from "../images/IntroBackground2.png";
 import FinancialHealth from "../images/financialhealth/Financialhealth.png";
 import WorkYouEnjoy from "../images/workyouenjoy/Workyouenjoy.png";
@@ -24,6 +23,7 @@ interface RouteParams {
   [key: string]: string | undefined;
 }
 
+// Maps the category keys to their respective names
 const categoryMap: Record<string, string> = {
   "financial-health": "Financial Health",
   "work-you-enjoy": "Work You Enjoy",
@@ -31,6 +31,7 @@ const categoryMap: Record<string, string> = {
   "peer-community-fulfillment": "Peer Community Fulfillment",
 };
 
+// Maps the category names to their respective images
 const categoryImages: Record<string, string> = {
   "Financial Health": FinancialHealth,
   "Work You Enjoy": WorkYouEnjoy,
@@ -44,6 +45,7 @@ const CategoryIntroduction = () => {
 
   const [fetchedCategory, setFetchedCategory] = useState<Category | null>(null);
 
+  // Fetch category details when the component renders or category changes
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -63,7 +65,11 @@ const CategoryIntroduction = () => {
           console.error("GraphQL errors:", data.errors);
         } else {
           const categories: Category[] = data.data.allCategories;
+
+          // Map the category to its respective name
           const mappedCategory = categoryMap[category as string];
+
+          // Find the category based on the mapped name
           const foundCategory =
             categories.find(
               (category) => category.category_name === mappedCategory
@@ -91,11 +97,13 @@ const CategoryIntroduction = () => {
       <div className="mx-auto overflow-hidden">
         <div className="absolute w-full ">
           <TopNavBar isDark />
+          {/* Background image for the introduction */}
           <img
             src={IntroBackground}
-            alt="illustration"
+            alt="Background"
             className="w-full mx-auto"
           />
+          {/* Display category image if fetchedCategory exists */}
           {fetchedCategory && (
             <img
               src={categoryImages[fetchedCategory.category_name]}
@@ -116,6 +124,8 @@ const CategoryIntroduction = () => {
             />
           )}
         </div>
+
+        {/* Content section for category introduction */}
         <div className="text-left mb-10 mt-[50vh] mx-5">
           <h3 className="text-xl mb-2">Introduction</h3>
           <h1 className="text-3xl font-bold">What is</h1>
@@ -127,6 +137,7 @@ const CategoryIntroduction = () => {
               : "Loading description..."}
           </p>
         </div>
+        {/* Button to navigate to the assessment page */}
         <div className="flex justify-center">
           <BaseButton
             className="w-2/3 red-button"
