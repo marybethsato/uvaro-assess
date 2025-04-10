@@ -31,11 +31,6 @@ interface SelectedAnswer {
   answer: Answer;
 }
 
-interface Note {
-  questionId: number;
-  content: string;
-}
-
 const Assessment = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -48,8 +43,6 @@ const Assessment = () => {
   const isFollowUp = searchParams.get("is_follow_up") === "true" ? true : false;
 
   const navigate = useNavigate();
-
-  const [notes, setNotes] = useState<Note[]>([]);
 
   const addQuestion = (newQuestion: Question) => {
     setQuestions((prevQuestions) => {
@@ -70,8 +63,10 @@ const Assessment = () => {
   };
 
   useEffect(() => {
+    // Reset questions state
     setQuestions([]);
 
+    // Fetch categories and questions
     async function fetchCategories() {
       try {
         const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
@@ -103,20 +98,25 @@ const Assessment = () => {
         if (data && data.allCategories) {
           setCategories(data.allCategories);
           if (data.allCategories.length > 0) {
+            // Filter and add questions based on category and follow-up status
             const categoryIndex = getCategoryIndexByKey(category);
 
             data.allCategories[categoryIndex].questions.forEach(
               (question: Question) => {
-                if (isFollowUp && question.follow_up == true) {
+                if (isFollowUp && question.follow_up === true) {
                   console.log("here");
                   addQuestion(question);
-                } else if (isFollowUp == false && question.follow_up == false) {
+                } else if (
+                  isFollowUp === false &&
+                  question.follow_up === false
+                ) {
                   console.log("hi");
                   addQuestion(question);
                 }
               }
             );
           } else {
+            // No categories found
             setCategories([]);
             setQuestions([]);
             console.log("No categories found.");
@@ -131,8 +131,10 @@ const Assessment = () => {
     fetchCategories();
   }, []);
 
+  // Get the current question based on the currentQuestionIndex
   const currentQuestion = questions[currentQuestionIndex];
 
+  // Handle answer selection
   const handleSelectAnswer = (answer: Answer) => {
     setSelectedAnswers((prev) => {
       const existing = prev.find(
@@ -148,6 +150,7 @@ const Assessment = () => {
     });
   };
 
+  // Handle navigation to the next question
   const handleNext = async () => {
     if (
       !selectedAnswers.find(
@@ -166,15 +169,14 @@ const Assessment = () => {
       currentQuestion.question_id,
       selectedAnswer.answer_id
     );
-    if (isSubmitted == false) {
+    if (isSubmitted === false) {
       alert("Error. Answer not submitted");
       return;
     }
-    // next question
+
+    // Navigate to the next question or results page if all questions are answered
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
-
-      //console.log("Note:", notes);
     }
     // initial results category
     else {
@@ -187,6 +189,7 @@ const Assessment = () => {
     }
   };
 
+  // Handle navigation to the previous question or back to previous page if at the first question
   const handleBack = async () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex((prev) => prev - 1);
@@ -195,14 +198,18 @@ const Assessment = () => {
     }
   };
 
+  // Get the current category based on the current question
   const currentCategory = categories.find((_category) =>
     _category.questions.some(
       (q) => q.question_id === currentQuestion.question_id
     )
   );
+
+  // Calculate the total number of questions and the current question number
   const totalQuestions = questions.length;
   const currentNumber = currentQuestionIndex + 1;
 
+  // Loading state
   if (loading) {
     return (
       <Layout>
@@ -214,8 +221,10 @@ const Assessment = () => {
     );
   }
 
+  // Get assessment ID from local storage
   const assessmentId = localStorage.getItem("assessmentId");
 
+  // Submit an answer to the backend
   const submitAnswer = async (questionId: number, answerId: number) => {
     try {
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
@@ -240,20 +249,6 @@ const Assessment = () => {
     } catch (e) {
       return false;
     }
-  };
-
-  const handleNoteChange = (questionId: number, newContent: string) => {
-    setNotes((prev) => {
-      const existing = prev.findIndex((n) => n.questionId === questionId);
-
-      if (existing !== -1) {
-        const updatedNotes = [...prev];
-        updatedNotes[existing].content = newContent;
-        return updatedNotes;
-      } else {
-        return [...prev, { questionId, content: newContent }];
-      }
-    });
   };
 
   if (!currentQuestion) {
@@ -293,19 +288,12 @@ const Assessment = () => {
           }
           onSelect={(answer) => handleSelectAnswer(answer)}
         />
-        {/* <NoteCard
-          questionId={currentQuestion.question_id}
-          onNoteChange={handleNoteChange}
-          existingNote={
-            notes.find((n) => n.questionId === currentQuestion.question_id)
-              ?.content
-          }
-        /> */}
         <div
           className={`flex flex-row ${
             currentQuestionIndex > 0 ? "justify-between" : "justify-end"
           }`}
         >
+          {/* Display "Back" button only if not on the first question */}
           {currentQuestionIndex > 0 && (
             <button
               className="mt-10 px-4 py-2 border border-gray-300 hover:bg-gray-100 self-end rounded-md cursor-pointer flex items-center gap-3"
@@ -329,6 +317,3 @@ const Assessment = () => {
 };
 
 export default Assessment;
-function getKeyByValue(arg0: string) {
-  throw new Error("Function not implemented.");
-}

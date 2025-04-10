@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Assessment from "../../interfaces/assessment";
-import { formatDate, getOrdinalAssessmentLabel } from "../home/PreviousAssessments";
+import {
+  formatDate,
+  getOrdinalAssessmentLabel,
+} from "../home/PreviousAssessments";
 import TopNavBar from "../navigation/TopNavBar";
 import AssessmentCard from "./AssessmentCard";
 
@@ -9,8 +12,11 @@ interface PreviousAssessmentsProps {
   assessments: Assessment[];
 }
 
-const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({ assessments }) => {
-  const [sortedAssessments, setSortedAssessments] = useState<Assessment[]>(assessments);
+const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({
+  assessments,
+}) => {
+  const [sortedAssessments, setSortedAssessments] =
+    useState<Assessment[]>(assessments);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const navigate = useNavigate();
@@ -24,21 +30,33 @@ const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({ assessments }
     navigate("/result?assessmentId=" + id);
   }
 
-  // 🧠 Step 1: Create a consistent ordinal label map (chronological by end_date_time)
+  // Step 1: Create a consistent ordinal label map (chronological by end_date_time)
   const ordinalLabelMap: Record<number, string> = {};
 
   [...assessments]
-    .sort((a, b) => new Date(a.end_date_time).getTime() - new Date(b.end_date_time).getTime())
+    .sort(
+      (a, b) =>
+        new Date(a.end_date_time).getTime() -
+        new Date(b.end_date_time).getTime()
+    )
     .forEach((assessment, index) => {
       ordinalLabelMap[assessment.id] = getOrdinalAssessmentLabel(index);
     });
 
-  // 🔁 Toggle sort order
+  // Toggle sort order
   const handleSort = () => {
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
     const sorted = [...sortedAssessments].sort((a, b) => {
-      const dateA = new Date(typeof a.end_date_time === "string" ? parseInt(a.end_date_time) : a.end_date_time).getTime();
-      const dateB = new Date(typeof b.end_date_time === "string" ? parseInt(b.end_date_time) : b.end_date_time).getTime();
+      const dateA = new Date(
+        typeof a.end_date_time === "string"
+          ? parseInt(a.end_date_time)
+          : a.end_date_time
+      ).getTime();
+      const dateB = new Date(
+        typeof b.end_date_time === "string"
+          ? parseInt(b.end_date_time)
+          : b.end_date_time
+      ).getTime();
 
       return newOrder === "asc" ? dateA - dateB : dateB - dateA;
     });

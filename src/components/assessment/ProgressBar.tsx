@@ -1,4 +1,3 @@
-
 interface Category {
   name: string;
   totalQuestions: number;
@@ -30,7 +29,10 @@ const ProgressBar = ({ categories, activeCategoryIndex }: ProgressBarProps) => {
           const isLastStep = index === categories.length - 1;
 
           return (
-            <div key={index} className="flex items-center flex-1 justify-center">
+            <div
+              key={index}
+              className="flex items-center flex-1 justify-center"
+            >
               <div className="flex flex-col items-center w-[50px] shrink-0">
                 <svg width={size} height={size}>
                   {/* Background Circle */}
@@ -66,10 +68,10 @@ const ProgressBar = ({ categories, activeCategoryIndex }: ProgressBarProps) => {
                     {percentage}%
                   </text>
                 </svg>
-                <span className="mt-2 text-xs text-center break-words">{category.name}</span>
+                <span className="mt-2 text-xs text-center break-words">
+                  {category.name}
+                </span>
               </div>
-
-          
             </div>
           );
         })}

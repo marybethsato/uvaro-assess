@@ -28,6 +28,7 @@ const ResultCategory = () => {
     calculateLevel();
   }, []);
 
+  // Function to calculate the level of the category
   const calculateLevel = async () => {
     try {
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
@@ -48,6 +49,7 @@ const ResultCategory = () => {
       const result = await response.json();
       console.log("Mutation Result:", result);
 
+      // Set the category level and description based on the response
       if (!result.errors) {
         setCategoryLevel(result.data.calculateLevel.level_name);
         setCategoryDescription(
@@ -57,10 +59,12 @@ const ResultCategory = () => {
     } catch (e) {}
   };
 
+  // Function to get the respective name for the category
   function getCategoryName(key: string): string {
     return categoryMap[key] || "Unknown Category";
   }
 
+  // Function to get the current category level
   const getCategoryLevel = (): string => {
     return categoryLevel;
   };
@@ -80,6 +84,7 @@ const ResultCategory = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Function to handle the save action in the modal
   const handleSave = async (note: string) => {
     const isSubmittedNotes = await submitNotes(note);
     if (isSubmittedNotes) {
@@ -87,7 +92,7 @@ const ResultCategory = () => {
         getCategoryIndexByKey(category!) + 1
       );
 
-      if (getCategoryIndexByKey(categoryKey!) == -1) {
+      if (getCategoryIndexByKey(categoryKey!) === -1) {
         navigate("/complete-checkmark");
       } else {
         navigate("/introduction/" + categoryKey);
@@ -97,18 +102,20 @@ const ResultCategory = () => {
     }
   };
 
+  // Function to handle the skip action in the modal
   const handleSkip = () => {
     const categoryKey = getCategoryKeyByIndex(
       getCategoryIndexByKey(category!) + 1
     );
 
-    if (getCategoryIndexByKey(categoryKey!) == -1) {
+    if (getCategoryIndexByKey(categoryKey!) === -1) {
       navigate("/complete-checkmark");
     } else {
       navigate("/introduction/" + categoryKey);
     }
   };
 
+  // Function to submit notes to the backend
   const submitNotes = async (note: string) => {
     try {
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
@@ -155,6 +162,8 @@ const ResultCategory = () => {
             {getCategoryLevel()}
           </h1>
           <p className="text-center mt-4">{categoryDescription}</p>
+
+          {/* Buttons for navigating or submitting */}
           {!isCompletedFullAssessment ? (
             <div>
               <div className="flex justify-center">
@@ -178,6 +187,7 @@ const ResultCategory = () => {
           ) : null}
         </div>
       </div>
+      {/* Modal for notes */}
       <NotesModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
