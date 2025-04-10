@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import BottomNavBar from "../components/navigation/BottomNavBar";
 import AssessmentList from "./AssessmentList";
 import Home from "./Home";
 import Settings from "./Settings";
@@ -16,7 +15,6 @@ const App: React.FC = () => {
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
-        <BottomNavBar />
       </div>
     </Router>
   );
