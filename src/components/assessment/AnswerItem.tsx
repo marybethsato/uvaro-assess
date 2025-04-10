@@ -10,6 +10,7 @@ export default function AnswerItem({
 }: AnswerItemProps) {
   return (
     <div
+      data-testid="answer-item"
       className={`p-2 border cursor-pointer rounded-lg  ${
         isSelected
           ? "border-green-500 bg-green-50 hover:bg-none"

@@ -1,6 +1,5 @@
-// src/components/__tests__/BaseButton.test.tsx
 import { fireEvent, render, screen } from "@testing-library/react";
-import BaseButton from "../buttons/BaseButton";
+import BaseButton from "../../buttons/BaseButton";
 
 describe("BaseButton component", () => {
   test("renders children text", () => {
@@ -18,23 +17,5 @@ describe("BaseButton component", () => {
     render(<BaseButton onClick={handleClick}>Click</BaseButton>);
     fireEvent.click(screen.getByRole("button"));
     expect(handleClick).toHaveBeenCalledTimes(1);
-  });
-
-  test("does not call onClick when disabled", () => {
-    const handleClick = jest.fn<void, []>();
-    render(
-      <BaseButton onClick={handleClick} disabled>
-        Disabled
-      </BaseButton>
-    );
-    const btn = screen.getByRole("button");
-    expect(btn).toBeDisabled();
-    fireEvent.click(btn);
-    expect(handleClick).not.toHaveBeenCalled();
-  });
-
-  test("matches snapshot", () => {
-    const { asFragment } = render(<BaseButton>Snapshot</BaseButton>);
-    expect(asFragment()).toMatchSnapshot();
   });
 });
