@@ -18,8 +18,8 @@ const Home: React.FC = () => {
 
   const getLatestAssessment = (assessments: Assessment[]): Assessment | undefined => {
     return assessments.reduce((latest, current) => {
-      const latestDate = new Date(latest.start_date_time).getTime();
-      const currentDate = new Date(current.start_date_time).getTime();
+      const latestDate = new Date(latest.startDateTime).getTime();
+      const currentDate = new Date(current.startDateTime).getTime();
       return currentDate > latestDate ? current : latest;
     }, assessments[0]);
   };
@@ -61,7 +61,7 @@ const Home: React.FC = () => {
 
         result.data.getUserAssessments.forEach((assessment: Assessment) => {
           setAllAssessments(prev => {
-            const exists = prev.some(a => a.id === assessment.id);
+            const exists = prev.some(a => a.assessmentId === assessment.assessmentId);
             if (!exists) {
               return [...prev, assessment];
             }
@@ -69,8 +69,8 @@ const Home: React.FC = () => {
           });
 
           setAssessments(prev => {
-            const exists = prev.some(a => a.id === assessment.id);
-            if (!exists && assessment.end_date_time != null) {
+            const exists = prev.some(a => a.assessmentId === assessment.assessmentId);
+            if (!exists && assessment.endDateTime != null) {
               return [...prev, assessment];
             }
             return prev;
@@ -100,12 +100,14 @@ const Home: React.FC = () => {
 
         const result = await response.json();
         if (!response.ok) {
+          console.log(response);
           alert('Error getting assessments');
         }
 
+
         setUser(result.data.getUser);
-        localStorage.setItem('userId', user!.user_id.toString());
-     
+        localStorage.setItem('isLoggedIn', 'true');
+
       } catch (e) {
         console.log(e);
       }
@@ -133,7 +135,7 @@ const Home: React.FC = () => {
         console.log("Failed to add assessment as guest: ", data.errors);
         alert("Failed to start assessment: " + data.errors);
       } else {
-        localStorage.setItem("assessmentId", data.data.addAssessment.id);
+        localStorage.setItem("assessmentId", data.data.addAssessment.assessmentId);
         navigate("/introduction/financial-health")
       }
     } catch (error) {
@@ -144,8 +146,8 @@ const Home: React.FC = () => {
 
   return (
     <div className="p-6 mb-[70px]">
-      <WelcomeBack profileUrl={rProfileUrl} name={user != null ? (user?.first_name + ' ' + user?.last_name) : ''}></WelcomeBack>
-      <ReminderComponent onStartAssessment={() => handleAssessment()} lastAssessmentDate={formatToYMD(latestAssessment?.end_date_time ?? '')}></ReminderComponent>
+      <WelcomeBack profileUrl={rProfileUrl} name={user != null ? (user?.firstName + ' ' + user?.lastName) : ''}></WelcomeBack>
+      <ReminderComponent onStartAssessment={() => handleAssessment()} lastAssessmentDate={formatToYMD(latestAssessment?.endDateTime ?? '')}></ReminderComponent>
       <ProgressChart assessments={assessments} />
       <button
         onClick={handleAssessment}
@@ -154,7 +156,7 @@ const Home: React.FC = () => {
         Start a New Assessment
       </button>
       <OngoingAssessments assessments={allAssessments.filter(
-        (a) => a.end_date_time === null || a.end_date_time === undefined
+        (a) => a.endDateTime === null || a.endDateTime === undefined
       )} />
       <PreviousAssessment assessments={assessments} />
     </div>

@@ -37,7 +37,7 @@ const Settings: React.FC = () => {
   }, []);
 
   async function handleSignOut() {
-    localStorage.removeItem('userId');
+    localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('assessmentId');
 
     const loginPath = '/logout';
@@ -65,7 +65,7 @@ const Settings: React.FC = () => {
             size={100}
           />
           <div className="text-center">
-            <h2 className="text-lg font-bold">{user?.first_name + ' ' + user?.last_name}</h2>
+            <h2 className="text-lg font-bold">{user?.firstName + ' ' + user?.lastName}</h2>
             <p className="text-sm text-gray-500">{user?.email}</p>
           </div>
         </div>

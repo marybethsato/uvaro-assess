@@ -9,13 +9,13 @@ export const processAssessments = (
 
   assessments.forEach((assessment) => {
     assessment.levels.forEach((level) => {
-      const { category_id, level_name } = level;
+      const { categoryId, levelName } = level;
 
-      if (!groupedLevels[category_id]) {
-        groupedLevels[category_id] = [];
+      if (!groupedLevels[categoryId]) {
+        groupedLevels[categoryId] = [];
       }
 
-      groupedLevels[category_id].push(levelMap[level_name]);
+      groupedLevels[categoryId].push(levelMap[levelName]);
     });
   });
 
@@ -34,7 +34,7 @@ const formatDate = (date: string | number | Date): string => {
 
 export const getFormattedEndDates = (assessments: Assessment[]): string[] => {
   return assessments.map((a) =>
-   formatDate(a.end_date_time)
+   formatDate(a.endDateTime)
   );
 };
 

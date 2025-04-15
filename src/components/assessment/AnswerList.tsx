@@ -16,7 +16,7 @@ export default function AnswerList({
       {options.map((option, index) => (
         <AnswerItem
           key={index}
-          text={option.answer_text}
+          text={option.answerText}
           isSelected={selected === option}
           onSelect={() => onSelect(option)}
         />

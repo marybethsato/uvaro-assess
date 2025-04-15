@@ -5,18 +5,19 @@ import Layout from "../components/Layout";
 import TopNavBar from "../components/navigation/TopNavBar";
 import { ALL_CATEGORIES } from "../graphql/queries";
 // import IntroBackground from "../images/IntroBackground.png";
-import IntroBackground from "../images/IntroBackground2.png";
 import FinancialHealth from "../images/financialhealth/Financialhealth.png";
-import WorkYouEnjoy from "../images/workyouenjoy/Workyouenjoy.png";
+import IntroBackground from "../images/IntroBackground2.png";
+import IntroVector from "../images/IntroVector.png";
 import LifeChoiceFulfillment from "../images/lifechoice.png";
 import PeerCommunityFulfillment from "../images/projectcommunity.png";
-import IntroVector from "../images/IntroVector.png";
+import WorkYouEnjoy from "../images/workyouenjoy/Workyouenjoy.png";
+import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 
 interface Category {
-  category_id: string;
-  category_name: string;
-  category_description: string;
-  category_image: string;
+  categoryId: string;
+  categoryName: string;
+  categoryDescription: string;
+  categoryImage: string;
 }
 
 interface RouteParams {
@@ -66,7 +67,7 @@ const CategoryIntroduction = () => {
           const mappedCategory = categoryMap[category as string];
           const foundCategory =
             categories.find(
-              (category) => category.category_name === mappedCategory
+              (category) => category.categoryName === mappedCategory
             ) || categories[0];
           setFetchedCategory(foundCategory);
         }
@@ -76,13 +77,13 @@ const CategoryIntroduction = () => {
     }
 
     fetchCategories();
+    const categoryIndex = getCategoryIndexByKey(category!) + 1;
+    localStorage.removeItem(categoryIndex.toString());
   }, [category]);
 
   if (!category) {
     return null;
   }
-
-  console.log(fetchedCategory?.category_name);
 
   const categoryName = categoryMap[category] || "Unknown Category";
 
@@ -90,12 +91,16 @@ const CategoryIntroduction = () => {
     <Layout>
       <div className="mx-auto overflow-hidden">
         <div className="absolute w-full ">
-          <TopNavBar isDark />
+       
           <img
             src={IntroBackground}
             alt="illustration"
             className="w-full mx-auto"
           />
+          <div className="absolute top-2 left-2">
+          <TopNavBar isDark />
+          </div>
+          
           {/* <img
             src={FinancialHealth}
             alt="Financial Health Introduction"
@@ -103,23 +108,27 @@ const CategoryIntroduction = () => {
             width={400}
           /> */}
           {fetchedCategory && (
-            <img
-              src={categoryImages[fetchedCategory.category_name]}
-              alt={`${fetchedCategory.category_name} Introduction`}
+            <div className="flex justify-center items-center"> 
+               <img
+              src={categoryImages[fetchedCategory.categoryName]}
+              alt={`${fetchedCategory.categoryName} Introduction`}
               className={`absolute ${
-                fetchedCategory.category_name === "Financial Health"
-                  ? "top-10 left-5"
-                  : fetchedCategory.category_name === "Work You Enjoy"
+                fetchedCategory.categoryName === "Financial Health"
+                  ? "top-5"
+                  : fetchedCategory.categoryName === "Work You Enjoy"
                   ? "top-20"
-                  : fetchedCategory.category_name ===
+                  : fetchedCategory.categoryName ===
                       "Life Choice Fulfillment" ||
-                    fetchedCategory.category_name ===
+                    fetchedCategory.categoryName ===
                       "Peer Community Fulfillment"
-                  ? "top-10 left-2"
+                  ? "top-10"
                   : ""
               }`}
+              style={{ width: '360px'}}
               width={400}
             />
+              </div>
+           
           )}
         </div>
         <div className="text-left mb-10 mt-[50vh] mx-5">
@@ -127,10 +136,10 @@ const CategoryIntroduction = () => {
           <h1 className="text-3xl font-bold">What is</h1>
           <h1 className="text-3xl font-bold">{categoryName}?</h1>
           <img src={IntroVector} alt="vector" className="mt-5" />
-          {/* <img src={fetchedCategory?.category_image} alt="Category vector image" className="mt-5" /> */}
+          {/* <img src={fetchedCategory?.categoryImage} alt="Category vector image" className="mt-5" /> */}
           <p className="mt-5">
             {fetchedCategory
-              ? fetchedCategory.category_description
+              ? fetchedCategory.categoryDescription
               : "Loading description..."}
           </p>
         </div>

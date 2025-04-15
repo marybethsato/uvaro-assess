@@ -9,9 +9,9 @@ import { GET_ASSESSMENT_BY_ID } from "../graphql/queries";
 import getCategoryKeyByIndex from "../utils/get_category_key_by_index";
 
 interface Level {
-  category_id: number;
-  level_name: string;
-  level_statement: string;
+  categoryId: number;
+  levelName: string;
+  levelStatement: string;
 }
 
 const Result = () => {
@@ -20,11 +20,40 @@ const Result = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsLoggedIn(localStorage.getItem("userId") !== null);
+    setIsLoggedIn(localStorage.getItem("isLoggedIn") !== null);
     getResults();
   }, []);
 
-  const getResults = async () => {
+  function getResults(){
+    if(isLoggedIn){
+      getResultsForAuthenticated();
+    }else{
+      getResultsForGuests();
+    }
+  }
+
+  function getResultsForGuests() {
+    const categoryIndexes = [1, 2, 3, 4];
+    const guestLevels: Level[] = [];
+  
+    categoryIndexes.forEach((index) => {
+      const stored = localStorage.getItem(index.toString() + "_result");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const level = parsed?.data?.calculateLevel;
+        if (level) {
+          guestLevels.push(level);
+        }
+      }
+    });
+    setLevels(guestLevels);
+
+    if (guestLevels.length === 0){
+      navigate('/');
+    }
+  }
+
+  const getResultsForAuthenticated = async () => {
     const assessmentId = localStorage.getItem("assessmentId");
     try {
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
@@ -67,8 +96,8 @@ const Result = () => {
           <ResultCard
             key={index}
             category_key={getCategoryKeyByIndex(index) ?? ""}
-            level_name={'Level ' + levelMap[level.level_name]}
-            level_statement={level.level_statement}
+            levelName={'Level ' + levelMap[level.levelName]}
+            levelStatement={level.levelStatement}
 
           />
         ))}

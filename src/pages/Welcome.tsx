@@ -1,40 +1,30 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import BaseButton from "../components/buttons/BaseButton";
 import WelcomeInfo from "../components/welcome/welcomeInfo";
 import sectionsData from "../data/sectionsData";
-import { ADD_ASSESSMENT_AS_GUEST } from "../graphql/queries";
 import welcomeImage from "../images/welcome/welcomePage.jpg";
 
 const Welcome = () => {
   const navigate = useNavigate();
 
+  async function signIn() {
+    const loginPath = '/login';
+    const baseUrl = window.location.origin;
+    const redirectPath = baseUrl + '/app/home'
+    const url = process.env.REACT_APP_BACKEND_URL + loginPath + '?referer=' + redirectPath;
 
+    const res = await fetch(url, {
+      method: "GET",
+      credentials: "include",
+      redirect: 'manual'
+    });
 
-  async function handleGuestAssessment() {
-    try {
-      console.log(process.env.REACT_APP_GRAPHQL_URL);
-      const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: ADD_ASSESSMENT_AS_GUEST,
-        }),
-      });
-      const data = await res.json();
-
-      if (data.errors) {
-        console.log("Failed to add assessment as guest: ", data.errors);
-        alert("Failed to add assessment as guest");
-      } else {
-        localStorage.setItem("assessmentId", data.data.addAssessmentAsGuest.id);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    window.location.href = res.url;
   }
+
+
+
 
   return (
     <Layout>
@@ -51,10 +41,13 @@ const Welcome = () => {
               Find out where you stand and uncover your potential for growth.
               Take the first step toward achieving your career goals!
             </p>
+            <div className="flex flex-row">
+
+            </div>
             <BaseButton
               className="w-full mb-5 red-button"
               onClick={() => {
-                handleGuestAssessment();
+                //handleGuestAssessment();
                 navigate("/introduction/financial-health");
               }}
             >
@@ -62,9 +55,9 @@ const Welcome = () => {
             </BaseButton>
             <p>
               Already have an account?{" "}
-              <Link to="/signin" className="text-button">
+              <p onClick={() => signIn()} className="text-button">
                 Sign in
-              </Link>
+              </p>
             </p>
           </div>
         </div>

@@ -1,12 +1,12 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import AnswerList from "../../assessment/AnswerList";
+import { fireEvent, render, screen } from "@testing-library/react";
 import Answer from "../../../interfaces/answer";
+import AnswerList from "../../assessment/AnswerList";
 
 describe("AnswerList component", () => {
   const options: Answer[] = [
-    { answer_id: 1, answer_text: "Option A" },
-    { answer_id: 2, answer_text: "Option B" },
-    { answer_id: 3, answer_text: "Option C" },
+    { answerId: 1, answerText: "Option A" },
+    { answerId: 2, answerText: "Option B" },
+    { answerId: 3, answerText: "Option C" },
   ];
 
   test("renders correct number of AnswerItem components", () => {

@@ -5,7 +5,7 @@ import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
 import TopNavBar from "../components/navigation/TopNavBar";
 import categoryMap from "../data/category_map";
-import { CALCULATE_LEVEL, INSERT_NOTES } from "../graphql/queries";
+import { CALCULATE_LEVEL_AUTHENTICATED, CALCULATE_LEVEL_GUEST, INSERT_NOTES } from "../graphql/queries";
 import resultcategory from "../images/result/result-category.png";
 import "../styles/globals.css";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
@@ -24,12 +24,41 @@ const ResultCategory = () => {
   const [categoryDescription, setCategoryDescription] = useState<string>("");
   const assessmentId = localStorage.getItem("assessmentId");
 
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+
   useEffect(() => {
-    calculateLevel();
+    const isLoggedIn = localStorage.getItem("isLoggedIn") !== null;
+    setIsLoggedIn(isLoggedIn);
   }, []);
 
-  const calculateLevel = async () => {
+  useEffect(() => {
+    if (isLoggedIn !== null) {
+      calculateLevel();
+    }
+  }, [isLoggedIn]);
+
+  function calculateLevel() {
+    if (isLoggedIn) {
+      calculateLevelAuthenticated();
+    } else {
+      calculateLevelGuests();
+    }
+  }
+
+  const calculateLevelGuests = async () => {
     try {
+      console.log("CALCULATE GUEST");
+      const categoryIndex = getCategoryIndexByKey(category!) + 1;
+      const stored = localStorage.getItem(categoryIndex.toString());
+      const answersList = stored ? JSON.parse(stored) : [];
+      const answersMap: any[] = [];
+
+      answersList.forEach((element: any) => {
+        answersMap.push({
+          'answerId': element
+        });
+      });
+
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
         credentials: "include",
@@ -37,10 +66,58 @@ const ResultCategory = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          query: CALCULATE_LEVEL,
+          query: CALCULATE_LEVEL_GUEST,
+          variables:
+          {
+            answers: answersMap,
+            categoryId: categoryIndex,
+          },
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!result.errors) {
+        setCategoryLevel(result.data.calculateLevel.levelName);
+        setCategoryDescription(
+          result.data.calculateLevel.levelStatement.toString()
+        );
+
+        localStorage.setItem(categoryIndex.toString() + "_result", JSON.stringify(result))
+      }
+    } catch (e) {
+      console.log('error' + e);
+    }
+  };
+
+  const calculateLevelAuthenticated = async () => {
+    try {
+      console.log("CALCULATE AUTH");
+      
+      const categoryIndex = getCategoryIndexByKey(category!) + 1;
+      const stored = localStorage.getItem(categoryIndex.toString());
+      const answersList = stored ? JSON.parse(stored) : [];
+      const answersMap: any[] = [];
+
+      answersList.forEach((element: any) => {
+        answersMap.push({
+          'answerId': element
+        });
+      });
+     
+
+      const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: CALCULATE_LEVEL_AUTHENTICATED,
           variables: {
-            assessmentId: Number(assessmentId),
-            categoryId: getCategoryIndexByKey(category!) + 1,
+            categoryId: categoryIndex,
+            assessmentId: parseInt(assessmentId!),
+            answers: answersMap
           },
         }),
       });
@@ -49,12 +126,12 @@ const ResultCategory = () => {
       console.log("Mutation Result:", result);
 
       if (!result.errors) {
-        setCategoryLevel(result.data.calculateLevel.level_name);
+        setCategoryLevel(result.data.calculateLevel.levelName);
         setCategoryDescription(
-          result.data.calculateLevel.level_statement.toString()
+          result.data.calculateLevel.levelStatement.toString()
         );
       }
-    } catch (e) {}
+    } catch (e) { }
   };
 
   function getCategoryName(key: string): string {
@@ -156,7 +233,9 @@ const ResultCategory = () => {
           </h1>
           <p className="text-center mt-4">{categoryDescription}</p>
           {!isCompletedFullAssessment ? (
+
             <div>
+              <p className="text-center font-bold mt-10 text-xl">Does this represent you?</p>
               <div className="flex justify-center">
                 <BaseButton
                   className="mt-5 green-button font-bold"
@@ -171,7 +250,7 @@ const ResultCategory = () => {
                   className="mt-5 font-bold white-button"
                   onClick={() => navigateToFollowUpQuestions()}
                 >
-                  More Questions
+                  Not quite. Ask more Questions.
                 </BaseButton>
               </div>
             </div>
