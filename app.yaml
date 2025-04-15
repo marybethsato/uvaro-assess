@@ -2,12 +2,19 @@ runtime: nodejs20
 instance_class: F1
 
 handlers:
-  - url: /
+  # Serve all static assets normally (JS, CSS, images, etc.)
+  - url: /(.*\.(js|css|png|jpg|ico|svg|webp|woff|woff2|ttf|eot|map))
+    static_files: build/\1
+    upload: build/.*\.(js|css|png|jpg|ico|svg|webp|woff|woff2|ttf|eot|map)
+
+  # Serve static files in /static folder (React/Vite setup)
+  - url: /static
+    static_dir: build/static
+
+  # Catch-all: all other routes fallback to index.html
+  - url: /.*
     static_files: build/index.html
     upload: build/index.html
-
-  - url: /
-    static_dir: build
 
 automatic_scaling:
   target_cpu_utilization: 0.65

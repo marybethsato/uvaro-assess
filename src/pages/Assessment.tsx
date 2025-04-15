@@ -9,7 +9,7 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ProgressBar from "../components/assessment/ProgressBar";
 import categoryMap from "../data/category_map";
-import { ALL_CATEGORIES, INSERT_ANSWER } from "../graphql/queries";
+import { ALL_CATEGORIES } from "../graphql/queries";
 import Answer from "../interfaces/answer";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 import getCategoryKeyByValue from "../utils/get_category_key_by_value";
@@ -213,8 +213,6 @@ const Assessment = () => {
     );
   }
 
-  const assessmentId = localStorage.getItem("assessmentId");
-
   const saveAnswerToLocal = async (answerId: number) => {
     try {
       const categoryId = currentCategory!.categoryId.toString();
@@ -226,32 +224,6 @@ const Assessment = () => {
       localStorage.setItem(categoryId, JSON.stringify(currentAnswers));
     } catch (e) {
       console.log(e);
-    }
-  };
-
-  const submitAnswer = async (questionId: number, answerId: number) => {
-    try {
-      const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: INSERT_ANSWER,
-          variables: {
-            assessmentId: Number(assessmentId),
-            questionId: questionId,
-            answerId: answerId,
-          },
-        }),
-      });
-
-      const result = await response.json();
-      console.log("Mutation Result:", result);
-      return true;
-    } catch (e) {
-      return false;
     }
   };
 

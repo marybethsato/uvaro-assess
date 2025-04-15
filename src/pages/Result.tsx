@@ -24,18 +24,36 @@ const Result = () => {
     getResults();
   }, []);
 
-  function getResults(){
-    if(isLoggedIn){
+  function getResults() {
+    if (isLoggedIn) {
       getResultsForAuthenticated();
-    }else{
+    } else {
       getResultsForGuests();
     }
+  }
+
+
+  async function signIn() {
+    localStorage.setItem('saveAssessment', 'true');
+    
+    const loginPath = '/login';
+    const baseUrl = window.location.origin;
+    const redirectPath = baseUrl + '/app/home'
+    const url = process.env.REACT_APP_BACKEND_URL + loginPath + '?referer=' + redirectPath;
+
+    const res = await fetch(url, {
+      method: "GET",
+      credentials: "include",
+      redirect: 'manual'
+    });
+
+    window.location.href = res.url;
   }
 
   function getResultsForGuests() {
     const categoryIndexes = [1, 2, 3, 4];
     const guestLevels: Level[] = [];
-  
+
     categoryIndexes.forEach((index) => {
       const stored = localStorage.getItem(index.toString() + "_result");
       if (stored) {
@@ -48,7 +66,7 @@ const Result = () => {
     });
     setLevels(guestLevels);
 
-    if (guestLevels.length === 0){
+    if (guestLevels.length === 0) {
       navigate('/');
     }
   }
@@ -121,13 +139,13 @@ const Result = () => {
           <div>
             <BaseButton
               className="mt-3 w-full white-button"
-              onClick={() => navigate("/signin")}
+              onClick={() => signIn()}
             >
               Sign in to Save Assessment
             </BaseButton>
             <p className="text-center text-sm my-5 mb-10">
               Don't have an account?{" "}
-              <Link to="/signup" className="text-button">
+              <Link to="/signup" onClick={signIn} className="text-button">
                 Sign up now!
               </Link>
             </p>

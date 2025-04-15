@@ -40,25 +40,27 @@ export const INSERT_NOTES = `
 `;
 
 export const CALCULATE_LEVEL_GUEST = `
-query Query($categoryId: Int!, $answers: [GetLevelInput!]!) {
+query CalculateLevel($categoryId: Int!, $answers: [GetLevelInput!]!) {
   calculateLevel(categoryId: $categoryId, answers: $answers) {
-    categoryId
     levelId
     levelName
     levelStatement
+    levelImage
+    weightingId
+    categoryId
   }
 }
 `;
 
 export const CALCULATE_LEVEL_AUTHENTICATED = `
-mutation Mutation($categoryId: Int!, $assessmentId: Int!, $answers: [GetLevelInput!]!) {
+mutation CompleteCategory($categoryId: Int!, $assessmentId: Int!, $answers: [GetLevelInput!]!) {
   completeCategory(categoryId: $categoryId, assessmentId: $assessmentId, answers: $answers) {
-    categoryId
     levelId
-    levelImage
     levelName
     levelStatement
+    levelImage
     weightingId
+    categoryId
   }
 }
 `;
@@ -108,14 +110,14 @@ export const INSERT_ANSWER = `
 `;
 
 export const END_ASSESSSMENT = `
-mutation Mutation($assessmentId: Int!) {
+mutation EndAssessment($assessmentId: Int!) {
   endAssessment(assessmentId: $assessmentId) {
-    categoryId
     levelId
-    levelImage
     levelName
     levelStatement
+    levelImage
     weightingId
+    categoryId
   }
 }
 `;

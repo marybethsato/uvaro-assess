@@ -8,6 +8,8 @@ import ReminderComponent from "../components/home/Reminder";
 import WelcomeBack from "../components/home/WelcomeBack";
 import {
   ADD_ASSESSMENT,
+  CALCULATE_LEVEL_AUTHENTICATED,
+  END_ASSESSSMENT,
   GET_USER,
   GET_USER_ASSESSMENTS,
 } from "../graphql/queries";
@@ -16,15 +18,14 @@ import User from "../interfaces/user";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-
-  // URL for the user's profile picture (mocked for demo)
   const rProfileUrl = "https://avatar.iran.liara.run/public/98";
 
-  // Function to get the latest assessment from an array of assessments
-  // This function compares the start_date_time of each assessment and returns the one with the latest date
-  const getLatestAssessment = (
-    assessments: Assessment[]
-  ): Assessment | undefined => {
+  const [allAssessments, setAllAssessments] = useState<Assessment[]>([]);
+  const [assessments, setAssessments] = useState<Assessment[]>([]);
+  const [latestAssessment, setLatestAssessment] = useState<Assessment>();
+  const [user, setUser] = useState<User>();
+
+  const getLatestAssessment = (assessments: Assessment[]): Assessment | undefined => {
     return assessments.reduce((latest, current) => {
       const latestDate = new Date(latest.startDateTime).getTime();
       const currentDate = new Date(current.startDateTime).getTime();
@@ -32,121 +33,162 @@ const Home: React.FC = () => {
     }, assessments[0]);
   };
 
-  const [allAssessments, setAllAssessments] = useState<Assessment[]>([]);
-  const [assessments, setAssessments] = useState<Assessment[]>([]);
-  const [latestAssessment, setLatestAssessment] = useState<Assessment>();
-  const [user, setUser] = useState<User>();
-
-  // Function to format a date to YYYY-MM-DD format
   const formatToYMD = (date: string | number | Date): string => {
     const d = new Date(typeof date === "string" ? parseInt(date) : date);
     const year = d.getFullYear();
-    const month = (d.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-based
+    const month = (d.getMonth() + 1).toString().padStart(2, "0");
     const day = d.getDate().toString().padStart(2, "0");
-
     return `${year}-${month}-${day}`;
   };
 
-  // Fetch user assessments and user data when the component mounts
   useEffect(() => {
-    setAssessments([]);
-    async function getUserAssessments() {
-      try {
-        const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            query: GET_USER_ASSESSMENTS,
-          }),
-        });
+    async function init() {
+      await getUser();
+      await saveAssessment();
+      await getUserAssessments();
 
-        const result = await response.json();
-        if (!response.ok) {
-          alert("Error getting assessments");
-        }
-
-        result.data.getUserAssessments.forEach((assessment: Assessment) => {
-          setAllAssessments(prev => {
-            const exists = prev.some(a => a.assessmentId === assessment.assessmentId);
-            if (!exists) {
-              return [...prev, assessment];
-            }
-            return prev;
-          });
-
-          setAssessments(prev => {
-            const exists = prev.some(a => a.assessmentId === assessment.assessmentId);
-            if (!exists && assessment.endDateTime != null) {
-              return [...prev, assessment];
-            }
-            return prev;
-          });
-        });
-
-        // Set the latest assessment from the fetched assessments
-        setLatestAssessment(getLatestAssessment(assessments));
-      } catch (e) {
-        console.log(e);
-      }
+      localStorage.removeItem("assessmentId");
+      localStorage.removeItem("saveAssessment");
     }
-
-    // Fetch user profile data
-    async function getUser() {
-      try {
-        const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            query: GET_USER,
-          }),
-        });
-
-        const result = await response.json();
-        if (!response.ok) {
-          console.log(response);
-          alert('Error getting assessments');
-        }
-
-
-        setUser(result.data.getUser);
-        localStorage.setItem('isLoggedIn', 'true');
-
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    getUser();
-    getUserAssessments();
+    init();
   }, []);
 
-  // Function to handle starting a new assessment
-  async function handleAssessment() {
+  async function getUserAssessments() {
     try {
-      console.log(process.env.REACT_APP_GRAPHQL_URL);
+      const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: GET_USER_ASSESSMENTS }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        alert("Error getting assessments");
+        return;
+      }
+
+      const fetchedAssessments: Assessment[] = result.data.getUserAssessments;
+      const completed = fetchedAssessments.filter(a => a.endDateTime != null);
+      setAllAssessments(fetchedAssessments);
+      setAssessments(completed);
+      if (completed.length > 0) {
+        setLatestAssessment(getLatestAssessment(completed));
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function getUser() {
+    try {
+      const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: GET_USER }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        alert("Error getting user");
+      }
+      setUser(result.data.getUser);
+      localStorage.setItem("isLoggedIn", "true");
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function saveAssessment() {
+    const isSave = localStorage.getItem("saveAssessment") !== null;
+    if (!isSave) return;
+
+    await startAssessment();
+
+    for (let i = 1; i <= 4; i++) {
+      await saveAssessmentByCategory(i);
+    }
+
+    await endAssessment();
+  }
+
+  async function startAssessment() {
+    try {
       const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: ADD_ASSESSMENT }),
+      });
+
+      const data = await res.json();
+      if (!data.errors) {
+        localStorage.setItem("assessmentId", data.data.addAssessment.assessmentId);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function saveAssessmentByCategory(index: number) {
+    try {
+      const stored = localStorage.getItem(index.toString());
+      const answersList = stored ? JSON.parse(stored) : [];
+      const answersMap = answersList.map((ans: any) => ({ answerId: ans }));
+      const assessmentId = localStorage.getItem("assessmentId");
+
+      await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: ADD_ASSESSMENT,
+          query: CALCULATE_LEVEL_AUTHENTICATED,
+          variables: {
+            categoryId: index,
+            assessmentId: parseInt(assessmentId!),
+            answers: answersMap,
+          },
         }),
       });
-      const data = await res.json();
+    } catch (e) {
+      console.log("Error saving assessment by category");
+    }
+  }
 
-      if (data.errors) {
-        console.log("Failed to add assessment as guest: ", data.errors);
-        alert("Failed to start assessment: " + data.errors);
-      } else {
+  async function endAssessment() {
+    try {
+      await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: END_ASSESSSMENT,
+          variables: {
+            assessmentId: Number(localStorage.getItem("assessmentId")),
+          },
+        }),
+      });
+    } catch (error) {
+      console.error("Error ending assessment:", error);
+    }
+  }
+
+  async function handleAssessment() {
+    try {
+      const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: ADD_ASSESSMENT }),
+      });
+
+      const data = await res.json();
+      if (!data.errors) {
         localStorage.setItem("assessmentId", data.data.addAssessment.assessmentId);
-        navigate("/introduction/financial-health")
+        navigate("/introduction/financial-health");
+      } else {
+        alert("Failed to start assessment: " + data.errors[0].message);
       }
     } catch (error) {
       console.error(error);
@@ -155,18 +197,35 @@ const Home: React.FC = () => {
 
   return (
     <div className="p-6 mb-[70px]">
-      <WelcomeBack profileUrl={rProfileUrl} name={user != null ? (user?.firstName + ' ' + user?.lastName) : ''}></WelcomeBack>
-      <ReminderComponent onStartAssessment={() => handleAssessment()} lastAssessmentDate={formatToYMD(latestAssessment?.endDateTime ?? '')}></ReminderComponent>
-      <ProgressChart assessments={assessments} />
+      <WelcomeBack
+        profileUrl={rProfileUrl}
+        name={user ? `${user.firstName} ${user.lastName}` : ""}
+      />
+      {assessments.length === 0 ? (
+        <p className="mt-20 text-center text-3xl font-semibold my-8">
+          You have not taken the assessment yet!<br />
+          Wanna try?
+        </p>
+      ) : (
+        <>
+          <ReminderComponent
+            onStartAssessment={handleAssessment}
+            lastAssessmentDate={formatToYMD(latestAssessment?.endDateTime ?? "")}
+          />
+          <ProgressChart assessments={assessments} />
+        </>
+      )}
+
       <button
         onClick={handleAssessment}
         className="w-full px-4 py-3 mt-8 mb-4 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition"
       >
         Start a New Assessment
       </button>
-      <OngoingAssessments assessments={allAssessments.filter(
-        (a) => a.endDateTime === null || a.endDateTime === undefined
-      )} />
+
+      <OngoingAssessments
+        assessments={allAssessments.filter(a => !a.endDateTime)}
+      />
       <PreviousAssessment assessments={assessments} />
     </div>
   );

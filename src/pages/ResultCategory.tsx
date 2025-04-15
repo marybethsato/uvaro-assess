@@ -47,7 +47,6 @@ const ResultCategory = () => {
 
   const calculateLevelGuests = async () => {
     try {
-      console.log("CALCULATE GUEST");
       const categoryIndex = getCategoryIndexByKey(category!) + 1;
       const stored = localStorage.getItem(categoryIndex.toString());
       const answersList = stored ? JSON.parse(stored) : [];
@@ -93,7 +92,7 @@ const ResultCategory = () => {
   const calculateLevelAuthenticated = async () => {
     try {
       console.log("CALCULATE AUTH");
-      
+
       const categoryIndex = getCategoryIndexByKey(category!) + 1;
       const stored = localStorage.getItem(categoryIndex.toString());
       const answersList = stored ? JSON.parse(stored) : [];
@@ -104,7 +103,7 @@ const ResultCategory = () => {
           'answerId': element
         });
       });
-     
+
 
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
@@ -115,7 +114,7 @@ const ResultCategory = () => {
         body: JSON.stringify({
           query: CALCULATE_LEVEL_AUTHENTICATED,
           variables: {
-            categoryId: categoryIndex,
+            categoryId: parseInt(categoryIndex.toString()),
             assessmentId: parseInt(assessmentId!),
             answers: answersMap
           },
@@ -126,9 +125,9 @@ const ResultCategory = () => {
       console.log("Mutation Result:", result);
 
       if (!result.errors) {
-        setCategoryLevel(result.data.calculateLevel.levelName);
+        setCategoryLevel(result.data.completeCategory.levelName);
         setCategoryDescription(
-          result.data.calculateLevel.levelStatement.toString()
+          result.data.completeCategory.levelStatement.toString()
         );
       }
     } catch (e) { }

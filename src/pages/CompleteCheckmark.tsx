@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
@@ -7,10 +7,17 @@ import { END_ASSESSSMENT } from "../graphql/queries";
 import checkmark from "../images/completeCheckmark.png";
 
 export default function CompleteCheckmark() {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn") !== null;
+    setIsLoggedIn(isLoggedIn);
+  }, []);
+
   const navigate = useNavigate();
 
-  // Function to execute ending the assessment when the component mounts
   useEffect(() => {
+
     async function fetchEndAssessment() {
       try {
         const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
@@ -37,8 +44,11 @@ export default function CompleteCheckmark() {
         console.error("Error ending assessment:", error);
       }
     }
-    fetchEndAssessment();
-  }, []);
+    if (isLoggedIn === true) {
+      fetchEndAssessment();
+    }
+
+  }, [isLoggedIn]);
 
   return (
     <Layout>
