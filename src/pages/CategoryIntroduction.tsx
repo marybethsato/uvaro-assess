@@ -25,6 +25,7 @@ interface RouteParams {
   [key: string]: string | undefined;
 }
 
+// Maps the category keys to their respective names
 const categoryMap: Record<string, string> = {
   "financial-health": "Financial Health",
   "work-you-enjoy": "Work You Enjoy",
@@ -32,6 +33,7 @@ const categoryMap: Record<string, string> = {
   "peer-community-fulfillment": "Peer Community Fulfillment",
 };
 
+// Maps the category names to their respective images
 const categoryImages: Record<string, string> = {
   "Financial Health": FinancialHealth,
   "Work You Enjoy": WorkYouEnjoy,
@@ -45,6 +47,7 @@ const CategoryIntroduction = () => {
 
   const [fetchedCategory, setFetchedCategory] = useState<Category | null>(null);
 
+  // Fetch category details when the component renders or category changes
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -64,7 +67,11 @@ const CategoryIntroduction = () => {
           console.error("GraphQL errors:", data.errors);
         } else {
           const categories: Category[] = data.data.allCategories;
+
+          // Map the category to its respective name
           const mappedCategory = categoryMap[category as string];
+
+          // Find the category based on the mapped name
           const foundCategory =
             categories.find(
               (category) => category.categoryName === mappedCategory
@@ -91,16 +98,16 @@ const CategoryIntroduction = () => {
     <Layout>
       <div className="mx-auto overflow-hidden">
         <div className="absolute w-full ">
-       
+
           <img
             src={IntroBackground}
-            alt="illustration"
+            alt="Background"
             className="w-full mx-auto"
           />
           <div className="absolute top-2 left-2">
-          <TopNavBar isDark />
+            <TopNavBar isDark />
           </div>
-          
+
           {/* <img
             src={FinancialHealth}
             alt="Financial Health Introduction"
@@ -108,29 +115,30 @@ const CategoryIntroduction = () => {
             width={400}
           /> */}
           {fetchedCategory && (
-            <div className="flex justify-center items-center"> 
-               <img
-              src={categoryImages[fetchedCategory.categoryName]}
-              alt={`${fetchedCategory.categoryName} Introduction`}
-              className={`absolute ${
-                fetchedCategory.categoryName === "Financial Health"
-                  ? "top-5"
-                  : fetchedCategory.categoryName === "Work You Enjoy"
-                  ? "top-20"
-                  : fetchedCategory.categoryName ===
-                      "Life Choice Fulfillment" ||
-                    fetchedCategory.categoryName ===
-                      "Peer Community Fulfillment"
-                  ? "top-10"
-                  : ""
-              }`}
-              style={{ width: '360px'}}
-              width={400}
-            />
-              </div>
-           
+            <div className="flex justify-center items-center">
+              <img
+                src={categoryImages[fetchedCategory.categoryName]}
+                alt={`${fetchedCategory.categoryName} Introduction`}
+                className={`absolute ${fetchedCategory.categoryName === "Financial Health"
+                    ? "top-5"
+                    : fetchedCategory.categoryName === "Work You Enjoy"
+                      ? "top-20"
+                      : fetchedCategory.categoryName ===
+                        "Life Choice Fulfillment" ||
+                        fetchedCategory.categoryName ===
+                        "Peer Community Fulfillment"
+                        ? "top-10"
+                        : ""
+                  }`}
+                style={{ width: '360px' }}
+                width={400}
+              />
+            </div>
+
           )}
         </div>
+
+        {/* Content section for category introduction */}
         <div className="text-left mb-10 mt-[50vh] mx-5">
           <h3 className="text-xl mb-2">Introduction</h3>
           <h1 className="text-3xl font-bold">What is</h1>
@@ -143,6 +151,7 @@ const CategoryIntroduction = () => {
               : "Loading description..."}
           </p>
         </div>
+        {/* Button to navigate to the assessment page */}
         <div className="flex justify-center">
           <BaseButton
             className="w-2/3 red-button"

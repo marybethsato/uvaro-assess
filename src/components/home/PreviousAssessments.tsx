@@ -1,30 +1,33 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import Assessment from '../../interfaces/assessment';
-import AssessmentCard from '../assessment_list/AssessmentCard';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import Assessment from "../../interfaces/assessment";
+import AssessmentCard from "../assessment_list/AssessmentCard";
 
 interface PreviousAssessmentProps {
   assessments: Assessment[];
 }
 
-// ✅ Converts a value to a Date object, handling string, number, or Date input
+// Converts a value to a Date object, handling string, number, or Date input
 export const toDate = (date: string | number | Date): Date => {
   if (date instanceof Date) return date;
-  return new Date(typeof date === 'string' ? parseInt(date) : date);
+  return new Date(typeof date === "string" ? parseInt(date) : date);
 };
 
-// ✅ Formats a date to "Nov 10, 2023"
+// Formats a date to "Nov 10, 2023"
 export const formatDate = (date: string | number | Date): string => {
   const d = toDate(date);
-  return d.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   });
 };
 
-// ✅ Converts index to "1st Assessment", "2nd Assessment", etc.
-export const getOrdinalAssessmentLabel = (index: number, isOngoing?: boolean): string => {
+// Converts index to "1st Assessment", "2nd Assessment", etc.
+export const getOrdinalAssessmentLabel = (
+  index: number,
+  isOngoing?: boolean
+): string => {
   const number = index + 1;
 
   const getOrdinalSuffix = (n: number) => {
@@ -37,29 +40,31 @@ export const getOrdinalAssessmentLabel = (index: number, isOngoing?: boolean): s
     return `${n}th`;
   };
 
-  return `${getOrdinalSuffix(number)}${isOngoing ? ' Ongoing' : ''} Assessment`;
+  return `${getOrdinalSuffix(number)}${isOngoing ? " Ongoing" : ""} Assessment`;
 };
 
-const PreviousAssessments: React.FC<PreviousAssessmentProps> = ({ assessments }) => {
+const PreviousAssessments: React.FC<PreviousAssessmentProps> = ({
+  assessments,
+}) => {
   const navigate = useNavigate();
 
   function goToResults(id: string) {
-    localStorage.setItem('assessmentId', id);
-    navigate('/result?assessmentId=' + id);
+    localStorage.setItem("assessmentId", id);
+    navigate("/result?assessmentId=" + id);
   }
 
-  // ✅ Step 1: Sort all assessments chronologically (oldest → newest)
+  // Step 1: Sort all assessments chronologically (oldest → newest)
   const chronological = [...assessments].sort(
     (a, b) => toDate(a.endDateTime).getTime() - toDate(b.endDateTime).getTime()
   );
 
-  // ✅ Step 2: Build ordinal title map from original chronological order
+  // Step 2: Build ordinal title map from original chronological order
   const ordinalLabelMap: Record<number, string> = {};
   chronological.forEach((assessment, index) => {
     ordinalLabelMap[assessment.assessmentId] = getOrdinalAssessmentLabel(index);
   });
 
-  // ✅ Step 3: Get the 3 most recent assessments (newest → oldest)
+  // Step 3: Get the 3 most recent assessments (newest → oldest)
   const mostRecentThree = [...assessments]
     .sort((a, b) => toDate(b.endDateTime).getTime() - toDate(a.endDateTime).getTime())
     .slice(0, 3);

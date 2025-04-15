@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Assessment from "../../interfaces/assessment";
-import { formatDate, getOrdinalAssessmentLabel } from "../home/PreviousAssessments";
+import {
+  formatDate,
+  getOrdinalAssessmentLabel,
+} from "../home/PreviousAssessments";
 import TopNavBar from "../navigation/TopNavBar";
 import AssessmentCard from "./AssessmentCard";
 
@@ -9,8 +12,11 @@ interface PreviousAssessmentsProps {
   assessments: Assessment[];
 }
 
-const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({ assessments }) => {
-  const [sortedAssessments, setSortedAssessments] = useState<Assessment[]>(assessments);
+const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({
+  assessments,
+}) => {
+  const [sortedAssessments, setSortedAssessments] =
+    useState<Assessment[]>(assessments);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const navigate = useNavigate();
@@ -33,7 +39,7 @@ const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({ assessments }
       ordinalLabelMap[assessment.assessmentId] = getOrdinalAssessmentLabel(index);
     });
 
-  // 🔁 Toggle sort order
+  // Toggle sort order
   const handleSort = () => {
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
     const sorted = [...sortedAssessments].sort((a, b) => {

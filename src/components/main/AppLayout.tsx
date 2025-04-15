@@ -6,7 +6,7 @@ const AppLayout: React.FC = () => {
     <div className="flex flex-col min-h-screen">
       {/* Main Content Area */}
       <div className="flex-grow">
-        <Outlet /> {/* This is where child routes will be rendered */}
+        <Outlet />
       </div>
     </div>
   );

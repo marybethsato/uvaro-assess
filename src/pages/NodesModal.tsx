@@ -17,7 +17,7 @@ const NotesModal: React.FC<NotesModalProps> = ({
 }) => {
   const [note, setNote] = useState("");
 
-  if (!isOpen) return null; // Hide modal when it's closed
+  if (!isOpen) return null;
 
   const handleSave = () => {
     if (note) {

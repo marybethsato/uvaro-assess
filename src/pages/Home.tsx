@@ -6,17 +6,25 @@ import PreviousAssessment from "../components/home/PreviousAssessments";
 import ProgressChart from "../components/home/ProgressChart";
 import ReminderComponent from "../components/home/Reminder";
 import WelcomeBack from "../components/home/WelcomeBack";
-import { ADD_ASSESSMENT, GET_USER, GET_USER_ASSESSMENTS } from "../graphql/queries";
+import {
+  ADD_ASSESSMENT,
+  GET_USER,
+  GET_USER_ASSESSMENTS,
+} from "../graphql/queries";
 import Assessment from "../interfaces/assessment";
 import User from "../interfaces/user";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
 
+  // URL for the user's profile picture (mocked for demo)
   const rProfileUrl = "https://avatar.iran.liara.run/public/98";
 
-
-  const getLatestAssessment = (assessments: Assessment[]): Assessment | undefined => {
+  // Function to get the latest assessment from an array of assessments
+  // This function compares the start_date_time of each assessment and returns the one with the latest date
+  const getLatestAssessment = (
+    assessments: Assessment[]
+  ): Assessment | undefined => {
     return assessments.reduce((latest, current) => {
       const latestDate = new Date(latest.startDateTime).getTime();
       const currentDate = new Date(current.startDateTime).getTime();
@@ -29,6 +37,7 @@ const Home: React.FC = () => {
   const [latestAssessment, setLatestAssessment] = useState<Assessment>();
   const [user, setUser] = useState<User>();
 
+  // Function to format a date to YYYY-MM-DD format
   const formatToYMD = (date: string | number | Date): string => {
     const d = new Date(typeof date === "string" ? parseInt(date) : date);
     const year = d.getFullYear();
@@ -38,6 +47,7 @@ const Home: React.FC = () => {
     return `${year}-${month}-${day}`;
   };
 
+  // Fetch user assessments and user data when the component mounts
   useEffect(() => {
     setAssessments([]);
     async function getUserAssessments() {
@@ -50,13 +60,12 @@ const Home: React.FC = () => {
           },
           body: JSON.stringify({
             query: GET_USER_ASSESSMENTS,
-
           }),
         });
 
         const result = await response.json();
         if (!response.ok) {
-          alert('Error getting assessments');
+          alert("Error getting assessments");
         }
 
         result.data.getUserAssessments.forEach((assessment: Assessment) => {
@@ -77,13 +86,14 @@ const Home: React.FC = () => {
           });
         });
 
+        // Set the latest assessment from the fetched assessments
         setLatestAssessment(getLatestAssessment(assessments));
-
       } catch (e) {
         console.log(e);
       }
-    };
+    }
 
+    // Fetch user profile data
     async function getUser() {
       try {
         const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
@@ -94,7 +104,6 @@ const Home: React.FC = () => {
           },
           body: JSON.stringify({
             query: GET_USER,
-
           }),
         });
 
@@ -111,17 +120,18 @@ const Home: React.FC = () => {
       } catch (e) {
         console.log(e);
       }
-    };
+    }
     getUser();
     getUserAssessments();
   }, []);
 
+  // Function to handle starting a new assessment
   async function handleAssessment() {
     try {
       console.log(process.env.REACT_APP_GRAPHQL_URL);
       const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
-        credentials: 'include',
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -143,7 +153,6 @@ const Home: React.FC = () => {
     }
   }
 
-
   return (
     <div className="p-6 mb-[70px]">
       <WelcomeBack profileUrl={rProfileUrl} name={user != null ? (user?.firstName + ' ' + user?.lastName) : ''}></WelcomeBack>
@@ -164,5 +173,3 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-
-
