@@ -1,6 +1,6 @@
 interface Answer {
-    answer_id: number;
-    answer_text: string;
+    answerId: number;
+    answerText: string;
 }
 
 export default Answer;

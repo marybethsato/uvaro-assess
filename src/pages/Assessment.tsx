@@ -8,21 +8,22 @@ import QuestionCard from "../components/assessment/QuestionCard";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ProgressBar from "../components/assessment/ProgressBar";
-import { ALL_CATEGORIES, INSERT_ANSWER } from "../graphql/queries";
+import categoryMap from "../data/category_map";
+import { ALL_CATEGORIES } from "../graphql/queries";
 import Answer from "../interfaces/answer";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 import getCategoryKeyByValue from "../utils/get_category_key_by_value";
 
 interface Question {
-  question_id: number;
-  question_text: string;
+  questionId: number;
+  questionText: string;
   answers: Answer[];
-  follow_up: boolean;
+  followUp: boolean;
 }
 
 interface Category {
-  category_id: number;
-  category_name: string;
+  categoryId: number;
+  categoryName: string;
   questions: Question[];
 }
 
@@ -49,17 +50,15 @@ const Assessment = () => {
 
   const navigate = useNavigate();
 
-  const [notes, setNotes] = useState<Note[]>([]);
-
   const addQuestion = (newQuestion: Question) => {
     setQuestions((prevQuestions) => {
       const exists = prevQuestions.some(
-        (q) => q.question_id === newQuestion.question_id
+        (q) => q.questionId === newQuestion.questionId
       );
 
       if (exists) {
         return prevQuestions.map((q) =>
-          q.question_id === newQuestion.question_id
+          q.questionId === newQuestion.questionId
             ? { ...q, ...newQuestion }
             : q
         );
@@ -70,6 +69,7 @@ const Assessment = () => {
   };
 
   useEffect(() => {
+    console.log(isFollowUp)
     setQuestions([]);
 
     async function fetchCategories() {
@@ -86,6 +86,7 @@ const Assessment = () => {
         });
 
         if (!res.ok) {
+          console.log('here');
           throw new Error("Failed to fetch categories");
         }
 
@@ -93,6 +94,7 @@ const Assessment = () => {
         console.log(response.data);
 
         if (response.errors) {
+          console.log('error here');
           throw new Error(
             `GraphQL error: ${response.errors[0].message || "Unknown error"}`
           );
@@ -104,17 +106,14 @@ const Assessment = () => {
           setCategories(data.allCategories);
           if (data.allCategories.length > 0) {
             const categoryIndex = getCategoryIndexByKey(category);
-
             data.allCategories[categoryIndex].questions.forEach(
               (question: Question) => {
-                if (isFollowUp && question.follow_up === true) {
-                  console.log("here");
+                if (isFollowUp && question.followUp == true) {
+
                   addQuestion(question);
-                } else if (
-                  isFollowUp === false &&
-                  question.follow_up === false
-                ) {
-                  console.log("hi");
+
+                } else if (isFollowUp == false && question.followUp == false) {
+
                   addQuestion(question);
                 }
               }
@@ -122,7 +121,7 @@ const Assessment = () => {
           } else {
             setCategories([]);
             setQuestions([]);
-            console.log("No categories found.");
+
           }
         }
       } catch (error) {
@@ -134,19 +133,21 @@ const Assessment = () => {
     fetchCategories();
   }, []);
 
+
+
   const currentQuestion = questions[currentQuestionIndex];
 
   const handleSelectAnswer = (answer: Answer) => {
     setSelectedAnswers((prev) => {
       const existing = prev.find(
-        (a) => a.questionId === currentQuestion.question_id
+        (a) => a.questionId === currentQuestion.questionId
       );
       if (existing) {
         return prev.map((a) =>
-          a.questionId === currentQuestion.question_id ? { ...a, answer } : a
+          a.questionId === currentQuestion.questionId ? { ...a, answer } : a
         );
       } else {
-        return [...prev, { questionId: currentQuestion.question_id, answer }];
+        return [...prev, { questionId: currentQuestion.questionId, answer }];
       }
     });
   };
@@ -154,7 +155,7 @@ const Assessment = () => {
   const handleNext = async () => {
     if (
       !selectedAnswers.find(
-        (item) => item.questionId === currentQuestion.question_id
+        (item) => item.questionId === currentQuestion.questionId
       )
     ) {
       alert("Please select an answer.");
@@ -162,27 +163,20 @@ const Assessment = () => {
     }
 
     const selectedAnswer = selectedAnswers.find(
-      (item) => item.questionId === currentQuestion.question_id
+      (item) => item.questionId === currentQuestion.questionId
     )!.answer;
 
-    const isSubmitted = await submitAnswer(
-      currentQuestion.question_id,
-      selectedAnswer.answer_id
+    saveAnswerToLocal(
+      selectedAnswer.answerId
     );
-    if (isSubmitted == false) {
-      alert("Error. Answer not submitted");
-      return;
-    }
+    
     // next question
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
-
-      //console.log("Note:", notes);
     }
-    // initial results category
     else {
       const currentCategoryKey = getCategoryKeyByValue(
-        currentCategory!.category_name
+        currentCategory!.categoryName
       );
       navigate(
         "/result/" + currentCategoryKey + "?is_completed_full_assessment=false"
@@ -198,10 +192,12 @@ const Assessment = () => {
     }
   };
 
-  const currentCategory = categories.find((_category) =>
-    _category.questions.some(
-      (q) => q.question_id === currentQuestion.question_id
-    )
+  const currentCategory = categories.find(function (_category) {
+    return isFollowUp ? _category.categoryName === categoryMap[category] :
+      (_category.questions.some(
+        (q) => q.questionId === currentQuestion.questionId
+      ));
+  }
   );
   const totalQuestions = questions.length;
   const currentNumber = currentQuestionIndex + 1;
@@ -217,47 +213,20 @@ const Assessment = () => {
     );
   }
 
-  const assessmentId = localStorage.getItem("assessmentId");
-
-  const submitAnswer = async (questionId: number, answerId: number) => {
+  const saveAnswerToLocal = async (answerId: number) => {
     try {
-      const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: INSERT_ANSWER,
-          variables: {
-            assessmentId: Number(assessmentId),
-            questionId: questionId,
-            answerId: answerId,
-          },
-        }),
-      });
+      const categoryId = currentCategory!.categoryId.toString();
+      const storedAnswers = localStorage.getItem(categoryId);
+      const currentAnswers = storedAnswers ? JSON.parse(storedAnswers) : [];
 
-      const result = await response.json();
-      console.log("Mutation Result:", result);
-      return true;
+      currentAnswers.push(answerId);
+
+      localStorage.setItem(categoryId, JSON.stringify(currentAnswers));
     } catch (e) {
-      return false;
+      console.log(e);
     }
   };
 
-  const handleNoteChange = (questionId: number, newContent: string) => {
-    setNotes((prev) => {
-      const existing = prev.findIndex((n) => n.questionId === questionId);
-
-      if (existing !== -1) {
-        const updatedNotes = [...prev];
-        updatedNotes[existing].content = newContent;
-        return updatedNotes;
-      } else {
-        return [...prev, { questionId, content: newContent }];
-      }
-    });
-  };
 
   if (!currentQuestion) {
     return <p>Error...</p>;
@@ -268,13 +237,13 @@ const Assessment = () => {
       <Header title="Assessment" />
       <ProgressBar
         activeCategoryIndex={categories.findIndex(
-          (c) => c.category_name === currentCategory?.category_name
+          (c) => c.categoryName === currentCategory?.categoryName
         )}
         categories={categories.map((c) => ({
-          name: c.category_name,
+          name: c.categoryName,
           totalQuestions: c.questions.length,
           answered: selectedAnswers.filter((a) =>
-            c.questions.some((q) => q.question_id === a.questionId)
+            c.questions.some((q) => q.questionId === a.questionId)
           ).length,
         }))}
       />
@@ -283,31 +252,30 @@ const Assessment = () => {
           number={currentNumber}
           total={totalQuestions}
           category={
-            currentCategory ? currentCategory.category_name : "Uncategorized"
+            currentCategory ? currentCategory.categoryName : "Uncategorized"
           }
-          question={currentQuestion.question_text}
+          question={currentQuestion.questionText}
         />
         <AnswerList
           options={currentQuestion.answers}
           selected={
             selectedAnswers.find(
-              (a) => a.questionId === currentQuestion.question_id
+              (a) => a.questionId === currentQuestion.questionId
             )?.answer ?? null
           }
           onSelect={(answer) => handleSelectAnswer(answer)}
         />
         {/* <NoteCard
-          questionId={currentQuestion.question_id}
+          questionId={currentQuestion.questionId}
           onNoteChange={handleNoteChange}
           existingNote={
-            notes.find((n) => n.questionId === currentQuestion.question_id)
+            notes.find((n) => n.questionId === currentQuestion.questionId)
               ?.content
           }
         /> */}
         <div
-          className={`flex flex-row ${
-            currentQuestionIndex > 0 ? "justify-between" : "justify-end"
-          }`}
+          className={`flex flex-row ${currentQuestionIndex > 0 ? "justify-between" : "justify-end"
+            }`}
         >
           {currentQuestionIndex > 0 && (
             <button

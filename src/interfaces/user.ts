@@ -1,7 +1,7 @@
 interface User {
-    user_id: number;
-    first_name: string;
-    last_name: string;
+    userId: number;
+    firstName: string;
+    lastName: string;
     email: string;
 }
 

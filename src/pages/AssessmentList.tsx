@@ -34,8 +34,8 @@ const AssessmentList: React.FC = () => {
         result.data.getUserAssessments.forEach((assessment: Assessment) => {
 
           setAssessments(prev => {
-            const exists = prev.some(a => a.id === assessment.id);
-            if (!exists && assessment.end_date_time != null) {
+            const exists = prev.some(a => a.assessmentId === assessment.assessmentId);
+            if (!exists && assessment.endDateTime != null) {
               return [...prev, assessment];
             }
             return prev;

@@ -12,13 +12,18 @@ const SignUp = () => {
         <TopNavBar />
       </div>
       <div className="text-center mx-10 flex flex-col justify-center items-center h-screen">
+        {/* Logo Section */}
         <div>
           <img className="mb-5" width={100} src={logo} alt="logo" />
         </div>
+
+        {/* App Name */}
         <h1 className="text-4xl font-extrabold text-center mx-10 mb-5">
           Career Assessment
         </h1>
         <p className="mb-5 text-gray-600">Sign up to continue</p>
+
+        {/* Form Fields */}
         <input
           type="text"
           placeholder="First Name"

@@ -5,18 +5,19 @@ import Layout from "../components/Layout";
 import TopNavBar from "../components/navigation/TopNavBar";
 import { ALL_CATEGORIES } from "../graphql/queries";
 // import IntroBackground from "../images/IntroBackground.png";
-import IntroBackground from "../images/IntroBackground2.png";
 import FinancialHealth from "../images/financialhealth/Financialhealth.png";
-import WorkYouEnjoy from "../images/workyouenjoy/Workyouenjoy.png";
+import IntroBackground from "../images/IntroBackground2.png";
+import IntroVector from "../images/IntroVector.png";
 import LifeChoiceFulfillment from "../images/lifechoice.png";
 import PeerCommunityFulfillment from "../images/projectcommunity.png";
-import IntroVector from "../images/IntroVector.png";
+import WorkYouEnjoy from "../images/workyouenjoy/Workyouenjoy.png";
+import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 
 interface Category {
-  category_id: string;
-  category_name: string;
-  category_description: string;
-  category_image: string;
+  categoryId: string;
+  categoryName: string;
+  categoryDescription: string;
+  categoryImage: string;
 }
 
 interface RouteParams {
@@ -24,6 +25,7 @@ interface RouteParams {
   [key: string]: string | undefined;
 }
 
+// Maps the category keys to their respective names
 const categoryMap: Record<string, string> = {
   "financial-health": "Financial Health",
   "work-you-enjoy": "Work You Enjoy",
@@ -31,6 +33,7 @@ const categoryMap: Record<string, string> = {
   "peer-community-fulfillment": "Peer Community Fulfillment",
 };
 
+// Maps the category names to their respective images
 const categoryImages: Record<string, string> = {
   "Financial Health": FinancialHealth,
   "Work You Enjoy": WorkYouEnjoy,
@@ -44,6 +47,7 @@ const CategoryIntroduction = () => {
 
   const [fetchedCategory, setFetchedCategory] = useState<Category | null>(null);
 
+  // Fetch category details when the component renders or category changes
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -63,10 +67,14 @@ const CategoryIntroduction = () => {
           console.error("GraphQL errors:", data.errors);
         } else {
           const categories: Category[] = data.data.allCategories;
+
+          // Map the category to its respective name
           const mappedCategory = categoryMap[category as string];
+
+          // Find the category based on the mapped name
           const foundCategory =
             categories.find(
-              (category) => category.category_name === mappedCategory
+              (category) => category.categoryName === mappedCategory
             ) || categories[0];
           setFetchedCategory(foundCategory);
         }
@@ -76,13 +84,13 @@ const CategoryIntroduction = () => {
     }
 
     fetchCategories();
+    const categoryIndex = getCategoryIndexByKey(category!) + 1;
+    localStorage.removeItem(categoryIndex.toString());
   }, [category]);
 
   if (!category) {
     return null;
   }
-
-  console.log(fetchedCategory?.category_name);
 
   const categoryName = categoryMap[category] || "Unknown Category";
 
@@ -90,12 +98,16 @@ const CategoryIntroduction = () => {
     <Layout>
       <div className="mx-auto overflow-hidden">
         <div className="absolute w-full ">
-          <TopNavBar isDark />
+
           <img
             src={IntroBackground}
-            alt="illustration"
+            alt="Background"
             className="w-full mx-auto"
           />
+          <div className="absolute top-2 left-2">
+            <TopNavBar isDark />
+          </div>
+
           {/* <img
             src={FinancialHealth}
             alt="Financial Health Introduction"
@@ -103,37 +115,43 @@ const CategoryIntroduction = () => {
             width={400}
           /> */}
           {fetchedCategory && (
-            <img
-              src={categoryImages[fetchedCategory.category_name]}
-              alt={`${fetchedCategory.category_name} Introduction`}
-              className={`absolute ${
-                fetchedCategory.category_name === "Financial Health"
-                  ? "top-10 left-5"
-                  : fetchedCategory.category_name === "Work You Enjoy"
-                  ? "top-20"
-                  : fetchedCategory.category_name ===
-                      "Life Choice Fulfillment" ||
-                    fetchedCategory.category_name ===
-                      "Peer Community Fulfillment"
-                  ? "top-10 left-2"
-                  : ""
-              }`}
-              width={400}
-            />
+            <div className="flex justify-center items-center">
+              <img
+                src={categoryImages[fetchedCategory.categoryName]}
+                alt={`${fetchedCategory.categoryName} Introduction`}
+                className={`absolute ${fetchedCategory.categoryName === "Financial Health"
+                    ? "top-5"
+                    : fetchedCategory.categoryName === "Work You Enjoy"
+                      ? "top-20"
+                      : fetchedCategory.categoryName ===
+                        "Life Choice Fulfillment" ||
+                        fetchedCategory.categoryName ===
+                        "Peer Community Fulfillment"
+                        ? "top-10"
+                        : ""
+                  }`}
+                style={{ width: '360px' }}
+                width={400}
+              />
+            </div>
+
           )}
         </div>
+
+        {/* Content section for category introduction */}
         <div className="text-left mb-10 mt-[50vh] mx-5">
           <h3 className="text-xl mb-2">Introduction</h3>
           <h1 className="text-3xl font-bold">What is</h1>
           <h1 className="text-3xl font-bold">{categoryName}?</h1>
           <img src={IntroVector} alt="vector" className="mt-5" />
-          {/* <img src={fetchedCategory?.category_image} alt="Category vector image" className="mt-5" /> */}
+          {/* <img src={fetchedCategory?.categoryImage} alt="Category vector image" className="mt-5" /> */}
           <p className="mt-5">
             {fetchedCategory
-              ? fetchedCategory.category_description
+              ? fetchedCategory.categoryDescription
               : "Loading description..."}
           </p>
         </div>
+        {/* Button to navigate to the assessment page */}
         <div className="flex justify-center">
           <BaseButton
             className="w-2/3 red-button"

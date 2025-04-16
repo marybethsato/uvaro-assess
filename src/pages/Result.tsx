@@ -9,9 +9,9 @@ import { GET_ASSESSMENT_BY_ID } from "../graphql/queries";
 import getCategoryKeyByIndex from "../utils/get_category_key_by_index";
 
 interface Level {
-  category_id: number;
-  level_name: string;
-  level_statement: string;
+  categoryId: number;
+  levelName: string;
+  levelStatement: string;
 }
 
 const Result = () => {
@@ -20,11 +20,58 @@ const Result = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsLoggedIn(localStorage.getItem("userId") !== null);
+    setIsLoggedIn(localStorage.getItem("isLoggedIn") !== null);
     getResults();
   }, []);
 
-  const getResults = async () => {
+  function getResults() {
+    if (isLoggedIn) {
+      getResultsForAuthenticated();
+    } else {
+      getResultsForGuests();
+    }
+  }
+
+
+  async function signIn() {
+    localStorage.setItem('saveAssessment', 'true');
+    
+    const loginPath = '/login';
+    const baseUrl = window.location.origin;
+    const redirectPath = baseUrl + '/app/home'
+    const url = process.env.REACT_APP_BACKEND_URL + loginPath + '?referer=' + redirectPath;
+
+    const res = await fetch(url, {
+      method: "GET",
+      credentials: "include",
+      redirect: 'manual'
+    });
+
+    window.location.href = res.url;
+  }
+
+  function getResultsForGuests() {
+    const categoryIndexes = [1, 2, 3, 4];
+    const guestLevels: Level[] = [];
+
+    categoryIndexes.forEach((index) => {
+      const stored = localStorage.getItem(index.toString() + "_result");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const level = parsed?.data?.calculateLevel;
+        if (level) {
+          guestLevels.push(level);
+        }
+      }
+    });
+    setLevels(guestLevels);
+
+    if (guestLevels.length === 0) {
+      navigate('/');
+    }
+  }
+
+  const getResultsForAuthenticated = async () => {
     const assessmentId = localStorage.getItem("assessmentId");
     try {
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
@@ -54,8 +101,12 @@ const Result = () => {
   return (
     <Layout>
       <div className="mt-8"></div>
-      <div className="ml-5 mb-2">  <TopNavBar /></div>
+      <div className="ml-5 mb-2">
+        {" "}
+        <TopNavBar />
+      </div>
       <div className="mx-10">
+        {/* Title and description for the results page */}
         <h1 className="text-3xl font-bold text-center mt-2 mb-3">
           Your Career Assessment Results
         </h1>
@@ -63,48 +114,51 @@ const Result = () => {
           Your results highlight your strengths and growth areas. Let’s turn
           these insights into your roadmap for success.
         </p>
+
+        {/* Display the assessment levels using ResultCard component */}
         {levels.map((level, index) => (
           <ResultCard
             key={index}
             category_key={getCategoryKeyByIndex(index) ?? ""}
-            level_name={'Level ' + levelMap[level.level_name]}
-            level_statement={level.level_statement}
+            levelName={'Level ' + levelMap[level.levelName]}
+            levelStatement={level.levelStatement}
 
           />
         ))}
 
+        {/* Button to open Uvaro website */}
         <BaseButton
           className="mt-6 green-button"
-          onClick={() => window.open('https://uvaro.com', '_blank')}
+          onClick={() => window.open("https://uvaro.com", "_blank")}
         >
           Book Appointment with Advisor
         </BaseButton>
-        {
-          !isLoggedIn ? <div>
+
+        {/* Conditional rendering based on whether the user is logged in */}
+        {!isLoggedIn ? (
+          <div>
             <BaseButton
               className="mt-3 w-full white-button"
-              onClick={() => navigate("/signin")}
+              onClick={() => signIn()}
             >
               Sign in to Save Assessment
             </BaseButton>
             <p className="text-center text-sm my-5 mb-10">
               Don't have an account?{" "}
-              <Link to="/signup" className="text-button">
+              <Link to="/signup" onClick={signIn} className="text-button">
                 Sign up now!
               </Link>
             </p>
-          </div> :
-            <BaseButton
-              className="mt-3 w-full white-button mb-10"
-              onClick={() => navigate("/app/home")}
-            >
-              Back to Home
-            </BaseButton>
-        }
-
-
-
-
+          </div>
+        ) : (
+          // Button to navigate back to the home page if the user is logged in
+          <BaseButton
+            className="mt-3 w-full white-button mb-10"
+            onClick={() => navigate("/app/home")}
+          >
+            Back to Home
+          </BaseButton>
+        )}
       </div>
     </Layout>
   );

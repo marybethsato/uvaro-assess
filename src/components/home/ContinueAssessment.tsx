@@ -16,13 +16,12 @@ const OngoingAssessments: React.FC<OngoingAssessmentProps> = ({ assessments }) =
 
   function onClickOngoingAssessment(id: string, assessment: Assessment) {
     localStorage.setItem("assessmentId", id);
-    
-
     navigate("/introduction/"+ getCategoryKeyByIndex(assessment.levels.length))
   }
 
 
   return (
+    assessments.length === 0 ? <div></div>:
     <div className="mt-5">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
@@ -34,9 +33,9 @@ const OngoingAssessments: React.FC<OngoingAssessmentProps> = ({ assessments }) =
 
         <AssessmentCard
           key={index}
-          onClick={()=> onClickOngoingAssessment(assessment.id.toString(), assessment)}
+          onClick={()=> onClickOngoingAssessment(assessment.assessmentId.toString(), assessment)}
           title={getOrdinalAssessmentLabel(index, true)}
-          date={'Started ' +(formatDate(assessment.start_date_time))}
+          date={'Started ' +(formatDate(assessment.startDateTime))}
           description={'Tap to continue!'}
           isOngoing={true}
         />

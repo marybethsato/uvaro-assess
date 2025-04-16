@@ -1,30 +1,30 @@
 interface Assessment {
-    id: number,
-    start_date_time: Date,
-    end_date_time: Date
+    assessmentId: number,
+    startDateTime: Date,
+    endDateTime: Date
     levels: Level[],
     answers: Answer[]
     notes : Note[]
 }
 
 export interface Level {
-    level_name: string,
-    level_id: number,
-    level_statement: string,
-    category_id: number
+    levelName: string,
+    levelId: number,
+    levelStatement: string,
+    categoryId: number
 }
 
 export interface Answer {
-    answer_id: number,
-    answer_text: string,
-    quetion_id: number,
-    weighting: number
+    answerId: number,
+    answerText: string,
+    questionId: number,
+    weightingId: number
 }
 
 interface Note {
-    assessment_id: number,
-    category_id : number,
-    note_text: string
+    assessmentId: number,
+    categoryId : number,
+    noteText: string
 }
 
 export default Assessment;

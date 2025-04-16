@@ -5,15 +5,15 @@ import categoryMap from "../../data/category_map";
 
 interface ResultCardProps {
   category_key: string;
-  level_name: string;
-  level_statement: string;
+  levelName: string;
+  levelStatement: string;
   style?: React.CSSProperties;
 }
 
 const ResultCard: React.FC<ResultCardProps> = ({
   category_key,
-  level_name,
-  level_statement,
+  levelName,
+  levelStatement,
   style,
 }) => {
   const navigate = useNavigate();
@@ -32,8 +32,8 @@ const ResultCard: React.FC<ResultCardProps> = ({
         <hr className={`h-px mt-1 border-0 ${isOpen ? "bg-white" : "bg-gray-400"}`} />
         <div className="flex flex-row items-center mt-3 justify-between">
           <div className="w-3/4">
-            <p className="text-xl font-bold mb-2 text-black">{level_name}</p>
-            <p className="line-clamp-2">{level_statement}</p>
+            <p className="text-xl font-bold mb-2 text-black">{levelName}</p>
+            <p className="line-clamp-2">{levelStatement}</p>
           </div>
           <div className="mt-3">
             {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}

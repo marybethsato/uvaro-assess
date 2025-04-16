@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import BaseButton from "../components/buttons/BaseButton";
 import ProfileImage from "../components/home/ProfileImage";
 import TopNavBar from "../components/navigation/TopNavBar";
 import { GET_USER } from "../graphql/queries";
 import User from "../interfaces/user";
 
 const Settings: React.FC = () => {
+
   const [user, setUser] = useState<User>();
 
   useEffect(() => {
@@ -19,39 +19,36 @@ const Settings: React.FC = () => {
           },
           body: JSON.stringify({
             query: GET_USER,
+
           }),
         });
 
         const result = await response.json();
         if (!response.ok) {
-          alert("Error getting assessments");
+          alert('Error getting assessments');
         }
 
         setUser(result.data.getUser);
       } catch (e) {
         console.log(e);
       }
-    }
+    };
     getUser();
   }, []);
 
   async function handleSignOut() {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("assessmentId");
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('assessmentId');
 
-    const loginPath = "/logout";
+    const loginPath = '/logout';
     const baseUrl = window.location.origin;
-    const redirectPath = baseUrl;
-    const url =
-      process.env.REACT_APP_BACKEND_URL +
-      loginPath +
-      "?referer=" +
-      redirectPath;
+    const redirectPath = baseUrl
+    const url = process.env.REACT_APP_BACKEND_URL + loginPath + '?referer=' + redirectPath;
 
     const res = await fetch(url, {
       method: "GET",
       credentials: "include",
-      redirect: "manual",
+      redirect: 'manual'
     });
 
     window.location.href = res.url;
@@ -68,9 +65,7 @@ const Settings: React.FC = () => {
             size={100}
           />
           <div className="text-center">
-            <h2 className="text-lg font-bold">
-              {user?.first_name + " " + user?.last_name}
-            </h2>
+            <h2 className="text-lg font-bold">{user?.firstName + ' ' + user?.lastName}</h2>
             <p className="text-sm text-gray-500">{user?.email}</p>
           </div>
         </div>
@@ -95,12 +90,12 @@ const Settings: React.FC = () => {
       </div>
 
       {/* Sign Out Button */}
-      <BaseButton
-        className="red-button w-full font-medium"
+      <button
         onClick={handleSignOut}
+        className="w-full bg-red-600 text-white text-sm font-bold py-2 rounded-md hover:bg-red-700 transition"
       >
         Sign Out
-      </BaseButton>
+      </button>
     </div>
   );
 };

@@ -1,3 +1,5 @@
+import React from 'react';
+import AnimatedCircle from './AnimatedCircle';
 
 interface Category {
   name: string;
@@ -10,13 +12,16 @@ interface ProgressBarProps {
   activeCategoryIndex: number;
 }
 
-const ProgressBar = ({ categories, activeCategoryIndex }: ProgressBarProps) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({
+  categories,
+  activeCategoryIndex,
+}) => {
   const size = 50;
   const strokeWidth = 4;
 
   return (
-    <div className="w-full px-4 mt-5 flex justify-center">
-      <div className="flex items-center justify-center w-full max-w-4xl">
+    <div className="w-full mt-5 flex justify-center">
+      <div className="flex items-start justify-center gap-2 w-full max-w-4xl">
         {categories.map((category, index) => {
           const computedPercentage = Math.round(
             (category.answered / category.totalQuestions) * 100
@@ -24,52 +29,35 @@ const ProgressBar = ({ categories, activeCategoryIndex }: ProgressBarProps) => {
           const percentage =
             index < activeCategoryIndex ? 100 : computedPercentage;
 
-          const radius = (size - strokeWidth) / 2;
-          const circumference = 2 * Math.PI * radius;
-          const offset = circumference - (percentage / 100) * circumference;
-          const isLastStep = index === categories.length - 1;
+          const isLast = index === categories.length - 1;
+          const connectorFilled = percentage >= 100;
 
           return (
-            <div key={index} className="flex items-center flex-1 justify-center">
-              <div className="flex flex-col items-center w-[50px] shrink-0">
-                <svg width={size} height={size}>
-                  {/* Background Circle */}
-                  <circle
-                    stroke="#e5e7eb"
-                    fill="transparent"
-                    strokeWidth={strokeWidth}
-                    r={radius}
-                    cx={size / 2}
-                    cy={size / 2}
-                  />
-                  {/* Progress Circle */}
-                  <circle
-                    stroke="#449b44"
-                    fill="transparent"
-                    strokeWidth={strokeWidth}
-                    strokeLinecap="round"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={offset}
-                    r={radius}
-                    cx={size / 2}
-                    cy={size / 2}
-                  />
-                  {/* Percent Text */}
-                  <text
-                    x="50%"
-                    y="50%"
-                    textAnchor="middle"
-                    dy=".3em"
-                    fontSize="14"
-                    className="fill-current text-custom-green"
-                  >
-                    {percentage}%
-                  </text>
-                </svg>
-                <span className="mt-2 text-xs text-center break-words">{category.name}</span>
+            <div key={index} className="flex items-start">
+              {/* Circle + Label (vertical) */}
+              <div className="flex flex-col items-center">
+                <AnimatedCircle
+                  percentage={percentage}
+                  size={size}
+                  strokeWidth={strokeWidth}
+                  color="#449b44"
+                />
+                <span className="mt-2 text-xs text-center w-[72px] break-words">
+                  {category.name}
+                </span>
               </div>
 
-          
+              {/* Connector (not for last item) */}
+              {!isLast && (
+                <div className="flex items-center">
+                  <div
+                    className={`${
+                      connectorFilled ? 'bg-green-600 h-2' : 'bg-gray-300 h-1'
+                    } w-6  rounded-full transition-all duration-300`}
+                    style={{ marginTop: size / 2 - 1 }}
+                  />
+                </div>
+              )}
             </div>
           );
         })}

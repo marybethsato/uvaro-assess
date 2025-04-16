@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Assessment from "../../interfaces/assessment";
-import { formatDate, getOrdinalAssessmentLabel } from "../home/PreviousAssessments";
+import {
+  formatDate,
+  getOrdinalAssessmentLabel,
+} from "../home/PreviousAssessments";
 import TopNavBar from "../navigation/TopNavBar";
 import AssessmentCard from "./AssessmentCard";
 
@@ -9,8 +12,11 @@ interface PreviousAssessmentsProps {
   assessments: Assessment[];
 }
 
-const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({ assessments }) => {
-  const [sortedAssessments, setSortedAssessments] = useState<Assessment[]>(assessments);
+const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({
+  assessments,
+}) => {
+  const [sortedAssessments, setSortedAssessments] =
+    useState<Assessment[]>(assessments);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const navigate = useNavigate();
@@ -24,21 +30,21 @@ const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({ assessments }
     navigate("/result?assessmentId=" + id);
   }
 
-  // 🧠 Step 1: Create a consistent ordinal label map (chronological by end_date_time)
+  // 🧠 Step 1: Create a consistent ordinal label map (chronological by endDateTime)
   const ordinalLabelMap: Record<number, string> = {};
 
   [...assessments]
-    .sort((a, b) => new Date(a.end_date_time).getTime() - new Date(b.end_date_time).getTime())
+    .sort((a, b) => new Date(a.endDateTime).getTime() - new Date(b.endDateTime).getTime())
     .forEach((assessment, index) => {
-      ordinalLabelMap[assessment.id] = getOrdinalAssessmentLabel(index);
+      ordinalLabelMap[assessment.assessmentId] = getOrdinalAssessmentLabel(index);
     });
 
-  // 🔁 Toggle sort order
+  // Toggle sort order
   const handleSort = () => {
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
     const sorted = [...sortedAssessments].sort((a, b) => {
-      const dateA = new Date(typeof a.end_date_time === "string" ? parseInt(a.end_date_time) : a.end_date_time).getTime();
-      const dateB = new Date(typeof b.end_date_time === "string" ? parseInt(b.end_date_time) : b.end_date_time).getTime();
+      const dateA = new Date(typeof a.endDateTime === "string" ? parseInt(a.endDateTime) : a.endDateTime).getTime();
+      const dateB = new Date(typeof b.endDateTime === "string" ? parseInt(b.endDateTime) : b.endDateTime).getTime();
 
       return newOrder === "asc" ? dateA - dateB : dateB - dateA;
     });
@@ -48,6 +54,9 @@ const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({ assessments }
   };
 
   return (
+    assessments.length === 0 ? <div>
+      <h2>No assessment yet...</h2>
+    </div>:
     <div>
       <TopNavBar />
       <div className="mt-5">
@@ -65,10 +74,10 @@ const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({ assessments }
         {/* Render Assessment Cards */}
         {sortedAssessments.map((assessment) => (
           <AssessmentCard
-            key={assessment.id}
-            onClick={() => goToResults(assessment.id.toString())}
-            title={ordinalLabelMap[assessment.id]} // ✅ stays consistent
-            date={formatDate(assessment.end_date_time)}
+            key={assessment.assessmentId}
+            onClick={() => goToResults(assessment.assessmentId.toString())}
+            title={ordinalLabelMap[assessment.assessmentId]} // ✅ stays consistent
+            date={formatDate(assessment.endDateTime)}
             description={"Tap to learn more!"}
           />
         ))}

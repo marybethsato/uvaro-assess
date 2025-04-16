@@ -7,7 +7,7 @@ interface PublicRouteProps {
 }
 
 const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
-  const isLoggedIn = localStorage.getItem("userId") !== null;
+  const isLoggedIn = localStorage.getItem("isLoggedIn") !== null;
 
   if (isLoggedIn) {
     return <Navigate to="/app/home" replace />;
