@@ -17,7 +17,6 @@ export default function CompleteCheckmark() {
   const navigate = useNavigate();
 
   useEffect(() => {
-
     async function fetchEndAssessment() {
       try {
         const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
@@ -47,7 +46,6 @@ export default function CompleteCheckmark() {
     if (isLoggedIn === true) {
       fetchEndAssessment();
     }
-
   }, [isLoggedIn]);
 
   return (
@@ -65,7 +63,7 @@ export default function CompleteCheckmark() {
           <h1 className="font-bold text-4xl mt-10 mb-8 text-center">
             Completed!
           </h1>
-          <p className="text-center mx-5">
+          <p className="text-center mx-5 lg:text-lg">
             Thank you for completing the assessment. We will get back to you
             with the results soon.
           </p>

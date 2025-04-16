@@ -24,8 +24,11 @@ const Home: React.FC = () => {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [latestAssessment, setLatestAssessment] = useState<Assessment>();
   const [user, setUser] = useState<User>();
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const getLatestAssessment = (assessments: Assessment[]): Assessment | undefined => {
+  const getLatestAssessment = (
+    assessments: Assessment[]
+  ): Assessment | undefined => {
     return assessments.reduce((latest, current) => {
       const latestDate = new Date(latest.startDateTime).getTime();
       const currentDate = new Date(current.startDateTime).getTime();
@@ -43,12 +46,18 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     async function init() {
-      await getUser();
-      await saveAssessment();
-      await getUserAssessments();
+      try {
+        await getUser();
+        await saveAssessment();
+        await getUserAssessments();
 
-      localStorage.removeItem("assessmentId");
-      localStorage.removeItem("saveAssessment");
+        localStorage.removeItem("assessmentId");
+        localStorage.removeItem("saveAssessment");
+      } catch (error) {
+        console.error("Error during initialization:", error);
+      } finally {
+        setLoading(false);
+      }
     }
     init();
   }, []);
@@ -69,7 +78,7 @@ const Home: React.FC = () => {
       }
 
       const fetchedAssessments: Assessment[] = result.data.getUserAssessments;
-      const completed = fetchedAssessments.filter(a => a.endDateTime != null);
+      const completed = fetchedAssessments.filter((a) => a.endDateTime != null);
       setAllAssessments(fetchedAssessments);
       setAssessments(completed);
       if (completed.length > 0) {
@@ -124,7 +133,10 @@ const Home: React.FC = () => {
 
       const data = await res.json();
       if (!data.errors) {
-        localStorage.setItem("assessmentId", data.data.addAssessment.assessmentId);
+        localStorage.setItem(
+          "assessmentId",
+          data.data.addAssessment.assessmentId
+        );
       }
     } catch (error) {
       console.error(error);
@@ -185,7 +197,10 @@ const Home: React.FC = () => {
 
       const data = await res.json();
       if (!data.errors) {
-        localStorage.setItem("assessmentId", data.data.addAssessment.assessmentId);
+        localStorage.setItem(
+          "assessmentId",
+          data.data.addAssessment.assessmentId
+        );
         navigate("/introduction/financial-health");
       } else {
         alert("Failed to start assessment: " + data.errors[0].message);
@@ -195,22 +210,34 @@ const Home: React.FC = () => {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-2xl">Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 mb-[70px]">
       <WelcomeBack
         profileUrl={rProfileUrl}
         name={user ? `${user.firstName} ${user.lastName}` : ""}
       />
-      {assessments.length === 0 ? (
+
+      {loading === false && assessments.length === 0 ? (
         <p className="mt-20 text-center text-3xl font-semibold my-8">
-          You have not taken the assessment yet!<br />
+          You have not taken the assessment yet!
+          <br />
           Wanna try?
         </p>
       ) : (
         <>
           <ReminderComponent
             onStartAssessment={handleAssessment}
-            lastAssessmentDate={formatToYMD(latestAssessment?.endDateTime ?? "")}
+            lastAssessmentDate={formatToYMD(
+              latestAssessment?.endDateTime ?? ""
+            )}
           />
           <ProgressChart assessments={assessments} />
         </>
@@ -224,7 +251,7 @@ const Home: React.FC = () => {
       </button>
 
       <OngoingAssessments
-        assessments={allAssessments.filter(a => !a.endDateTime)}
+        assessments={allAssessments.filter((a) => !a.endDateTime)}
       />
       <PreviousAssessment assessments={assessments} />
     </div>

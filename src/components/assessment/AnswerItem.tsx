@@ -11,7 +11,7 @@ export default function AnswerItem({
   return (
     <div
       data-testid="answer-item"
-      className={`p-2 border cursor-pointer rounded-lg  ${
+      className={`p-2 border cursor-pointer rounded-lg lg:py-3  ${
         isSelected
           ? "border-green-500 bg-green-50 hover:bg-none"
           : "border-gray-300 hover:bg-gray-100"
