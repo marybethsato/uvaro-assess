@@ -4,13 +4,8 @@ import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
 import TopNavBar from "../components/navigation/TopNavBar";
 import { ALL_CATEGORIES } from "../graphql/queries";
-// import IntroBackground from "../images/IntroBackground.png";
-import FinancialHealth from "../images/financialhealth/Financialhealth.png";
-import IntroBackground from "../images/IntroBackground2.png";
+import IntroBackground from "../images/IntroBackground.png";
 import IntroVector from "../images/IntroVector.png";
-import LifeChoiceFulfillment from "../images/lifechoice.png";
-import PeerCommunityFulfillment from "../images/projectcommunity.png";
-import WorkYouEnjoy from "../images/workyouenjoy/Workyouenjoy.png";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 
 interface Category {
@@ -31,14 +26,6 @@ const categoryMap: Record<string, string> = {
   "work-you-enjoy": "Work You Enjoy",
   "life-choice-fulfillment": "Life Choice Fulfillment",
   "peer-community-fulfillment": "Peer Community Fulfillment",
-};
-
-// Maps the category names to their respective images
-const categoryImages: Record<string, string> = {
-  "Financial Health": FinancialHealth,
-  "Work You Enjoy": WorkYouEnjoy,
-  "Life Choice Fulfillment": LifeChoiceFulfillment,
-  "Peer Community Fulfillment": PeerCommunityFulfillment,
 };
 
 const CategoryIntroduction = () => {
@@ -62,6 +49,7 @@ const CategoryIntroduction = () => {
           }),
         });
         const data = await res.json();
+        console.log(data);
 
         if (data.errors) {
           console.error("GraphQL errors:", data.errors);
@@ -111,7 +99,7 @@ const CategoryIntroduction = () => {
           {fetchedCategory && (
             <div className="flex justify-center items-center">
               <img
-                src={categoryImages[fetchedCategory.categoryName]}
+                src={fetchedCategory.categoryImage}
                 alt={`${fetchedCategory.categoryName} Introduction`}
                 className={`absolute ${
                   fetchedCategory.categoryName === "Financial Health"
@@ -140,7 +128,7 @@ const CategoryIntroduction = () => {
           {fetchedCategory && (
             <div className="flex justify-center items-center">
               <img
-                src={categoryImages[fetchedCategory.categoryName]}
+                src={fetchedCategory.categoryImage}
                 alt={`${fetchedCategory.categoryName} Introduction`}
                 className={` ${
                   fetchedCategory.categoryName === "Financial Health"
