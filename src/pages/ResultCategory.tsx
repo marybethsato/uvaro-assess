@@ -139,7 +139,7 @@ const ResultCategory = () => {
           result.data.completeCategory.levelStatement.toString()
         );
       }
-    } catch (e) { }
+    } catch (e) {}
   };
 
   function getCategoryName(key: string): string {
@@ -233,6 +233,7 @@ const ResultCategory = () => {
               alt="completed-category"
             />
           </div>
+          <h1>{levelImage}</h1>
           <h1 className="text-3xl font-bold text-center mt-10 ">
             {categoryName}
           </h1>
@@ -263,14 +264,16 @@ const ResultCategory = () => {
                 </BaseButton>
               </div>
             </div>
-          ) : isFollowUpDone ? <div className="flex justify-center">
-            <BaseButton
-              className="mt-5 green-button font-bold"
-              onClick={() => navigateToNextCategory()}
-            >
-              Finish Category
-            </BaseButton>
-          </div> : null}
+          ) : isFollowUpDone ? (
+            <div className="flex justify-center">
+              <BaseButton
+                className="mt-5 green-button font-bold"
+                onClick={() => navigateToNextCategory()}
+              >
+                Finish Category
+              </BaseButton>
+            </div>
+          ) : null}
         </div>
       </div>
       <NotesModal

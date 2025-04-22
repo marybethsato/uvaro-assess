@@ -27,7 +27,6 @@ interface Category {
   questions: Question[];
 }
 
-
 interface SelectedAnswer {
   questionId: number;
   answer: Answer;
@@ -49,12 +48,16 @@ const Assessment = () => {
   function addQuestion(newQuestion: Question) {
     // Update the flat questions array
     setQuestions((prevQuestions) => {
-      const exists = prevQuestions.some(q => q.questionId === newQuestion.questionId);
+      const exists = prevQuestions.some(
+        (q) => q.questionId === newQuestion.questionId
+      );
 
       const newList = exists
-        ? prevQuestions.map(q =>
-          q.questionId === newQuestion.questionId ? { ...q, ...newQuestion } : q
-        )
+        ? prevQuestions.map((q) =>
+            q.questionId === newQuestion.questionId
+              ? { ...q, ...newQuestion }
+              : q
+          )
         : [...prevQuestions, newQuestion];
 
       newList.sort((a, b) => a.questionId - b.questionId);
@@ -63,16 +66,18 @@ const Assessment = () => {
 
     // Update the category structure
     setCategories((prevCategories) => {
-      return prevCategories.map(category => {
+      return prevCategories.map((category) => {
         if (category.categoryId === newQuestion.categoryId) {
           const questionExists = category.questions.some(
             (q) => q.questionId === newQuestion.questionId
           );
 
           const updatedQuestions = questionExists
-            ? category.questions.map(q =>
-              q.questionId === newQuestion.questionId ? { ...q, ...newQuestion } : q
-            )
+            ? category.questions.map((q) =>
+                q.questionId === newQuestion.questionId
+                  ? { ...q, ...newQuestion }
+                  : q
+              )
             : [...category.questions, newQuestion];
 
           updatedQuestions.sort((a, b) => a.questionId - b.questionId);
@@ -87,7 +92,6 @@ const Assessment = () => {
       });
     });
   }
-
 
   useEffect(() => {
     setQuestions([]);
@@ -167,6 +171,7 @@ const Assessment = () => {
       }
       return null;
     };
+
     async function getFollowUpQuestions(_categories: Category[]) {
       try {
         setSelectedAnswers([]);
@@ -174,7 +179,7 @@ const Assessment = () => {
 
         const answerIdsFromLocal = getAnswersFromLocal(categoryId);
         const updatedAnswers: SelectedAnswer[] = [];
-        
+
         answerIdsFromLocal.forEach((answerId) => {
           const result = getQuestionIdFromAnswerId(answerId, _categories);
 
@@ -185,7 +190,7 @@ const Assessment = () => {
             });
           }
         });
-        
+
         setSelectedAnswers((prev) => {
           return [...prev, ...updatedAnswers];
         });
@@ -199,10 +204,9 @@ const Assessment = () => {
           body: JSON.stringify({
             query: GET_FOLLOW_UP_QUESTIONS,
             variables: {
-              categoryId: categoryId
+              categoryId: categoryId,
             },
           }),
-
         });
 
         if (!res.ok) {
@@ -238,11 +242,9 @@ const Assessment = () => {
       }
     }
 
-
     async function run() {
-     const _categories = await fetchCategories();
-      if (isFollowUp)
-        getFollowUpQuestions(_categories);
+      const _categories = await fetchCategories();
+      if (isFollowUp) getFollowUpQuestions(_categories);
     }
     run();
   }, []);
@@ -252,9 +254,6 @@ const Assessment = () => {
       setCurrentQuestionIndex(3);
     }
   }, [questions, isFollowUp]);
-
-
-
 
   const currentQuestion = questions[currentQuestionIndex];
 
@@ -296,7 +295,10 @@ const Assessment = () => {
         currentCategory!.categoryName
       );
       navigate(
-        "/result/" + currentCategoryKey + "?is_completed_full_assessment=false"+ (isFollowUp ? "&is_follow_up_done=true": "")
+        "/result/" +
+          currentCategoryKey +
+          "?is_completed_full_assessment=false" +
+          (isFollowUp ? "&is_follow_up_done=true" : "")
       );
     }
   };
@@ -310,11 +312,9 @@ const Assessment = () => {
   };
 
   const currentCategory = categories.find(function (_category) {
-    return _category.questions.some(
-      (q) => {
-        return q.questionId === currentQuestion.questionId;
-      }
-    );
+    return _category.questions.some((q) => {
+      return q.questionId === currentQuestion.questionId;
+    });
   });
   const totalQuestions = questions.length;
   const currentNumber = currentQuestionIndex + 1;
@@ -330,8 +330,6 @@ const Assessment = () => {
     );
   }
 
- 
-
   const saveAnswerToLocal = async (answerId: number) => {
     try {
       const categoryId = currentCategory!.categoryId.toString();
@@ -345,8 +343,6 @@ const Assessment = () => {
       console.log(e);
     }
   };
-
-
 
   if (!currentQuestion) {
     return <p>Error...</p>;
@@ -367,7 +363,7 @@ const Assessment = () => {
           ).length,
         }))}
       />
-      <div className="mx-5 flex flex-col md:w-4/5 md:mx-auto">
+      <div className="mx-5 flex flex-col md:w-4/5 md:mx-auto mb-10 ">
         <QuestionCard
           number={currentNumber}
           total={totalQuestions}
@@ -387,8 +383,9 @@ const Assessment = () => {
         />
 
         <div
-          className={`flex flex-row ${currentQuestionIndex > 0 ? "justify-between" : "justify-end"
-            }`}
+          className={`flex flex-row ${
+            currentQuestionIndex > 0 ? "justify-between" : "justify-end"
+          }`}
         >
           {currentQuestionIndex > 0 && (
             <button
