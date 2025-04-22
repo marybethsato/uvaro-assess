@@ -94,6 +94,7 @@ const Assessment = () => {
   }
 
   useEffect(() => {
+
     setQuestions([]);
 
     async function fetchCategories() {

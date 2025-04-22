@@ -42,7 +42,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
                   strokeWidth={strokeWidth}
                   color="#449b44"
                 />
-                <span className="mt-2 text-xs text-center w-[72px] md:w-[150px] break-words">
+                <span className="mt-2 text-[10px] text-center w-[72px] md:w-[150px] break-words">
                   {category.name}
                 </span>
               </div>

@@ -101,7 +101,7 @@ const ResultCategory = () => {
 
   const calculateLevelAuthenticated = async () => {
     try {
-      console.log("CALCULATE AUTH");
+      console.log("CALCULATE AUTH:", assessmentId);
 
       const categoryIndex = getCategoryIndexByKey(category!) + 1;
       const stored = localStorage.getItem(categoryIndex.toString());
@@ -131,7 +131,7 @@ const ResultCategory = () => {
       });
 
       const result = await response.json();
-      setLevelImage(result.data.calculateLevel.levelImage);
+      setLevelImage(result.data.completeCategory.levelImage);
 
       if (!result.errors) {
         setCategoryLevel(result.data.completeCategory.levelName);
@@ -139,7 +139,8 @@ const ResultCategory = () => {
           result.data.completeCategory.levelStatement.toString()
         );
       }
-    } catch (e) {}
+    } catch (e) {
+    }
   };
 
   function getCategoryName(key: string): string {
@@ -228,22 +229,24 @@ const ResultCategory = () => {
         <div className="mx-5 my-5">
           <div className="flex justify-center mt-10">
             <img
-              className="w-auto h-auto"
+              className="w-auto h-[230px]"
               src={levelImage}
               alt="completed-category"
             />
           </div>
-          <h1>{levelImage}</h1>
-          <h1 className="text-3xl font-bold text-center mt-10 ">
+          <h1 className="text-2xl font-bold text-center mt-10 mb-2 ">
             {categoryName}
           </h1>
-          <h1 className="text-2xl font-bold text-center ">
+          <hr className="border-t border-gray-300  mx-auto my-2" />
+
+          <h1 className="text-2xl mt-4 font-bold text-center ">
             {getCategoryLevel()}
           </h1>
           <p className="text-center mt-4">{categoryDescription}</p>
+          <hr className="border-t border-gray-300 mt-4 mx-auto my-2" />
           {!isCompletedFullAssessment && !isFollowUpDone ? (
             <div>
-              <p className="text-center font-bold mt-10 text-xl">
+              <p className="text-center font-bold mt-4 text-xl">
                 Does this represent you?
               </p>
               <div className="flex justify-center">
@@ -251,7 +254,7 @@ const ResultCategory = () => {
                   className="mt-5 green-button font-bold"
                   onClick={() => navigateToNextCategory()}
                 >
-                  This Represents Me
+                  <p className="text-[14px]">This represents me.</p>
                 </BaseButton>
               </div>
 
@@ -259,8 +262,8 @@ const ResultCategory = () => {
                 <BaseButton
                   className="mt-5 font-bold white-button"
                   onClick={() => navigateToFollowUpQuestions()}
-                >
-                  Not quite. Ask more Questions.
+                ><p className="text-[14px]">Not quite. Ask more Questions.</p>
+
                 </BaseButton>
               </div>
             </div>

@@ -143,8 +143,8 @@ const CategoryIntroduction = () => {
           {/* Content section for category introduction */}
           <div className="text-left mb-10 mt-[50vh] md:mt-10 mx-5">
             <h3 className="text-xl mb-2">Introduction</h3>
-            <h1 className="text-3xl font-bold">What is</h1>
-            <h1 className="text-3xl font-bold">{categoryName}?</h1>
+            <h1 className="text-2xl font-bold">What is</h1>
+            <h1 className="text-2xl font-bold">{categoryName}?</h1>
             <img src={IntroVector} alt="vector" className="mt-5" />
             <p className="mt-5 lg:text-lg">
               {fetchedCategory

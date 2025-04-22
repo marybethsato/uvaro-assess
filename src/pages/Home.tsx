@@ -197,10 +197,8 @@ const Home: React.FC = () => {
 
       const data = await res.json();
       if (!data.errors) {
-        localStorage.setItem(
-          "assessmentId",
-          data.data.addAssessment.assessmentId
-        );
+        localStorage.setItem("assessmentId", data.data.addAssessment.assessmentId);
+       
         navigate("/introduction/financial-health");
       } else {
         alert("Failed to start assessment: " + data.errors[0].message);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
 import TopNavBar from "../components/navigation/TopNavBar";
@@ -15,16 +15,21 @@ interface Level {
 }
 
 const Result = () => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [levels, setLevels] = useState<Level[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
     setIsLoggedIn(localStorage.getItem("isLoggedIn") !== null);
-    getResults();
   }, []);
 
+  useEffect(() => {
+    getResults();
+  }, [isLoggedIn]);
+
   function getResults() {
+    console.log(isLoggedIn);
     if (isLoggedIn) {
       getResultsForAuthenticated();
     } else {
@@ -79,7 +84,7 @@ const Result = () => {
   }
 
   const getResultsForAuthenticated = async () => {
-    const assessmentId = localStorage.getItem("assessmentId");
+    const assessmentId = searchParams.get("assessmentId");
     try {
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",

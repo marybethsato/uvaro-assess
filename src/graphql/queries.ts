@@ -60,7 +60,7 @@ query CalculateLevel($categoryId: Int!, $answers: [GetLevelInput!]!) {
 `;
 
 export const CALCULATE_LEVEL_AUTHENTICATED = `
-mutation CompleteCategory($categoryId: Int!, $assessmentId: Int!, $answers: [GetLevelInput!]!) {
+mutation Mutation($categoryId: Int!, $assessmentId: Int!, $answers: [GetLevelInput!]!) {
   completeCategory(categoryId: $categoryId, assessmentId: $assessmentId, answers: $answers) {
     levelId
     levelName
@@ -132,13 +132,27 @@ mutation EndAssessment($assessmentId: Int!) {
 export const GET_ASSESSMENT_BY_ID = `
 query GetAssessmentById($getAssessmentByIdId: Int!) {
   getAssessmentById(id: $getAssessmentByIdId) {
-    id,
+    assessmentId
+    startDateTime
+    endDateTime
+    userId
+    answers {
+      answerId
+      answerText
+      weightingId
+      questionId
+    }
     levels {
-      categoryId,
-      levelName,
+      levelId
+      levelName
       levelStatement
-    },
+      levelImage
+      weightingId
+      categoryId
+    }
     notes {
+      categoryId
+      assessmentId
       noteText
     }
   }
