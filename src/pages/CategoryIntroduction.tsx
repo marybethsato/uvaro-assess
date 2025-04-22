@@ -91,6 +91,7 @@ const CategoryIntroduction = () => {
             src={IntroBackground}
             alt="Background"
             className="w-full mx-auto md:hidden"
+            style={{ height: "450px" }}
           />
           <div className="absolute top-2 left-2">
             <TopNavBar isDark />
@@ -101,19 +102,8 @@ const CategoryIntroduction = () => {
               <img
                 src={fetchedCategory.categoryImage}
                 alt={`${fetchedCategory.categoryName} Introduction`}
-                className={`absolute ${
-                  fetchedCategory.categoryName === "Financial Health"
-                    ? "top-5"
-                    : fetchedCategory.categoryName === "Work You Enjoy"
-                    ? "top-20"
-                    : fetchedCategory.categoryName ===
-                        "Life Choice Fulfillment" ||
-                      fetchedCategory.categoryName ===
-                        "Peer Community Fulfillment"
-                    ? "top-10"
-                    : ""
-                }`}
-                style={{ width: "360px" }}
+                className="absolute top-5"
+                style={{ width: "270px" }}
                 width={400}
               />
             </div>
@@ -156,7 +146,6 @@ const CategoryIntroduction = () => {
             <h1 className="text-3xl font-bold">What is</h1>
             <h1 className="text-3xl font-bold">{categoryName}?</h1>
             <img src={IntroVector} alt="vector" className="mt-5" />
-            {/* <img src={fetchedCategory?.categoryImage} alt="Category vector image" className="mt-5" /> */}
             <p className="mt-5 lg:text-lg">
               {fetchedCategory
                 ? fetchedCategory.categoryDescription

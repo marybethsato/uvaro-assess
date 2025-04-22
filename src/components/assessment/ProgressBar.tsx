@@ -20,7 +20,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   const strokeWidth = 4;
 
   return (
-    <div className="w-full mt-5 flex justify-center">
+    <div className="w-full mt-24 flex justify-center">
       <div className="flex items-start justify-center gap-2 w-full max-w-4xl md:max-w-full">
         {categories.map((category, index) => {
           const computedPercentage = Math.round(
@@ -53,7 +53,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
                   <div
                     className={`${
                       connectorFilled ? "bg-green-600 h-2" : "bg-gray-300 h-1"
-                    } w-6  rounded-full transition-all duration-300`}
+                    } xs:w-4 md:w-6 w-1 rounded-full transition-all duration-300`}
                     style={{ marginTop: size / 2 - 1 }}
                   />
                 </div>
