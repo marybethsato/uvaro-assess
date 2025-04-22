@@ -4,13 +4,8 @@ import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
 import TopNavBar from "../components/navigation/TopNavBar";
 import { ALL_CATEGORIES } from "../graphql/queries";
-// import IntroBackground from "../images/IntroBackground.png";
-import FinancialHealth from "../images/financialhealth/Financialhealth.png";
-import IntroBackground from "../images/IntroBackground2.png";
+import IntroBackground from "../images/IntroBackground.png";
 import IntroVector from "../images/IntroVector.png";
-import LifeChoiceFulfillment from "../images/lifechoice.png";
-import PeerCommunityFulfillment from "../images/projectcommunity.png";
-import WorkYouEnjoy from "../images/workyouenjoy/Workyouenjoy.png";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 
 interface Category {
@@ -31,14 +26,6 @@ const categoryMap: Record<string, string> = {
   "work-you-enjoy": "Work You Enjoy",
   "life-choice-fulfillment": "Life Choice Fulfillment",
   "peer-community-fulfillment": "Peer Community Fulfillment",
-};
-
-// Maps the category names to their respective images
-const categoryImages: Record<string, string> = {
-  "Financial Health": FinancialHealth,
-  "Work You Enjoy": WorkYouEnjoy,
-  "Life Choice Fulfillment": LifeChoiceFulfillment,
-  "Peer Community Fulfillment": PeerCommunityFulfillment,
 };
 
 const CategoryIntroduction = () => {
@@ -62,6 +49,7 @@ const CategoryIntroduction = () => {
           }),
         });
         const data = await res.json();
+        console.log(data);
 
         if (data.errors) {
           console.error("GraphQL errors:", data.errors);
@@ -96,69 +84,94 @@ const CategoryIntroduction = () => {
 
   return (
     <Layout>
-      <div className="mx-auto overflow-hidden">
-        <div className="absolute w-full ">
-
+      <div className="mx-auto overflow-hidden ">
+        {/* Mobile */}
+        <div className="absolute w-full md:hidden">
           <img
             src={IntroBackground}
             alt="Background"
-            className="w-full mx-auto"
+            className="w-full mx-auto md:hidden"
           />
           <div className="absolute top-2 left-2">
             <TopNavBar isDark />
           </div>
 
-          {/* <img
-            src={FinancialHealth}
-            alt="Financial Health Introduction"
-            className="absolute top-5"
-            width={400}
-          /> */}
           {fetchedCategory && (
             <div className="flex justify-center items-center">
               <img
-                src={categoryImages[fetchedCategory.categoryName]}
+                src={fetchedCategory.categoryImage}
                 alt={`${fetchedCategory.categoryName} Introduction`}
-                className={`absolute ${fetchedCategory.categoryName === "Financial Health"
+                className={`absolute ${
+                  fetchedCategory.categoryName === "Financial Health"
                     ? "top-5"
                     : fetchedCategory.categoryName === "Work You Enjoy"
-                      ? "top-20"
-                      : fetchedCategory.categoryName ===
+                    ? "top-20"
+                    : fetchedCategory.categoryName ===
                         "Life Choice Fulfillment" ||
-                        fetchedCategory.categoryName ===
+                      fetchedCategory.categoryName ===
                         "Peer Community Fulfillment"
-                        ? "top-10"
-                        : ""
-                  }`}
-                style={{ width: '360px' }}
+                    ? "top-10"
+                    : ""
+                }`}
+                style={{ width: "360px" }}
                 width={400}
               />
             </div>
-
           )}
         </div>
 
-        {/* Content section for category introduction */}
-        <div className="text-left mb-10 mt-[50vh] mx-5">
-          <h3 className="text-xl mb-2">Introduction</h3>
-          <h1 className="text-3xl font-bold">What is</h1>
-          <h1 className="text-3xl font-bold">{categoryName}?</h1>
-          <img src={IntroVector} alt="vector" className="mt-5" />
-          {/* <img src={fetchedCategory?.categoryImage} alt="Category vector image" className="mt-5" /> */}
-          <p className="mt-5">
-            {fetchedCategory
-              ? fetchedCategory.categoryDescription
-              : "Loading description..."}
-          </p>
+        {/* Tablet / Desktop */}
+        <div className="hidden md:block md:bg-black md:pb-10">
+          <div className="top-2 left-2">
+            <TopNavBar isDark />
+          </div>
+          {fetchedCategory && (
+            <div className="flex justify-center items-center">
+              <img
+                src={fetchedCategory.categoryImage}
+                alt={`${fetchedCategory.categoryName} Introduction`}
+                className={` ${
+                  fetchedCategory.categoryName === "Financial Health"
+                    ? "top-5"
+                    : fetchedCategory.categoryName === "Work You Enjoy"
+                    ? "top-20"
+                    : fetchedCategory.categoryName ===
+                        "Life Choice Fulfillment" ||
+                      fetchedCategory.categoryName ===
+                        "Peer Community Fulfillment"
+                    ? "top-10"
+                    : ""
+                }`}
+                style={{ width: "360px" }}
+                width={400}
+              />
+            </div>
+          )}
         </div>
-        {/* Button to navigate to the assessment page */}
-        <div className="flex justify-center">
-          <BaseButton
-            className="w-2/3 red-button"
-            onClick={() => navigate("/assessment?category=" + category)}
-          >
-            Continue
-          </BaseButton>
+
+        <div className="md:w-4/5 md:mx-auto md:mb-10">
+          {/* Content section for category introduction */}
+          <div className="text-left mb-10 mt-[50vh] md:mt-10 mx-5">
+            <h3 className="text-xl mb-2">Introduction</h3>
+            <h1 className="text-3xl font-bold">What is</h1>
+            <h1 className="text-3xl font-bold">{categoryName}?</h1>
+            <img src={IntroVector} alt="vector" className="mt-5" />
+            {/* <img src={fetchedCategory?.categoryImage} alt="Category vector image" className="mt-5" /> */}
+            <p className="mt-5 lg:text-lg">
+              {fetchedCategory
+                ? fetchedCategory.categoryDescription
+                : "Loading description..."}
+            </p>
+          </div>
+          {/* Button to navigate to the assessment page */}
+          <div className="flex justify-center">
+            <BaseButton
+              className="w-2/3 red-button"
+              onClick={() => navigate("/assessment?category=" + category)}
+            >
+              Continue
+            </BaseButton>
+          </div>
         </div>
       </div>
     </Layout>

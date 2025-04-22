@@ -1,5 +1,5 @@
-import React from 'react';
-import AnimatedCircle from './AnimatedCircle';
+import React from "react";
+import AnimatedCircle from "./AnimatedCircle";
 
 interface Category {
   name: string;
@@ -21,7 +21,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
   return (
     <div className="w-full mt-5 flex justify-center">
-      <div className="flex items-start justify-center gap-2 w-full max-w-4xl">
+      <div className="flex items-start justify-center gap-2 w-full max-w-4xl md:max-w-full">
         {categories.map((category, index) => {
           const computedPercentage = Math.round(
             (category.answered / category.totalQuestions) * 100
@@ -42,7 +42,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
                   strokeWidth={strokeWidth}
                   color="#449b44"
                 />
-                <span className="mt-2 text-xs text-center w-[72px] break-words">
+                <span className="mt-2 text-xs text-center w-[72px] md:w-[150px] break-words">
                   {category.name}
                 </span>
               </div>
@@ -52,7 +52,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
                 <div className="flex items-center">
                   <div
                     className={`${
-                      connectorFilled ? 'bg-green-600 h-2' : 'bg-gray-300 h-1'
+                      connectorFilled ? "bg-green-600 h-2" : "bg-gray-300 h-1"
                     } w-6  rounded-full transition-all duration-300`}
                     style={{ marginTop: size / 2 - 1 }}
                   />

@@ -5,8 +5,11 @@ import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
 import TopNavBar from "../components/navigation/TopNavBar";
 import categoryMap from "../data/category_map";
-import { CALCULATE_LEVEL_AUTHENTICATED, CALCULATE_LEVEL_GUEST, INSERT_NOTES } from "../graphql/queries";
-import resultcategory from "../images/result/result-category.png";
+import {
+  CALCULATE_LEVEL_AUTHENTICATED,
+  CALCULATE_LEVEL_GUEST,
+  INSERT_NOTES,
+} from "../graphql/queries";
 import "../styles/globals.css";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 import getCategoryKeyByIndex from "../utils/get_category_key_by_index";
@@ -22,6 +25,7 @@ const ResultCategory = () => {
   const categoryName = getCategoryName(category || "default");
   const [categoryLevel, setCategoryLevel] = useState<string>("");
   const [categoryDescription, setCategoryDescription] = useState<string>("");
+  const [levelImage, setLevelImage] = useState<string>("");
   const assessmentId = localStorage.getItem("assessmentId");
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
@@ -54,7 +58,7 @@ const ResultCategory = () => {
 
       answersList.forEach((element: any) => {
         answersMap.push({
-          'answerId': element
+          answerId: element,
         });
       });
 
@@ -66,8 +70,7 @@ const ResultCategory = () => {
         },
         body: JSON.stringify({
           query: CALCULATE_LEVEL_GUEST,
-          variables:
-          {
+          variables: {
             answers: answersMap,
             categoryId: categoryIndex,
           },
@@ -75,6 +78,7 @@ const ResultCategory = () => {
       });
 
       const result = await response.json();
+      setLevelImage(result.data.calculateLevel.levelImage);
 
       if (!result.errors) {
         setCategoryLevel(result.data.calculateLevel.levelName);
@@ -82,10 +86,13 @@ const ResultCategory = () => {
           result.data.calculateLevel.levelStatement.toString()
         );
 
-        localStorage.setItem(categoryIndex.toString() + "_result", JSON.stringify(result))
+        localStorage.setItem(
+          categoryIndex.toString() + "_result",
+          JSON.stringify(result)
+        );
       }
     } catch (e) {
-      console.log('error' + e);
+      console.log("error" + e);
     }
   };
 
@@ -100,10 +107,9 @@ const ResultCategory = () => {
 
       answersList.forEach((element: any) => {
         answersMap.push({
-          'answerId': element
+          answerId: element,
         });
       });
-
 
       const response = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
         method: "POST",
@@ -116,13 +122,13 @@ const ResultCategory = () => {
           variables: {
             categoryId: parseInt(categoryIndex.toString()),
             assessmentId: parseInt(assessmentId!),
-            answers: answersMap
+            answers: answersMap,
           },
         }),
       });
 
       const result = await response.json();
-      console.log("Mutation Result:", result);
+      setLevelImage(result.data.calculateLevel.levelImage);
 
       if (!result.errors) {
         setCategoryLevel(result.data.completeCategory.levelName);
@@ -130,7 +136,7 @@ const ResultCategory = () => {
           result.data.completeCategory.levelStatement.toString()
         );
       }
-    } catch (e) { }
+    } catch (e) {}
   };
 
   function getCategoryName(key: string): string {
@@ -163,7 +169,7 @@ const ResultCategory = () => {
         getCategoryIndexByKey(category!) + 1
       );
 
-      if (getCategoryIndexByKey(categoryKey!) == -1) {
+      if (getCategoryIndexByKey(categoryKey!) === -1) {
         navigate("/complete-checkmark");
       } else {
         navigate("/introduction/" + categoryKey);
@@ -178,7 +184,7 @@ const ResultCategory = () => {
       getCategoryIndexByKey(category!) + 1
     );
 
-    if (getCategoryIndexByKey(categoryKey!) == -1) {
+    if (getCategoryIndexByKey(categoryKey!) === -1) {
       navigate("/complete-checkmark");
     } else {
       navigate("/introduction/" + categoryKey);
@@ -220,7 +226,7 @@ const ResultCategory = () => {
           <div className="flex justify-center mt-10">
             <img
               className="w-auto h-auto"
-              src={resultcategory}
+              src={levelImage}
               alt="completed-category"
             />
           </div>
@@ -232,9 +238,10 @@ const ResultCategory = () => {
           </h1>
           <p className="text-center mt-4">{categoryDescription}</p>
           {!isCompletedFullAssessment ? (
-
             <div>
-              <p className="text-center font-bold mt-10 text-xl">Does this represent you?</p>
+              <p className="text-center font-bold mt-10 text-xl">
+                Does this represent you?
+              </p>
               <div className="flex justify-center">
                 <BaseButton
                   className="mt-5 green-button font-bold"

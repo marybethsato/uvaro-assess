@@ -32,11 +32,6 @@ interface SelectedAnswer {
   answer: Answer;
 }
 
-interface Note {
-  questionId: number;
-  content: string;
-}
-
 const Assessment = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -58,9 +53,7 @@ const Assessment = () => {
 
       if (exists) {
         return prevQuestions.map((q) =>
-          q.questionId === newQuestion.questionId
-            ? { ...q, ...newQuestion }
-            : q
+          q.questionId === newQuestion.questionId ? { ...q, ...newQuestion } : q
         );
       } else {
         return [...prevQuestions, newQuestion];
@@ -69,7 +62,7 @@ const Assessment = () => {
   };
 
   useEffect(() => {
-    console.log(isFollowUp)
+    console.log(isFollowUp);
     setQuestions([]);
 
     async function fetchCategories() {
@@ -86,7 +79,7 @@ const Assessment = () => {
         });
 
         if (!res.ok) {
-          console.log('here');
+          console.log("here");
           throw new Error("Failed to fetch categories");
         }
 
@@ -94,7 +87,7 @@ const Assessment = () => {
         console.log(response.data);
 
         if (response.errors) {
-          console.log('error here');
+          console.log("error here");
           throw new Error(
             `GraphQL error: ${response.errors[0].message || "Unknown error"}`
           );
@@ -109,11 +102,8 @@ const Assessment = () => {
             data.allCategories[categoryIndex].questions.forEach(
               (question: Question) => {
                 if (isFollowUp && question.followUp == true) {
-
                   addQuestion(question);
-
                 } else if (isFollowUp == false && question.followUp == false) {
-
                   addQuestion(question);
                 }
               }
@@ -121,7 +111,6 @@ const Assessment = () => {
           } else {
             setCategories([]);
             setQuestions([]);
-
           }
         }
       } catch (error) {
@@ -132,8 +121,6 @@ const Assessment = () => {
     }
     fetchCategories();
   }, []);
-
-
 
   const currentQuestion = questions[currentQuestionIndex];
 
@@ -166,15 +153,12 @@ const Assessment = () => {
       (item) => item.questionId === currentQuestion.questionId
     )!.answer;
 
-    saveAnswerToLocal(
-      selectedAnswer.answerId
-    );
-    
+    saveAnswerToLocal(selectedAnswer.answerId);
+
     // next question
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
-    }
-    else {
+    } else {
       const currentCategoryKey = getCategoryKeyByValue(
         currentCategory!.categoryName
       );
@@ -193,12 +177,12 @@ const Assessment = () => {
   };
 
   const currentCategory = categories.find(function (_category) {
-    return isFollowUp ? _category.categoryName === categoryMap[category] :
-      (_category.questions.some(
-        (q) => q.questionId === currentQuestion.questionId
-      ));
-  }
-  );
+    return isFollowUp
+      ? _category.categoryName === categoryMap[category]
+      : _category.questions.some(
+          (q) => q.questionId === currentQuestion.questionId
+        );
+  });
   const totalQuestions = questions.length;
   const currentNumber = currentQuestionIndex + 1;
 
@@ -227,7 +211,6 @@ const Assessment = () => {
     }
   };
 
-
   if (!currentQuestion) {
     return <p>Error...</p>;
   }
@@ -247,7 +230,7 @@ const Assessment = () => {
           ).length,
         }))}
       />
-      <div className="mx-5 flex flex-col">
+      <div className="mx-5 flex flex-col md:w-4/5 md:mx-auto">
         <QuestionCard
           number={currentNumber}
           total={totalQuestions}
@@ -265,17 +248,11 @@ const Assessment = () => {
           }
           onSelect={(answer) => handleSelectAnswer(answer)}
         />
-        {/* <NoteCard
-          questionId={currentQuestion.questionId}
-          onNoteChange={handleNoteChange}
-          existingNote={
-            notes.find((n) => n.questionId === currentQuestion.questionId)
-              ?.content
-          }
-        /> */}
+
         <div
-          className={`flex flex-row ${currentQuestionIndex > 0 ? "justify-between" : "justify-end"
-            }`}
+          className={`flex flex-row ${
+            currentQuestionIndex > 0 ? "justify-between" : "justify-end"
+          }`}
         >
           {currentQuestionIndex > 0 && (
             <button
@@ -300,6 +277,3 @@ const Assessment = () => {
 };
 
 export default Assessment;
-function getKeyByValue(arg0: string) {
-  throw new Error("Function not implemented.");
-}
