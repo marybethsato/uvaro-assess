@@ -12,6 +12,7 @@ export interface Level {
     levelId: number,
     levelStatement: string,
     categoryId: number
+    weightingId: number
 }
 
 export interface Answer {

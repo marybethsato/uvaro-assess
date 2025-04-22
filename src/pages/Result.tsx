@@ -4,7 +4,6 @@ import BaseButton from "../components/buttons/BaseButton";
 import Layout from "../components/Layout";
 import TopNavBar from "../components/navigation/TopNavBar";
 import ResultCard from "../components/result/ResultCard";
-import levelMap from "../data/level_map";
 import { GET_ASSESSMENT_BY_ID } from "../graphql/queries";
 import getCategoryKeyByIndex from "../utils/get_category_key_by_index";
 
@@ -12,6 +11,7 @@ interface Level {
   categoryId: number;
   levelName: string;
   levelStatement: string;
+  weightingId: number;
 }
 
 const Result = () => {
@@ -126,7 +126,7 @@ const Result = () => {
             <ResultCard
               key={index}
               category_key={getCategoryKeyByIndex(index) ?? ""}
-              levelName={"Level " + levelMap[level.levelName]}
+              levelName={"Level " + level.weightingId}
               levelStatement={level.levelStatement}
             />
           ))}

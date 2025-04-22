@@ -1,5 +1,5 @@
 import Assessment from "../interfaces/assessment";
-import levelMap from "./level_map";
+
 
 
 export const processAssessments = (
@@ -9,13 +9,13 @@ export const processAssessments = (
 
   assessments.forEach((assessment) => {
     assessment.levels.forEach((level) => {
-      const { categoryId, levelName } = level;
+      const { categoryId, levelName, weightingId } = level;
 
       if (!groupedLevels[categoryId]) {
         groupedLevels[categoryId] = [];
       }
 
-      groupedLevels[categoryId].push(levelMap[levelName]);
+      groupedLevels[categoryId].push(weightingId);
     });
   });
 

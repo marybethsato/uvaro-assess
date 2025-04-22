@@ -21,6 +21,9 @@ const ResultCategory = () => {
   const isCompletedFullAssessment =
     searchParams.get("is_completed_full_assessment") === "false" ? false : true;
 
+  const isFollowUpDone =
+    searchParams.get("is_follow_up_done") === "true" ? true : false;
+
   const { category } = useParams<{ category: string }>();
   const categoryName = getCategoryName(category || "default");
   const [categoryLevel, setCategoryLevel] = useState<string>("");
@@ -136,7 +139,7 @@ const ResultCategory = () => {
           result.data.completeCategory.levelStatement.toString()
         );
       }
-    } catch (e) {}
+    } catch (e) { }
   };
 
   function getCategoryName(key: string): string {
@@ -237,7 +240,7 @@ const ResultCategory = () => {
             {getCategoryLevel()}
           </h1>
           <p className="text-center mt-4">{categoryDescription}</p>
-          {!isCompletedFullAssessment ? (
+          {!isCompletedFullAssessment && !isFollowUpDone ? (
             <div>
               <p className="text-center font-bold mt-10 text-xl">
                 Does this represent you?
@@ -260,7 +263,14 @@ const ResultCategory = () => {
                 </BaseButton>
               </div>
             </div>
-          ) : null}
+          ) : isFollowUpDone ? <div className="flex justify-center">
+            <BaseButton
+              className="mt-5 green-button font-bold"
+              onClick={() => navigateToNextCategory()}
+            >
+              Finish Category
+            </BaseButton>
+          </div> : null}
         </div>
       </div>
       <NotesModal
