@@ -8,8 +8,7 @@ import QuestionCard from "../components/assessment/QuestionCard";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ProgressBar from "../components/assessment/ProgressBar";
-import categoryMap from "../data/category_map";
-import { ALL_CATEGORIES } from "../graphql/queries";
+import { ALL_CATEGORIES, GET_FOLLOW_UP_QUESTIONS } from "../graphql/queries";
 import Answer from "../interfaces/answer";
 import getCategoryIndexByKey from "../utils/get_category_index_by_key";
 import getCategoryKeyByValue from "../utils/get_category_key_by_value";
@@ -19,6 +18,7 @@ interface Question {
   questionText: string;
   answers: Answer[];
   followUp: boolean;
+  categoryId: number;
 }
 
 interface Category {
@@ -26,6 +26,7 @@ interface Category {
   categoryName: string;
   questions: Question[];
 }
+
 
 interface SelectedAnswer {
   questionId: number;
@@ -41,28 +42,54 @@ const Assessment = () => {
 
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category") || "financial-health";
-  const isFollowUp = searchParams.get("is_follow_up") === "true" ? true : false;
+  const isFollowUp = searchParams.get("is_follow_up") !== null ? true : false;
 
   const navigate = useNavigate();
 
-  const addQuestion = (newQuestion: Question) => {
+  function addQuestion(newQuestion: Question) {
+    // Update the flat questions array
     setQuestions((prevQuestions) => {
-      const exists = prevQuestions.some(
-        (q) => q.questionId === newQuestion.questionId
-      );
+      const exists = prevQuestions.some(q => q.questionId === newQuestion.questionId);
 
-      if (exists) {
-        return prevQuestions.map((q) =>
+      const newList = exists
+        ? prevQuestions.map(q =>
           q.questionId === newQuestion.questionId ? { ...q, ...newQuestion } : q
-        );
-      } else {
-        return [...prevQuestions, newQuestion];
-      }
+        )
+        : [...prevQuestions, newQuestion];
+
+      newList.sort((a, b) => a.questionId - b.questionId);
+      return newList;
     });
-  };
+
+    // Update the category structure
+    setCategories((prevCategories) => {
+      return prevCategories.map(category => {
+        if (category.categoryId === newQuestion.categoryId) {
+          const questionExists = category.questions.some(
+            (q) => q.questionId === newQuestion.questionId
+          );
+
+          const updatedQuestions = questionExists
+            ? category.questions.map(q =>
+              q.questionId === newQuestion.questionId ? { ...q, ...newQuestion } : q
+            )
+            : [...category.questions, newQuestion];
+
+          updatedQuestions.sort((a, b) => a.questionId - b.questionId);
+
+          return {
+            ...category,
+            questions: updatedQuestions,
+          };
+        }
+
+        return category;
+      });
+    });
+  }
+
 
   useEffect(() => {
-    console.log(isFollowUp);
     setQuestions([]);
 
     async function fetchCategories() {
@@ -79,12 +106,10 @@ const Assessment = () => {
         });
 
         if (!res.ok) {
-          console.log("here");
           throw new Error("Failed to fetch categories");
         }
 
         const response = await res.json();
-        console.log(response.data);
 
         if (response.errors) {
           console.log("error here");
@@ -101,11 +126,104 @@ const Assessment = () => {
             const categoryIndex = getCategoryIndexByKey(category);
             data.allCategories[categoryIndex].questions.forEach(
               (question: Question) => {
-                if (isFollowUp && question.followUp == true) {
-                  addQuestion(question);
-                } else if (isFollowUp == false && question.followUp == false) {
-                  addQuestion(question);
-                }
+                addQuestion(question);
+              }
+            );
+            return data.allCategories;
+          } else {
+            setCategories([]);
+            setQuestions([]);
+            return [];
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    const getAnswersFromLocal = (categoryId: number): number[] => {
+      try {
+        const storedAnswers = localStorage.getItem(categoryId.toString());
+        return storedAnswers ? JSON.parse(storedAnswers) : [];
+      } catch (e) {
+        console.log("Error getting answers from local:", e);
+        return [];
+      }
+    };
+
+    const getQuestionIdFromAnswerId = (
+      answerId: number,
+      searchIn: Category[]
+    ): { questionId: number; answer: Answer } | null => {
+      for (const category of searchIn) {
+        for (const question of category.questions) {
+          const answer = question.answers.find((a) => a.answerId === answerId);
+          if (answer) {
+            return { questionId: question.questionId, answer };
+          }
+        }
+      }
+      return null;
+    };
+    async function getFollowUpQuestions(_categories: Category[]) {
+      try {
+        setSelectedAnswers([]);
+        const categoryId = getCategoryIndexByKey(category) + 1;
+
+        const answerIdsFromLocal = getAnswersFromLocal(categoryId);
+        const updatedAnswers: SelectedAnswer[] = [];
+        
+        answerIdsFromLocal.forEach((answerId) => {
+          const result = getQuestionIdFromAnswerId(answerId, _categories);
+
+          if (result) {
+            updatedAnswers.push({
+              questionId: result.questionId,
+              answer: result.answer,
+            });
+          }
+        });
+        
+        setSelectedAnswers((prev) => {
+          return [...prev, ...updatedAnswers];
+        });
+
+        const res = await fetch(process.env.REACT_APP_GRAPHQL_URL || "", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: GET_FOLLOW_UP_QUESTIONS,
+            variables: {
+              categoryId: categoryId
+            },
+          }),
+
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const response = await res.json();
+
+        if (response.errors) {
+          throw new Error(
+            `GraphQL error: ${response.errors[0].message || "Unknown error"}`
+          );
+        }
+
+        const data = response.data;
+
+        if (data && data.getFollowUpQuestionsByCategory) {
+          if (data.getFollowUpQuestionsByCategory.length > 0) {
+            data.getFollowUpQuestionsByCategory.forEach(
+              (question: Question) => {
+                addQuestion(question);
               }
             );
           } else {
@@ -119,8 +237,24 @@ const Assessment = () => {
         setLoading(false);
       }
     }
-    fetchCategories();
+
+
+    async function run() {
+     const _categories = await fetchCategories();
+      if (isFollowUp)
+        getFollowUpQuestions(_categories);
+    }
+    run();
   }, []);
+
+  useEffect(() => {
+    if (isFollowUp && questions.length >= 4) {
+      setCurrentQuestionIndex(3);
+    }
+  }, [questions, isFollowUp]);
+
+
+
 
   const currentQuestion = questions[currentQuestionIndex];
 
@@ -155,7 +289,6 @@ const Assessment = () => {
 
     saveAnswerToLocal(selectedAnswer.answerId);
 
-    // next question
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     } else {
@@ -163,7 +296,7 @@ const Assessment = () => {
         currentCategory!.categoryName
       );
       navigate(
-        "/result/" + currentCategoryKey + "?is_completed_full_assessment=false"
+        "/result/" + currentCategoryKey + "?is_completed_full_assessment=false"+ (isFollowUp ? "&is_follow_up_done=true": "")
       );
     }
   };
@@ -177,11 +310,11 @@ const Assessment = () => {
   };
 
   const currentCategory = categories.find(function (_category) {
-    return isFollowUp
-      ? _category.categoryName === categoryMap[category]
-      : _category.questions.some(
-          (q) => q.questionId === currentQuestion.questionId
-        );
+    return _category.questions.some(
+      (q) => {
+        return q.questionId === currentQuestion.questionId;
+      }
+    );
   });
   const totalQuestions = questions.length;
   const currentNumber = currentQuestionIndex + 1;
@@ -197,6 +330,8 @@ const Assessment = () => {
     );
   }
 
+ 
+
   const saveAnswerToLocal = async (answerId: number) => {
     try {
       const categoryId = currentCategory!.categoryId.toString();
@@ -210,6 +345,8 @@ const Assessment = () => {
       console.log(e);
     }
   };
+
+
 
   if (!currentQuestion) {
     return <p>Error...</p>;
@@ -250,9 +387,8 @@ const Assessment = () => {
         />
 
         <div
-          className={`flex flex-row ${
-            currentQuestionIndex > 0 ? "justify-between" : "justify-end"
-          }`}
+          className={`flex flex-row ${currentQuestionIndex > 0 ? "justify-between" : "justify-end"
+            }`}
         >
           {currentQuestionIndex > 0 && (
             <button

@@ -20,13 +20,20 @@ export const ALL_CATEGORIES = `
 }
 `;
 
+
 export const GET_FOLLOW_UP_QUESTIONS = `
-query GetFollowUpQuestionsByCategory($categoryId: Int!) {
+query AllCategories($categoryId: Int!) {
   getFollowUpQuestionsByCategory(categoryId: $categoryId) {
-    categoryId
-    followUp
     questionId
     questionText
+    categoryId
+    followUp
+    answers {
+      answerId
+      answerText
+      weightingId
+      questionId
+    }
   }
 }
 `;
@@ -90,9 +97,9 @@ mutation Mutation {
 export const GET_USER = `
 query GetUser {
   getUser {
-    email
     firstName
     lastName
+    email
   }
 }
 `;

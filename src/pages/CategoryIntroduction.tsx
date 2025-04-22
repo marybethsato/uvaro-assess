@@ -164,7 +164,7 @@ const CategoryIntroduction = () => {
             </p>
           </div>
           {/* Button to navigate to the assessment page */}
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-10">
             <BaseButton
               className="w-2/3 red-button"
               onClick={() => navigate("/assessment?category=" + category)}

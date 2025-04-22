@@ -100,7 +100,7 @@ const Home: React.FC = () => {
 
       const result = await response.json();
       if (!response.ok) {
-        alert("Error getting user");
+        alert("Error getting user: "+ response.status.toString() );
       }
       setUser(result.data.getUser);
       localStorage.setItem("isLoggedIn", "true");
