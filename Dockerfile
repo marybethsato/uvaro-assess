@@ -11,13 +11,14 @@ ARG REACT_APP_GCLOUD_IMAGES_BASE_URL
 COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the app
-COPY . .
 
 # Write .env.production before the build step
 RUN echo "REACT_APP_GRAPHQL_URL=$REACT_APP_GRAPHQL_URL" > .env.production && \
     echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL" >> .env.production && \
     echo "REACT_APP_GCLOUD_IMAGES_BASE_URL=$REACT_APP_GCLOUD_IMAGES_BASE_URL" >> .env.production
+
+# Copy the rest of the app
+COPY . .
 
 # Build the app (CRA will read .env.production automatically)
 RUN npm run build
