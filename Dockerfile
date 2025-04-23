@@ -8,9 +8,9 @@ ARG REACT_APP_BACKEND_URL
 ARG REACT_APP_GCLOUD_IMAGES_BASE_URL
 
 # Write them to .env.production
-RUN echo "REACT_APP_GRAPHQL_URL=$REACT_APP_GRAPHQL_URL" > .env.production && \
-    echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL" >> .env.production && \
-    echo "REACT_APP_GCLOUD_IMAGES_BASE_URL=$REACT_APP_GCLOUD_IMAGES_BASE_URL" >> .env.production
+RUN echo "REACT_APP_GRAPHQL_URL=$REACT_APP_GRAPHQL_URL" > .env && \
+    echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL" >> .env && \
+    echo "REACT_APP_GCLOUD_IMAGES_BASE_URL=$REACT_APP_GCLOUD_IMAGES_BASE_URL" >> .env
 
 COPY package*.json ./
 RUN npm install
