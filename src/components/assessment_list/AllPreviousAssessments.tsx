@@ -34,17 +34,29 @@ const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({
   const ordinalLabelMap: Record<number, string> = {};
 
   [...assessments]
-    .sort((a, b) => new Date(a.endDateTime).getTime() - new Date(b.endDateTime).getTime())
+    .sort(
+      (a, b) =>
+        new Date(a.endDateTime).getTime() - new Date(b.endDateTime).getTime()
+    )
     .forEach((assessment, index) => {
-      ordinalLabelMap[assessment.assessmentId] = getOrdinalAssessmentLabel(index);
+      ordinalLabelMap[assessment.assessmentId] =
+        getOrdinalAssessmentLabel(index);
     });
 
   // Toggle sort order
   const handleSort = () => {
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
     const sorted = [...sortedAssessments].sort((a, b) => {
-      const dateA = new Date(typeof a.endDateTime === "string" ? parseInt(a.endDateTime) : a.endDateTime).getTime();
-      const dateB = new Date(typeof b.endDateTime === "string" ? parseInt(b.endDateTime) : b.endDateTime).getTime();
+      const dateA = new Date(
+        typeof a.endDateTime === "string"
+          ? parseInt(a.endDateTime)
+          : a.endDateTime
+      ).getTime();
+      const dateB = new Date(
+        typeof b.endDateTime === "string"
+          ? parseInt(b.endDateTime)
+          : b.endDateTime
+      ).getTime();
 
       return newOrder === "asc" ? dateA - dateB : dateB - dateA;
     });
@@ -53,13 +65,14 @@ const PreviousAssessments: React.FC<PreviousAssessmentsProps> = ({
     setSortOrder(newOrder);
   };
 
-  return (
-    assessments.length === 0 ? <div>
+  return assessments.length === 0 ? (
+    <div>
       <h2>No assessment yet...</h2>
-    </div>:
+    </div>
+  ) : (
     <div>
       <TopNavBar />
-      <div className="mt-5">
+      <div className="pt-12">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-m font-bold">Previous Assessments</h2>
